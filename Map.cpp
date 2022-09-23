@@ -1,6 +1,5 @@
 #pragma once
 #include "Map.h"
-#include "Player.h"
 #include <string>
 #include <vector>
 #include <iostream>
@@ -26,13 +25,15 @@ Territory::Territory(const Territory &t) {
     y = t.y;
 }
 
-Territory::Territory(string name, int x, int y) {
+Territory::Territory(int id, string name, int x, int y) {
+    this->id = id;
     this->name = name;
     this->x = x;
     this->y = y;
 }
 
-Territory::Territory(Player *owner, Continent* continent, int numOfArmies, std::string name, vector<Territory *>, int x, int y) {
+Territory::Territory(int id, Player *owner, Continent* continent, int numOfArmies, std::string name, vector<Territory *>, int x, int y) {
+    this->id = id;
     this->owner = owner;
     this->continent = continent;
     this->numOfArmies = numOfArmies;
@@ -42,7 +43,8 @@ Territory::Territory(Player *owner, Continent* continent, int numOfArmies, std::
     this->y = y;
 }
 
-Territory::Territory(Player *owner, Continent* continent, int numOfArmies, std::string name, int x, int y) {
+Territory::Territory(int id, Player *owner, Continent* continent, int numOfArmies, std::string name, int x, int y) {
+    this->id = id;
     this->owner = owner;
     this->continent = continent;
     this->numOfArmies = numOfArmies;
@@ -105,35 +107,35 @@ void Map::addContinent(Continent *c) {
     allContinents.push_back(c);
 }
 
-void Map::dfs(vector<std::string> *visitedTerritories, Territory *currentTerritory) {
+void Map::dfs(vector<int> *visitedTerritoriesIds, Territory *currentTerritory) {
 
     vector<Territory*> currentAdjacentTerritories = currentTerritory->getAdjacentTerritories();
 
     //if territory has already been visited
-    if(std::find(visitedTerritories->begin(), visitedTerritories->end(), currentTerritory->getName()) != visitedTerritories->end()){
+    if(std::find(visitedTerritoriesIds->begin(), visitedTerritoriesIds->end(), currentTerritory->getID()) != visitedTerritoriesIds->end()){
         return;
     }
 
     cout << "visiting territory: " << currentTerritory->getName() << std::endl;
     // add current territory to visited territories
-    visitedTerritories->push_back(currentTerritory->getName());
+    visitedTerritoriesIds->push_back(currentTerritory->getID());
     //visit adjacent territories
     for(int i = 0; i < currentAdjacentTerritories.size(); i++){
-        dfs(visitedTerritories, currentAdjacentTerritories.at(i));
+        dfs(visitedTerritoriesIds, currentAdjacentTerritories.at(i));
     }
 }
 
 bool Map::isConnectedTerritories() {
 
-    vector<std::string> visitedTerritories;
+    vector<int> visitedTerritoriesIds;
     Territory* startTerritory = allTerritories.at(0);
 
     // start DFS at first territory
-    dfs(&visitedTerritories, startTerritory);
+    dfs(&visitedTerritoriesIds, startTerritory);
 
     // check if all territories have been visited after DFS
     for (int i = 0; i < allTerritories.size(); i++){
-        if(std::find(visitedTerritories.begin(), visitedTerritories.end(), allTerritories.at(i)->getName()) == visitedTerritories.end()){
+        if(std::find(visitedTerritoriesIds.begin(), visitedTerritoriesIds.end(), allTerritories.at(i)->getID()) == visitedTerritoriesIds.end()){
             return false;
         }
     }
@@ -142,11 +144,11 @@ bool Map::isConnectedTerritories() {
 
 
 int main(){
-    Territory* t1 = new Territory("territory1", 2, 3);
-    Territory* t2 = new Territory("territory2", 2, 3);
-    Territory* t3 = new Territory("territory3", 2, 3);
-    Territory* t4 = new Territory("territory4", 2, 3);
-    Territory* t5 = new Territory("territory5", 2, 3);
+    Territory* t1 = new Territory(1,"territory1", 2, 3);
+    Territory* t2 = new Territory(2,"territory2", 2, 3);
+    Territory* t3 = new Territory(3,"territory3", 2, 3);
+    Territory* t4 = new Territory(4,"territory4", 2, 3);
+    Territory* t5 = new Territory(5,"territory5", 2, 3);
 
     t1->addAdjacentTerritory(t2);
     t1->addAdjacentTerritory(t3);

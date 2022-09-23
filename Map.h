@@ -4,13 +4,15 @@ using std::string;
 using std::vector;
 
 class Continent{
-
+    private:
+        int bonus;
 };
 
 class Player;
 
 class Territory{
     private:
+        int id;
         Player* owner;
         Continent* continent;
         int numOfArmies;
@@ -21,9 +23,10 @@ class Territory{
     public:
         Territory();
         Territory(const Territory &t);
-        Territory(string name, int x, int y);
-        Territory(Player* owner, Continent* continent, int numOfArmies, string name, vector<Territory*>, int x, int y);
-        Territory(Player *owner, Continent* continent, int numOfArmies, string name, int x, int y);
+        Territory(int id, string name, int x, int y);
+        Territory(int id, Player* owner, Continent* continent, int numOfArmies, string name, vector<Territory*>, int x, int y);
+        Territory(int id, Player *owner, Continent* continent, int numOfArmies, string name, int x, int y);
+        int getID() { return id; }
         Player* getOwner() { return owner; }
         Continent* getContinent() { return continent; }
         int getNumOfArmies() { return numOfArmies; }
@@ -47,7 +50,7 @@ class Map{
     private:
         vector <Territory*> allTerritories;
         vector <Continent*> allContinents;
-        void dfs(vector<string>* visitedTerritories, Territory* currentTerritory);
+        void dfs(vector<int>* visitedTerritoriesIds, Territory* currentTerritory);
 
     public:
         Map();
