@@ -5,7 +5,17 @@ using std::vector;
 
 class Continent{
     private:
+        int id;
+        string name;
         int bonus;
+    public:
+        Continent();
+        Continent(const Continent &c);
+        Continent(int id, string name, int bonus);
+        int getID() { return id; }
+        string getName() { return name; }
+        int getBonus() { return bonus; }
+
 };
 
 class Player;
@@ -51,6 +61,7 @@ class Map{
         vector <Territory*> allTerritories;
         vector <Continent*> allContinents;
         void dfs(vector<int>* visitedTerritoriesIds, Territory* currentTerritory);
+        void dfs_continent(vector<int>* visitedTerritoriesIds, Territory* currentTerritory, Continent* currentContinent);
 
     public:
         Map();
@@ -58,6 +69,8 @@ class Map{
 
         vector<Territory*> getAllTerritories() { return allTerritories; }
         vector<Continent*> getAllContinents() { return allContinents; }
+        Continent* getContinentById(int continentID);
+        vector<Territory*> getAllTerritoriesByContinent(Continent* continent);
         void setAllTerritories(vector<Territory*> territories);
         void setAllContinents(vector<Continent*> continents);
 
