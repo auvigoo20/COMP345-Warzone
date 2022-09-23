@@ -211,7 +211,7 @@ void Map::dfs_continent(vector<int> *visitedTerritoriesIds, Territory *currentTe
 
 bool Map::isConnectedContinents() {
 
-    for (int i = 0; i < getAllContinents().size(); i++){
+    for (int i = 0; i < allContinents.size(); i++){
         Continent* currentContinent = getAllContinents().at(i);
         vector<Territory*> currentContinentTerritories = getAllTerritoriesByContinent(currentContinent);
         vector<int> visitedTerritories;
