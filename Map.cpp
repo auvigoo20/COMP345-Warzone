@@ -181,6 +181,7 @@ vector<Territory*> Map::getAllTerritoriesByContinent(Continent* continent) {
             cout << allTerritories.at(i)->getName() << " ";
         }
     }
+    cout << endl;
     return continentTerritories;
 }
 
@@ -205,7 +206,7 @@ void Map::dfs_continent(vector<int> *visitedTerritoriesIds, Territory *currentTe
     visitedTerritoriesIds->push_back(currentTerritory->getID());
     //visit adjacent territories
     for(int i = 0; i < currentAdjacentTerritoriesInContinent.size(); i++){
-        dfs(visitedTerritoriesIds, currentAdjacentTerritoriesInContinent.at(i));
+        dfs_continent(visitedTerritoriesIds, currentAdjacentTerritoriesInContinent.at(i), currentContinent);
     }
 }
 
@@ -246,8 +247,11 @@ int main(){
     t1->addAdjacentTerritory(t2);
 
     t2->addAdjacentTerritory(t1);
+    t2->addAdjacentTerritory(t3);
+
 
     t3->addAdjacentTerritory(t1);
+    t3->addAdjacentTerritory(t2);
     t3->addAdjacentTerritory(t4);
 
     t4->addAdjacentTerritory(t3);
