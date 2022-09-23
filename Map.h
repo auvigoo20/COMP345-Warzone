@@ -3,6 +3,9 @@
 using std::string;
 using std::vector;
 
+// Forward declaration
+class Player;
+
 class Continent{
     private:
         int id;
@@ -15,10 +18,11 @@ class Continent{
         int getID() { return id; }
         string getName() { return name; }
         int getBonus() { return bonus; }
+        void setID(int id);
+        void setName(string name);
+        void setBonus(int bonus);
 
 };
-
-class Player;
 
 class Territory{
     private:
@@ -79,8 +83,4 @@ class Map{
         bool isConnectedTerritories();
         bool isConnectedContinents();
         bool validate();
-
-
-
-
 };

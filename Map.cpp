@@ -9,6 +9,10 @@ using std::vector;
 using std::cout;
 using std::endl;
 
+/*
+ * CONTINENT
+ */
+
 Continent::Continent() {
     id = 0;
     name = "";
@@ -27,10 +31,25 @@ Continent::Continent(int id, string name, int bonus) {
     this->bonus = bonus;
 }
 
+void Continent::setID(int id) {
+    this->id = id;
+}
 
+void Continent::setBonus(int bonus) {
+    this->bonus = bonus;
+}
 
+void Continent::setName(std::string name) {
+    this->name = name;
+}
+
+/*
+ * TERRITORY
+ */
 Territory::Territory() {
+    id = 0;
     owner = nullptr;
+    continent = nullptr;
     numOfArmies = 0;
     name = "";
     x = 0;
@@ -106,6 +125,10 @@ void Territory::addAdjacentTerritory(Territory *territory) {
     adjacentTerritories.push_back(territory);
 }
 
+/*
+ * MAP
+ */
+
 Map::Map(){}
 
 Map::Map(const Map &map) {
@@ -129,24 +152,27 @@ void Map::addContinent(Continent *c) {
     allContinents.push_back(c);
 }
 
+// Depth-first search recursive algorithm to visit all adjacent territories to the current territory
 void Map::dfs(vector<int> *visitedTerritoriesIds, Territory *currentTerritory) {
 
     vector<Territory*> currentAdjacentTerritories = currentTerritory->getAdjacentTerritories();
 
-    //if territory has already been visited
+    // Base case: if current territory has already been visited, return
     if(std::find(visitedTerritoriesIds->begin(), visitedTerritoriesIds->end(), currentTerritory->getID()) != visitedTerritoriesIds->end()){
         return;
     }
 
     cout << "visiting territory: " << currentTerritory->getName() << std::endl;
-    // add current territory to visited territories
+    // Add current territory to visited territories
     visitedTerritoriesIds->push_back(currentTerritory->getID());
-    //visit adjacent territories
+
     for(int i = 0; i < currentAdjacentTerritories.size(); i++){
+        // Recursive call to perform DFS for each adjacent territory
         dfs(visitedTerritoriesIds, currentAdjacentTerritories.at(i));
     }
 }
 
+// Check if map is a connected graph
 bool Map::isConnectedTerritories() {
 
     vector<int> visitedTerritoriesIds;
@@ -185,10 +211,15 @@ vector<Territory*> Map::getAllTerritoriesByContinent(Continent* continent) {
     return continentTerritories;
 }
 
+/*
+ * Depth-first search recursive algorithm to visit all adjacent territories to the current territory.
+ * Slight variation in this algorithm since it does not take into account adjacent territories that are not part of
+ * the currently searched Continent.
+*/
 void Map::dfs_continent(vector<int> *visitedTerritoriesIds, Territory *currentTerritory,
                         Continent* currentContinent) {
 
-    // need to remove adjacent territories that aren't in the current continent
+    // Need to remove adjacent territories that aren't in the current continent
     vector<Territory*> currentAdjacentTerritoriesInContinent;
     for(int i = 0 ;i < currentTerritory->getAdjacentTerritories().size(); i++){
         if(currentTerritory->getAdjacentTerritories().at(i)->getContinent() == currentContinent){
@@ -196,29 +227,34 @@ void Map::dfs_continent(vector<int> *visitedTerritoriesIds, Territory *currentTe
         }
     }
 
-    //if territory has already been visited
+    // Base case: if current territory has already been visited, return
     if(std::find(visitedTerritoriesIds->begin(), visitedTerritoriesIds->end(), currentTerritory->getID()) != visitedTerritoriesIds->end()){
         return;
     }
 
     cout << "visiting territory: " << currentTerritory->getName() << std::endl;
-    // add current territory to visited territories
+    // Add current territory to visited territories
     visitedTerritoriesIds->push_back(currentTerritory->getID());
-    //visit adjacent territories
+
     for(int i = 0; i < currentAdjacentTerritoriesInContinent.size(); i++){
+        // Recursive call to perform DFS for each adjacent territory
         dfs_continent(visitedTerritoriesIds, currentAdjacentTerritoriesInContinent.at(i), currentContinent);
     }
 }
 
+// Check if Map's continents are connected subgraphs
 bool Map::isConnectedContinents() {
 
     for (int i = 0; i < allContinents.size(); i++){
-        Continent* currentContinent = getAllContinents().at(i);
+        Continent* currentContinent = allContinents.at(i);
         vector<Territory*> currentContinentTerritories = getAllTerritoriesByContinent(currentContinent);
         vector<int> visitedTerritories;
         Territory* startTerritory = currentContinentTerritories.at(0);
 
+        // Start DFS at first territory
         dfs_continent(&visitedTerritories, startTerritory, currentContinent);
+
+        // If number of visited territories is not equal to the number of territories of a given continent, it is not a connected subgraph
         if (visitedTerritories.size() != currentContinentTerritories.size()){
             return false;
         }
@@ -246,8 +282,8 @@ int main(){
     t1->addAdjacentTerritory(t3);
     t1->addAdjacentTerritory(t2);
 
-    t2->addAdjacentTerritory(t1);
     t2->addAdjacentTerritory(t3);
+    t2->addAdjacentTerritory(t1);
 
 
     t3->addAdjacentTerritory(t1);
