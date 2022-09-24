@@ -1,13 +1,16 @@
+#pragma once
 #include <string>
 #include <vector>
 using std::string;
 using std::vector;
+using std::ostream;
 
 // Forward declaration
 class Player;
 
 class Continent{
     private:
+        friend ostream& operator<<(ostream&, const Continent&);
         int id;
         string name;
         int bonus;
@@ -26,6 +29,7 @@ class Continent{
 
 class Territory{
     private:
+        friend ostream& operator<<(ostream&, const Territory&);
         int id;
         Player* owner;
         Continent* continent;
@@ -62,6 +66,7 @@ class Territory{
 
 class Map{
     private:
+        friend ostream& operator<<(ostream&, const Map&);
         vector <Territory*> allTerritories;
         vector <Continent*> allContinents;
         void dfs(vector<int>* visitedTerritoriesIds, Territory* currentTerritory);

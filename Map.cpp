@@ -1,4 +1,3 @@
-#pragma once
 #include "Map.h"
 #include <string>
 #include <vector>
@@ -8,10 +7,15 @@ using std::string;
 using std::vector;
 using std::cout;
 using std::endl;
+using std::ostream;
 
 /*
  * CONTINENT
  */
+
+ostream& operator<<(ostream &strm, const Continent &c){
+    return strm << "CONTINENT: ID:" << c.id << " - Name:" << c.name << " - Bonus:" << c.bonus << endl;
+}
 
 Continent::Continent() {
     id = 0;
@@ -46,6 +50,10 @@ void Continent::setName(std::string name) {
 /*
  * TERRITORY
  */
+
+ostream& operator<<(ostream &strm, const Territory &t){
+    return strm << "TERRITORY: ID:" << t.id << " - Name:" << t.name << endl;
+}
 Territory::Territory() {
     id = 0;
     owner = nullptr;
@@ -129,6 +137,10 @@ void Territory::addAdjacentTerritory(Territory *territory) {
  * MAP
  */
 
+ostream& operator<<(ostream &strm, const Map &m){
+    return strm << "MAP: Number of territories:" << m.allTerritories.size() << " - Number of continents:" << m.allContinents.size() << endl;
+}
+
 Map::Map(){}
 
 Map::Map(const Map &map) {
@@ -162,7 +174,7 @@ void Map::dfs(vector<int> *visitedTerritoriesIds, Territory *currentTerritory) {
         return;
     }
 
-    cout << "visiting territory: " << currentTerritory->getName() << std::endl;
+    cout << "visiting territory: " << *currentTerritory << std::endl;
     // Add current territory to visited territories
     visitedTerritoriesIds->push_back(currentTerritory->getID());
 
@@ -267,6 +279,9 @@ int main(){
     Continent* c1 = new Continent(1, "continent1", 5);
     Continent* c2 = new Continent(2, "continent2", 5);
 
+    cout << *c1;
+    cout << *c2;
+
     Territory* t1 = new Territory(1,"territory1", 2, 3);
     Territory* t2 = new Territory(2,"territory2", 2, 3);
     Territory* t3 = new Territory(3,"territory3", 2, 3);
@@ -305,6 +320,8 @@ int main(){
     map.addContinent(c1);
     map.addContinent(c2);
 
+
+
     bool x = map.isConnectedTerritories();
     cout << "connected territories?:" << x << endl;
 
@@ -316,6 +333,8 @@ int main(){
 
     bool y = map.isConnectedContinents();
     cout << "connected continents?:" << y << endl;
+
+    cout << map;
 
     delete c1;
     delete c2;
