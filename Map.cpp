@@ -274,6 +274,17 @@ bool Map::isConnectedContinents() {
     return true;
 }
 
+/*
+ * Does the following checks:
+ * 1) Map is a connected graph
+ * 2) Continents of the map are connected subgraphs
+ * 3) Each territory belongs to one and only one continent (this is not explicitly checked since Territories have been
+ *      designed to only be possible to belong to one continent)
+ * */
+bool Map::validate() {
+    return isConnectedTerritories() && isConnectedContinents();
+}
+
 
 int main(){
     Continent* c1 = new Continent(1, "continent1", 5);
@@ -335,6 +346,9 @@ int main(){
     cout << "connected continents?:" << y << endl;
 
     cout << map;
+
+    bool mapIsvalidated = map.validate();
+    cout << "Is the map validated?: " << mapIsvalidated;
 
     delete c1;
     delete c2;
