@@ -3,11 +3,15 @@
 #include <vector>
 #include <iostream>
 #include <algorithm>
+#include <fstream>
+
 using std::string;
 using std::vector;
 using std::cout;
 using std::endl;
 using std::ostream;
+using std::ifstream;
+using std::getline;
 
 /*
  * CONTINENT
@@ -142,6 +146,15 @@ ostream& operator<<(ostream &strm, const Map &m){
 }
 
 Map::Map(){}
+
+Map::~Map(){
+    for(auto continent: allContinents){
+        delete continent;
+    }
+    for(auto territory: allContinents){
+        delete territory;
+    }
+}
 
 Map::Map(const Map &map) {
     this ->allTerritories = map.allTerritories;
@@ -285,77 +298,155 @@ bool Map::validate() {
     return isConnectedTerritories() && isConnectedContinents();
 }
 
+/*
+ * MAPLOADER
+ * */
+
+MapLoader::MapLoader() {
+    map = new Map();
+    continentID = 0;
+    territoryID = 0;
+}
+
+MapLoader::~MapLoader() {
+    delete map;
+}
+
+MapLoader::MapLoader(const MapLoader &m) {
+    this->map = m.map;
+    this->continentID = m.continentID;
+    this->territoryID = m.territoryID;
+}
+
+void MapLoader::readMapFile(std::string fileName) {
+
+    const char continentDelimiter = '=';
+    const char territoryDelimiter = ',';
+
+    vector <Continent*> createdContinents;
+
+    ifstream input;
+    input.open("../maptest.map");
+
+    if (!input){
+        cout << "ERROR";
+    }
+    else{
+        string currentLine;
+        while(getline(input, currentLine)){
+            if (currentLine == "[Continents]"){
+                while(getline(input, currentLine)){
+                    if(currentLine.length() == 0){
+                        break;
+                    }
+                    else{
+
+                        std::size_t continentDelimiterIndex = currentLine.find(continentDelimiter);
+                        string continentName = currentLine.substr(0, continentDelimiterIndex);
+                        int continentBonus = std::stoi(currentLine.substr(continentDelimiterIndex + 1, currentLine.length()));
+
+                        Continent* continent = new Continent(continentID, continentName, continentBonus);
+                        createdContinents.push_back(continent);
+                        continentID++;
+
+                        cout << currentLine << continentName << ": " << continentBonus << endl;
+                    }
+                }
+            }
+            else if(currentLine == "[Territories]"){
+
+            }
+        }
+        input.close();
+    }
+
+    map->setAllContinents(createdContinents);
+
+    for(int i = 0; i < map->getAllContinents().size(); i++){
+        cout << *map->getAllContinents().at(i) << endl;
+    }
+
+}
+
+
 
 int main(){
-    Continent* c1 = new Continent(1, "continent1", 5);
-    Continent* c2 = new Continent(2, "continent2", 5);
 
-    cout << *c1;
-    cout << *c2;
+    MapLoader m;
+    m.readMapFile("fsdfsd");
 
-    Territory* t1 = new Territory(1,"territory1", 2, 3);
-    Territory* t2 = new Territory(2,"territory2", 2, 3);
-    Territory* t3 = new Territory(3,"territory3", 2, 3);
-    Territory* t4 = new Territory(4,"territory4", 2, 3);
-    Territory* t5 = new Territory(5,"territory5", 2, 3);
+//    Continent* c1 = new Continent(1, "continent1", 5);
+//    Continent* c2 = new Continent(2, "continent2", 5);
+//
+//    cout << *c1;
+//    cout << *c2;
+//
+//    Territory* t1 = new Territory(1,"territory1", 2, 3);
+//    Territory* t2 = new Territory(2,"territory2", 2, 3);
+//    Territory* t3 = new Territory(3,"territory3", 2, 3);
+//    Territory* t4 = new Territory(4,"territory4", 2, 3);
+//    Territory* t5 = new Territory(5,"territory5", 2, 3);
+//
+//    t1->setContinent(c1);
+//    t2->setContinent(c1);
+//    t3->setContinent(c2);
+//    t4->setContinent(c2);
+//    t5->setContinent(c2);
+//
+//    t1->addAdjacentTerritory(t3);
+//    t1->addAdjacentTerritory(t2);
+//
+//    t2->addAdjacentTerritory(t3);
+//    t2->addAdjacentTerritory(t1);
+//
+//
+//    t3->addAdjacentTerritory(t1);
+//    t3->addAdjacentTerritory(t2);
+//    t3->addAdjacentTerritory(t4);
+//
+//    t4->addAdjacentTerritory(t3);
+//    t4->addAdjacentTerritory(t5);
+//
+//    t5->addAdjacentTerritory(t4);
+//
+//    Map map;
+//    map.addTerritory(t1);
+//    map.addTerritory(t2);
+//    map.addTerritory(t3);
+//    map.addTerritory(t4);
+//    map.addTerritory(t5);
+//
+//    map.addContinent(c1);
+//    map.addContinent(c2);
+//
+//
+//
+//    bool x = map.isConnectedTerritories();
+//    cout << "connected territories?:" << x << endl;
+//
+//    Continent* cont1 = map.getContinentById(1);
+//    vector<Territory*> t = map.getAllTerritoriesByContinent(cont1);
+//
+//    Continent* cont2 = map.getContinentById(2);
+//    vector<Territory*> tt = map.getAllTerritoriesByContinent(cont2);
+//
+//    bool y = map.isConnectedContinents();
+//    cout << "connected continents?:" << y << endl;
+//
+//    cout << map;
+//
+//    bool mapIsvalidated = map.validate();
+//    cout << "Is the map validated?: " << mapIsvalidated;
+//
+//    delete c1;
+//    delete c2;
+//
+//    delete t1;
+//    delete t2;
+//    delete t3;
+//    delete t4;
+//    delete t5;
 
-    t1->setContinent(c1);
-    t2->setContinent(c1);
-    t3->setContinent(c2);
-    t4->setContinent(c2);
-    t5->setContinent(c2);
-
-    t1->addAdjacentTerritory(t3);
-    t1->addAdjacentTerritory(t2);
-
-    t2->addAdjacentTerritory(t3);
-    t2->addAdjacentTerritory(t1);
 
 
-    t3->addAdjacentTerritory(t1);
-    t3->addAdjacentTerritory(t2);
-    t3->addAdjacentTerritory(t4);
-
-    t4->addAdjacentTerritory(t3);
-    t4->addAdjacentTerritory(t5);
-
-    t5->addAdjacentTerritory(t4);
-
-    Map map;
-    map.addTerritory(t1);
-    map.addTerritory(t2);
-    map.addTerritory(t3);
-    map.addTerritory(t4);
-    map.addTerritory(t5);
-
-    map.addContinent(c1);
-    map.addContinent(c2);
-
-
-
-    bool x = map.isConnectedTerritories();
-    cout << "connected territories?:" << x << endl;
-
-    Continent* cont1 = map.getContinentById(1);
-    vector<Territory*> t = map.getAllTerritoriesByContinent(cont1);
-
-    Continent* cont2 = map.getContinentById(2);
-    vector<Territory*> tt = map.getAllTerritoriesByContinent(cont2);
-
-    bool y = map.isConnectedContinents();
-    cout << "connected continents?:" << y << endl;
-
-    cout << map;
-
-    bool mapIsvalidated = map.validate();
-    cout << "Is the map validated?: " << mapIsvalidated;
-
-    delete c1;
-    delete c2;
-
-    delete t1;
-    delete t2;
-    delete t3;
-    delete t4;
-    delete t5;
 }
