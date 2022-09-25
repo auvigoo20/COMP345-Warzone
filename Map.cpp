@@ -57,7 +57,7 @@ void Continent::setName(std::string name) {
  */
 
 ostream& operator<<(ostream &strm, const Territory &t){
-    return strm << "TERRITORY: ID:" << t.id << " - Name:" << t.name << endl;
+    return strm << "TERRITORY: ID:" << t.id << " - Name:" << t.name << " - Continent:" << t.continent->getName() << endl;
 }
 Territory::Territory() {
     id = 0;
@@ -353,7 +353,6 @@ void MapLoader::readMapFile(std::string fileName) {
                         createdContinents.push_back(continent);
                         continentID++;
 
-                        cout << currentLine << continentName << ": " << continentBonus << endl;
                     }
                 }
                 map->setAllContinents(createdContinents);
@@ -361,7 +360,7 @@ void MapLoader::readMapFile(std::string fileName) {
             else if(currentLine == "[Territories]"){
                 while(getline(input, currentLine)){
                     if(currentLine.length() == 0){
-                        break;
+                        // skip line
                     }
                     else{
                         // Create all Territories without taking into account their adjacent territories since those may
@@ -379,7 +378,7 @@ void MapLoader::readMapFile(std::string fileName) {
                         string territoryName = splitStrings.at(0);
                         int territoryX = stoi(splitStrings.at(1));
                         int territoryY = stoi(splitStrings.at(2));
-                        string territoryContinentName = splitStrings.at(4);
+                        string territoryContinentName = splitStrings.at(3);
 
                         Continent* territoryContinent = map->getContinentByName(territoryContinentName);
                         Territory* territory = new Territory(territoryID, territoryName, territoryX, territoryY, territoryContinent);
