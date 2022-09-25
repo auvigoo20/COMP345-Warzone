@@ -74,6 +74,7 @@ class Map{
 
     public:
         Map();
+        ~Map();
         Map(const Map &map);
 
         vector<Territory*> getAllTerritories() { return allTerritories; }
@@ -88,4 +89,17 @@ class Map{
         bool isConnectedTerritories();
         bool isConnectedContinents();
         bool validate();
+};
+
+class MapLoader{
+    public:
+        MapLoader();
+        ~MapLoader();
+        MapLoader(const MapLoader &m);
+        Map* getMap() { return map; }
+        void readMapFile(string fileName);
+    private:
+        Map* map;
+        int continentID;
+        int territoryID;
 };
