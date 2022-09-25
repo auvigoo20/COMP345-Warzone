@@ -4,6 +4,7 @@
 #include <iostream>
 #include <algorithm>
 #include <fstream>
+#include <sstream>
 
 using std::string;
 using std::vector;
@@ -78,11 +79,12 @@ Territory::Territory(const Territory &t) {
     y = t.y;
 }
 
-Territory::Territory(int id, string name, int x, int y) {
+Territory::Territory(int id, string name, int x, int y, Continent* continent) {
     this->id = id;
     this->name = name;
     this->x = x;
     this->y = y;
+    this->continent = continent;
 }
 
 Territory::Territory(int id, Player *owner, Continent* continent, int numOfArmies, std::string name, vector<Territory *>, int x, int y) {
@@ -215,9 +217,9 @@ bool Map::isConnectedTerritories() {
     return true;
 }
 
-Continent* Map::getContinentById(int continentID) {
+Continent* Map::getContinentByName(string continentName) {
     for (int i = 0; i < allContinents.size(); i++){
-        if (allContinents.at(i)->getID() == continentID){
+        if (allContinents.at(i)->getName() == continentName){
             return allContinents.at(i);
         }
     }
@@ -324,6 +326,7 @@ void MapLoader::readMapFile(std::string fileName) {
     const char territoryDelimiter = ',';
 
     vector <Continent*> createdContinents;
+    vector <Territory*> createdTerritories;
 
     ifstream input;
     input.open("../maptest.map");
@@ -334,6 +337,7 @@ void MapLoader::readMapFile(std::string fileName) {
     else{
         string currentLine;
         while(getline(input, currentLine)){
+
             if (currentLine == "[Continents]"){
                 while(getline(input, currentLine)){
                     if(currentLine.length() == 0){
@@ -352,18 +356,50 @@ void MapLoader::readMapFile(std::string fileName) {
                         cout << currentLine << continentName << ": " << continentBonus << endl;
                     }
                 }
+                map->setAllContinents(createdContinents);
             }
             else if(currentLine == "[Territories]"){
+                while(getline(input, currentLine)){
+                    if(currentLine.length() == 0){
+                        break;
+                    }
+                    else{
+                        // Create all Territories without taking into account their adjacent territories since those may
+                        // not have been created yet.
 
+                        // Split each line by delimiter and store the strings in a vector.
+                        std::stringstream lineToSplit(currentLine);
+                        string segment;
+                        vector<string> splitStrings;
+                        while(getline(lineToSplit, segment, territoryDelimiter)){
+                            splitStrings.push_back(segment);
+                        }
+                        // Format of the map file is as follows for Territories:
+                        // (1) Name, (2) X-coordinate, (3) Y-coordinate, (4) Continent, ...[adjacent territories]
+                        string territoryName = splitStrings.at(0);
+                        int territoryX = stoi(splitStrings.at(1));
+                        int territoryY = stoi(splitStrings.at(2));
+                        string territoryContinentName = splitStrings.at(4);
+
+                        Continent* territoryContinent = map->getContinentByName(territoryContinentName);
+                        Territory* territory = new Territory(territoryID, territoryName, territoryX, territoryY, territoryContinent);
+                        createdTerritories.push_back(territory);
+                        territoryID++;
+                    }
+                }
+                map->setAllTerritories(createdTerritories);
             }
         }
         input.close();
     }
 
-    map->setAllContinents(createdContinents);
 
     for(int i = 0; i < map->getAllContinents().size(); i++){
         cout << *map->getAllContinents().at(i) << endl;
+    }
+
+    for(int i = 0; i < map->getAllTerritories().size(); i++){
+        cout << *map->getAllTerritories().at(i) << endl;
     }
 
 }

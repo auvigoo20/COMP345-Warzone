@@ -41,7 +41,7 @@ class Territory{
     public:
         Territory();
         Territory(const Territory &t);
-        Territory(int id, string name, int x, int y);
+        Territory(int id, string name, int x, int y, Continent* continent);
         Territory(int id, Player* owner, Continent* continent, int numOfArmies, string name, vector<Territory*>, int x, int y);
         Territory(int id, Player *owner, Continent* continent, int numOfArmies, string name, int x, int y);
         int getID() { return id; }
@@ -79,7 +79,7 @@ class Map{
 
         vector<Territory*> getAllTerritories() { return allTerritories; }
         vector<Continent*> getAllContinents() { return allContinents; }
-        Continent* getContinentById(int continentID);
+        Continent* getContinentByName(string continentName);
         vector<Territory*> getAllTerritoriesByContinent(Continent* continent);
         void setAllTerritories(vector<Territory*> territories);
         void setAllContinents(vector<Continent*> continents);
