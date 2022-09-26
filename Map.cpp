@@ -153,7 +153,7 @@ Map::~Map(){
     for(auto continent: allContinents){
         delete continent;
     }
-    for(auto territory: allContinents){
+    for(auto territory: allTerritories){
         delete territory;
     }
 }
