@@ -80,6 +80,7 @@ class Map{
         vector<Territory*> getAllTerritories() { return allTerritories; }
         vector<Continent*> getAllContinents() { return allContinents; }
         Continent* getContinentByName(string continentName);
+        Territory* getTerritoryByName(string territoryName);
         vector<Territory*> getAllTerritoriesByContinent(Continent* continent);
         void setAllTerritories(vector<Territory*> territories);
         void setAllContinents(vector<Continent*> continents);
@@ -97,7 +98,7 @@ class MapLoader{
         ~MapLoader();
         MapLoader(const MapLoader &m);
         Map* getMap() { return map; }
-        void readMapFile(string fileName);
+        void readMapFile(string filepath);
     private:
         Map* map;
         int continentID;

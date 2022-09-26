@@ -218,9 +218,17 @@ bool Map::isConnectedTerritories() {
 }
 
 Continent* Map::getContinentByName(string continentName) {
-    for (int i = 0; i < allContinents.size(); i++){
-        if (allContinents.at(i)->getName() == continentName){
-            return allContinents.at(i);
+    for(auto continent: allContinents){
+        if(continent->getName() == continentName){
+            return continent;
+        }
+    }
+}
+
+Territory* Map::getTerritoryByName(std::string territoryName) {
+    for(auto territory: allTerritories){
+        if(territory->getName() == territoryName){
+            return territory;
         }
     }
 }
@@ -320,7 +328,7 @@ MapLoader::MapLoader(const MapLoader &m) {
     this->territoryID = m.territoryID;
 }
 
-void MapLoader::readMapFile(std::string fileName) {
+void MapLoader::readMapFile(std::string filepath) {
 
     const char continentDelimiter = '=';
     const char territoryDelimiter = ',';
@@ -329,12 +337,13 @@ void MapLoader::readMapFile(std::string fileName) {
     vector <Territory*> createdTerritories;
 
     ifstream input;
-    input.open("../maptest.map");
 
+    input.open(filepath);
     if (!input){
         cout << "ERROR";
     }
     else{
+        // First time reading the file: Create the Continents and Territories (without associating its adjacent territories)
         string currentLine;
         while(getline(input, currentLine)){
 
@@ -359,10 +368,8 @@ void MapLoader::readMapFile(std::string fileName) {
             }
             else if(currentLine == "[Territories]"){
                 while(getline(input, currentLine)){
-                    if(currentLine.length() == 0){
-                        // skip line
-                    }
-                    else{
+                    if(currentLine.length() > 0){
+
                         // Create all Territories without taking into account their adjacent territories since those may
                         // not have been created yet.
 
@@ -389,8 +396,23 @@ void MapLoader::readMapFile(std::string fileName) {
                 map->setAllTerritories(createdTerritories);
             }
         }
+        // Second time reading file: Add the adjacent territories for each Territory
+
+        // Reset the stream cursor to point to beginning of file  
+        input.clear();
+        input.seekg(0);
+
+        while(getline(input, currentLine)){
+            if(currentLine == "[Territories]"){
+
+            }
+        }
+
+
         input.close();
     }
+
+
 
 
     for(int i = 0; i < map->getAllContinents().size(); i++){
@@ -408,7 +430,7 @@ void MapLoader::readMapFile(std::string fileName) {
 int main(){
 
     MapLoader m;
-    m.readMapFile("fsdfsd");
+    m.readMapFile("../maptest.map");
 
 //    Continent* c1 = new Continent(1, "continent1", 5);
 //    Continent* c2 = new Continent(2, "continent2", 5);
