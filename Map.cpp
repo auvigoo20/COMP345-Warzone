@@ -147,6 +147,11 @@ Map::~Map(){
     }
 }
 
+Map::Map(vector<Territory *> territories, vector<Continent *> continents) {
+    this->allTerritories = territories;
+    this->allContinents = continents;
+}
+
 Map::Map(const Map &map) {
     this ->allTerritories = map.allTerritories;
     this->allContinents = map.allContinents;
@@ -206,22 +211,6 @@ bool Map::isConnectedTerritories() {
     }
     cout << "Territories form a connected graph!" << endl;
     return true;
-}
-
-Continent* Map::getContinentByName(string continentName) {
-    for(auto continent: allContinents){
-        if(continent->getName() == continentName){
-            return continent;
-        }
-    }
-}
-
-Territory* Map::getTerritoryByName(std::string territoryName) {
-    for(auto territory: allTerritories){
-        if(territory->getName() == territoryName){
-            return territory;
-        }
-    }
 }
 
 vector<Territory*> Map::getAllTerritoriesByContinent(Continent* continent) {
@@ -306,18 +295,27 @@ bool Map::validate() {
  * */
 
 MapLoader::MapLoader() {
-    map = new Map();
 }
 
-MapLoader::~MapLoader() {
-    delete map;
+// HELPER FUNCTION
+Continent* MapLoader::getContinentByNameFromSet(vector<Continent *> continents, std::string continentName) {
+    for(auto continent: continents){
+        if(continent->getName() == continentName){
+            return continent;
+        }
+    }
 }
 
-MapLoader::MapLoader(const MapLoader &m) {
-    this->map = m.map;
+// HELPER FUNCTION
+Territory* MapLoader::getTerritoryByNameFromSet(vector<Territory *> territories, std::string territoryName) {
+    for(auto territory:territories){
+        if(territory->getName() == territoryName){
+            return territory;
+        }
+    }
 }
 
-void MapLoader::readMapFile(std::string filepath) {
+Map* MapLoader::readMapFile(std::string filepath) {
 
     const char continentDelimiter = '=';
     const char territoryDelimiter = ',';
@@ -330,10 +328,12 @@ void MapLoader::readMapFile(std::string filepath) {
     input.open(filepath);
     if (!input) {
         cout << "ERROR: File does not exist";
+        return nullptr;
     }
     else {
         if (input.peek() == std::ifstream::traits_type::eof()) {
             cout << "ERROR: File is empty";
+            return nullptr;
         }
         else {
 
@@ -357,7 +357,6 @@ void MapLoader::readMapFile(std::string filepath) {
 
                         }
                     }
-                    map->setAllContinents(createdContinents);
                 }
                 else if (currentLine == "[Territories]") {
                     while (getline(input, currentLine)) {
@@ -380,17 +379,18 @@ void MapLoader::readMapFile(std::string filepath) {
                             int territoryY = stoi(splitStrings.at(2));
                             string territoryContinentName = splitStrings.at(3);
 
-                            Continent *territoryContinent = map->getContinentByName(territoryContinentName);
+                            Continent *territoryContinent = getContinentByNameFromSet(createdContinents, territoryContinentName);
                             Territory *territory = new Territory(territoryName, territoryX, territoryY,territoryContinent);
                             createdTerritories.push_back(territory);
 
                         }
                     }
-                    map->setAllTerritories(createdTerritories);
                 }
             }
             if (createdTerritories.size() == 0 || createdContinents.size() == 0){
                 cout << "ERROR: Missing section in file." << endl;
+                input.close();
+                return nullptr;
             }
             else{
                 // Second time reading file: Add the adjacent territories for each Territory
@@ -421,10 +421,10 @@ void MapLoader::readMapFile(std::string filepath) {
                                     // Start from index 4 to obtain adjacent territories
                                     int adjacentTerritoryIndex{4};
                                     string currentTerritoryName = splitStrings.at(0);
-                                    Territory *currentTerritory = map->getTerritoryByName(currentTerritoryName);
+                                    Territory *currentTerritory = getTerritoryByNameFromSet(createdTerritories, currentTerritoryName);
 
                                     for (int i = adjacentTerritoryIndex; i < splitStrings.size(); i++) {
-                                        Territory *adjacentTerritory = map->getTerritoryByName(splitStrings.at(i));
+                                        Territory *adjacentTerritory = getTerritoryByNameFromSet(createdTerritories, splitStrings.at(i));
                                         currentTerritory->addAdjacentTerritory(adjacentTerritory);
                                     }
                                 }
@@ -435,6 +435,8 @@ void MapLoader::readMapFile(std::string filepath) {
             }
         }
         input.close();
+        return new Map(createdTerritories,createdContinents);
+
     }
 
 }
@@ -444,9 +446,9 @@ void MapLoader::readMapFile(std::string filepath) {
 int main(){
 
     MapLoader m;
-    m.readMapFile("../map_files/canada_valid.map");
-    Map* map = m.getMap();
+    Map* map = m.readMapFile("../map_files/canada_valid.map");
     cout << map->validate();
+    delete map;
 
 //    Continent* c1 = new Continent(1, "continent1", 5);
 //    Continent* c2 = new Continent(2, "continent2", 5);

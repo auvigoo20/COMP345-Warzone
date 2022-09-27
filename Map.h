@@ -70,12 +70,11 @@ class Map{
     public:
         Map();
         ~Map();
+        Map(vector<Territory*> territories, vector<Continent*> continents);
         Map(const Map &map);
 
         vector<Territory*> getAllTerritories() { return allTerritories; }
         vector<Continent*> getAllContinents() { return allContinents; }
-        Continent* getContinentByName(string continentName);
-        Territory* getTerritoryByName(string territoryName);
         vector<Territory*> getAllTerritoriesByContinent(Continent* continent);
         void setAllTerritories(vector<Territory*> territories);
         void setAllContinents(vector<Continent*> continents);
@@ -90,10 +89,9 @@ class Map{
 class MapLoader{
     public:
         MapLoader();
-        ~MapLoader();
-        MapLoader(const MapLoader &m);
-        Map* getMap() { return map; }
-        void readMapFile(string filepath);
+        Map* readMapFile(string filepath);
     private:
-        Map* map;
+        Continent* getContinentByNameFromSet(vector<Continent*> continents, string continentName);
+        Territory* getTerritoryByNameFromSet(vector<Territory*> territories, string territoryName);
+
 };
