@@ -11,17 +11,14 @@ class Player;
 class Continent{
     private:
         friend ostream& operator<<(ostream&, const Continent&);
-        int id;
         string name;
         int bonus;
     public:
         Continent();
         Continent(const Continent &c);
-        Continent(int id, string name, int bonus);
-        int getID() { return id; }
+        Continent(string name, int bonus);
         string getName() { return name; }
         int getBonus() { return bonus; }
-        void setID(int id);
         void setName(string name);
         void setBonus(int bonus);
 
@@ -30,7 +27,6 @@ class Continent{
 class Territory{
     private:
         friend ostream& operator<<(ostream&, const Territory&);
-        int id;
         Player* owner;
         Continent* continent;
         int numOfArmies;
@@ -41,10 +37,9 @@ class Territory{
     public:
         Territory();
         Territory(const Territory &t);
-        Territory(int id, string name, int x, int y, Continent* continent);
-        Territory(int id, Player* owner, Continent* continent, int numOfArmies, string name, vector<Territory*>, int x, int y);
-        Territory(int id, Player *owner, Continent* continent, int numOfArmies, string name, int x, int y);
-        int getID() { return id; }
+        Territory(string name, int x, int y, Continent* continent);
+        Territory(Player* owner, Continent* continent, int numOfArmies, string name, vector<Territory*>, int x, int y);
+        Territory(Player *owner, Continent* continent, int numOfArmies, string name, int x, int y);
         Player* getOwner() { return owner; }
         Continent* getContinent() { return continent; }
         int getNumOfArmies() { return numOfArmies; }
@@ -69,8 +64,8 @@ class Map{
         friend ostream& operator<<(ostream&, const Map&);
         vector <Territory*> allTerritories;
         vector <Continent*> allContinents;
-        void dfs(vector<int>* visitedTerritoriesIds, Territory* currentTerritory);
-        void dfs_continent(vector<int>* visitedTerritoriesIds, Territory* currentTerritory, Continent* currentContinent);
+        void dfs(vector<string>* visitedTerritoriesNames, Territory* currentTerritory);
+        void dfs_continent(vector<string>* visitedTerritoriesNames, Territory* currentTerritory, Continent* currentContinent);
 
     public:
         Map();
@@ -101,6 +96,4 @@ class MapLoader{
         void readMapFile(string filepath);
     private:
         Map* map;
-        int continentID;
-        int territoryID;
 };

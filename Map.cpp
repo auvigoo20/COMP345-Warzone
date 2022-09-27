@@ -19,29 +19,22 @@ using std::getline;
  */
 
 ostream& operator<<(ostream &strm, const Continent &c){
-    return strm << "CONTINENT: ID:" << c.id << " - Name:" << c.name << " - Bonus:" << c.bonus << endl;
+    return strm << "CONTINENT: Name:" << c.name << " - Bonus:" << c.bonus << endl;
 }
 
 Continent::Continent() {
-    id = 0;
     name = "";
     bonus = 0;
 }
 
 Continent::Continent(const Continent &c) {
-    id = c.id;
     name = c.name;
     bonus = c.bonus;
 }
 
-Continent::Continent(int id, string name, int bonus) {
-    this->id = id;
+Continent::Continent(string name, int bonus) {
     this->name = name;
     this->bonus = bonus;
-}
-
-void Continent::setID(int id) {
-    this->id = id;
 }
 
 void Continent::setBonus(int bonus) {
@@ -57,10 +50,9 @@ void Continent::setName(std::string name) {
  */
 
 ostream& operator<<(ostream &strm, const Territory &t){
-    return strm << "TERRITORY: ID:" << t.id << " - Name:" << t.name << " - Continent:" << t.continent->getName() << endl;
+    return strm << "TERRITORY: Name:" << t.name << " - Continent:" << t.continent->getName() << endl;
 }
 Territory::Territory() {
-    id = 0;
     owner = nullptr;
     continent = nullptr;
     numOfArmies = 0;
@@ -79,16 +71,14 @@ Territory::Territory(const Territory &t) {
     y = t.y;
 }
 
-Territory::Territory(int id, string name, int x, int y, Continent* continent) {
-    this->id = id;
+Territory::Territory(string name, int x, int y, Continent* continent) {
     this->name = name;
     this->x = x;
     this->y = y;
     this->continent = continent;
 }
 
-Territory::Territory(int id, Player *owner, Continent* continent, int numOfArmies, std::string name, vector<Territory *>, int x, int y) {
-    this->id = id;
+Territory::Territory(Player *owner, Continent* continent, int numOfArmies, std::string name, vector<Territory *>, int x, int y) {
     this->owner = owner;
     this->continent = continent;
     this->numOfArmies = numOfArmies;
@@ -98,8 +88,7 @@ Territory::Territory(int id, Player *owner, Continent* continent, int numOfArmie
     this->y = y;
 }
 
-Territory::Territory(int id, Player *owner, Continent* continent, int numOfArmies, std::string name, int x, int y) {
-    this->id = id;
+Territory::Territory(Player *owner, Continent* continent, int numOfArmies, std::string name, int x, int y) {
     this->owner = owner;
     this->continent = continent;
     this->numOfArmies = numOfArmies;
@@ -180,37 +169,37 @@ void Map::addContinent(Continent *c) {
 }
 
 // Depth-first search recursive algorithm to visit all adjacent territories to the current territory
-void Map::dfs(vector<int> *visitedTerritoriesIds, Territory *currentTerritory) {
+void Map::dfs(vector<string> *visitedTerritoriesNames, Territory *currentTerritory) {
 
     vector<Territory*> currentAdjacentTerritories = currentTerritory->getAdjacentTerritories();
 
     // Base case: if current territory has already been visited, return
-    if(std::find(visitedTerritoriesIds->begin(), visitedTerritoriesIds->end(), currentTerritory->getID()) != visitedTerritoriesIds->end()){
+    if(std::find(visitedTerritoriesNames->begin(), visitedTerritoriesNames->end(), currentTerritory->getName()) != visitedTerritoriesNames->end()){
         return;
     }
 
     cout << "visiting territory: " << *currentTerritory << std::endl;
     // Add current territory to visited territories
-    visitedTerritoriesIds->push_back(currentTerritory->getID());
+    visitedTerritoriesNames->push_back(currentTerritory->getName());
 
     for(int i = 0; i < currentAdjacentTerritories.size(); i++){
         // Recursive call to perform DFS for each adjacent territory
-        dfs(visitedTerritoriesIds, currentAdjacentTerritories.at(i));
+        dfs(visitedTerritoriesNames, currentAdjacentTerritories.at(i));
     }
 }
 
 // Check if map is a connected graph
 bool Map::isConnectedTerritories() {
 
-    vector<int> visitedTerritoriesIds;
+    vector<string> visitedTerritoriesNames;
     Territory* startTerritory = allTerritories.at(0);
 
     // start DFS at first territory
-    dfs(&visitedTerritoriesIds, startTerritory);
+    dfs(&visitedTerritoriesNames, startTerritory);
 
     // check if all territories have been visited after DFS
     for (int i = 0; i < allTerritories.size(); i++){
-        if(std::find(visitedTerritoriesIds.begin(), visitedTerritoriesIds.end(), allTerritories.at(i)->getID()) == visitedTerritoriesIds.end()){
+        if(std::find(visitedTerritoriesNames.begin(), visitedTerritoriesNames.end(), allTerritories.at(i)->getName()) == visitedTerritoriesNames.end()){
             cout << "Territories do not form a connected graph!" << endl;
             return false;
         }
@@ -253,7 +242,7 @@ vector<Territory*> Map::getAllTerritoriesByContinent(Continent* continent) {
  * Slight variation in this algorithm since it does not take into account adjacent territories that are not part of
  * the currently searched Continent.
 */
-void Map::dfs_continent(vector<int> *visitedTerritoriesIds, Territory *currentTerritory,
+void Map::dfs_continent(vector<string> *visitedTerritoriesNames, Territory *currentTerritory,
                         Continent* currentContinent) {
 
     // Need to remove adjacent territories that aren't in the current continent
@@ -265,17 +254,17 @@ void Map::dfs_continent(vector<int> *visitedTerritoriesIds, Territory *currentTe
     }
 
     // Base case: if current territory has already been visited, return
-    if(std::find(visitedTerritoriesIds->begin(), visitedTerritoriesIds->end(), currentTerritory->getID()) != visitedTerritoriesIds->end()){
+    if(std::find(visitedTerritoriesNames->begin(), visitedTerritoriesNames->end(), currentTerritory->getName()) != visitedTerritoriesNames->end()){
         return;
     }
 
     cout << "visiting territory: " << currentTerritory->getName() << std::endl;
     // Add current territory to visited territories
-    visitedTerritoriesIds->push_back(currentTerritory->getID());
+    visitedTerritoriesNames->push_back(currentTerritory->getName());
 
     for(int i = 0; i < currentAdjacentTerritoriesInContinent.size(); i++){
         // Recursive call to perform DFS for each adjacent territory
-        dfs_continent(visitedTerritoriesIds, currentAdjacentTerritoriesInContinent.at(i), currentContinent);
+        dfs_continent(visitedTerritoriesNames, currentAdjacentTerritoriesInContinent.at(i), currentContinent);
     }
 }
 
@@ -285,7 +274,7 @@ bool Map::isConnectedContinents() {
     for (int i = 0; i < allContinents.size(); i++){
         Continent* currentContinent = allContinents.at(i);
         vector<Territory*> currentContinentTerritories = getAllTerritoriesByContinent(currentContinent);
-        vector<int> visitedTerritories;
+        vector<string> visitedTerritories;
         Territory* startTerritory = currentContinentTerritories.at(0);
 
         // Start DFS at first territory
@@ -318,8 +307,6 @@ bool Map::validate() {
 
 MapLoader::MapLoader() {
     map = new Map();
-    continentID = 0;
-    territoryID = 0;
 }
 
 MapLoader::~MapLoader() {
@@ -328,8 +315,6 @@ MapLoader::~MapLoader() {
 
 MapLoader::MapLoader(const MapLoader &m) {
     this->map = m.map;
-    this->continentID = m.continentID;
-    this->territoryID = m.territoryID;
 }
 
 void MapLoader::readMapFile(std::string filepath) {
@@ -367,9 +352,8 @@ void MapLoader::readMapFile(std::string filepath) {
                             int continentBonus = std::stoi(
                                     currentLine.substr(continentDelimiterIndex + 1, currentLine.length()));
 
-                            Continent *continent = new Continent(continentID, continentName, continentBonus);
+                            Continent *continent = new Continent(continentName, continentBonus);
                             createdContinents.push_back(continent);
-                            continentID++;
 
                         }
                     }
@@ -397,9 +381,8 @@ void MapLoader::readMapFile(std::string filepath) {
                             string territoryContinentName = splitStrings.at(3);
 
                             Continent *territoryContinent = map->getContinentByName(territoryContinentName);
-                            Territory *territory = new Territory(territoryID, territoryName, territoryX, territoryY,territoryContinent);
+                            Territory *territory = new Territory(territoryName, territoryX, territoryY,territoryContinent);
                             createdTerritories.push_back(territory);
-                            territoryID++;
 
                         }
                     }
@@ -454,17 +437,6 @@ void MapLoader::readMapFile(std::string filepath) {
         input.close();
     }
 
-
-
-
-    for(int i = 0; i < map->getAllContinents().size(); i++){
-        cout << *map->getAllContinents().at(i) << endl;
-    }
-
-    for(int i = 0; i < map->getAllTerritories().size(); i++){
-        cout << *map->getAllTerritories().at(i) << endl;
-    }
-
 }
 
 
@@ -472,7 +444,7 @@ void MapLoader::readMapFile(std::string filepath) {
 int main(){
 
     MapLoader m;
-    m.readMapFile("../Canada.map");
+    m.readMapFile("../map_files/canada_valid.map");
     Map* map = m.getMap();
     cout << map->validate();
 
