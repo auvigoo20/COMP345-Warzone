@@ -211,9 +211,11 @@ bool Map::isConnectedTerritories() {
     // check if all territories have been visited after DFS
     for (int i = 0; i < allTerritories.size(); i++){
         if(std::find(visitedTerritoriesIds.begin(), visitedTerritoriesIds.end(), allTerritories.at(i)->getID()) == visitedTerritoriesIds.end()){
+            cout << "Territories do not form a connected graph!" << endl;
             return false;
         }
     }
+    cout << "Territories form a connected graph!" << endl;
     return true;
 }
 
@@ -291,9 +293,11 @@ bool Map::isConnectedContinents() {
 
         // If number of visited territories is not equal to the number of territories of a given continent, it is not a connected subgraph
         if (visitedTerritories.size() != currentContinentTerritories.size()){
+            cout << "Continents are not connected subgraphs!" << endl;
             return false;
         }
     }
+    cout << "Continents are connected subgraphs!" << endl;
     return true;
 }
 
@@ -404,7 +408,37 @@ void MapLoader::readMapFile(std::string filepath) {
 
         while(getline(input, currentLine)){
             if(currentLine == "[Territories]"){
+                while(getline(input, currentLine)){
+                    if(currentLine.length() > 0){
 
+                        // Split each line by delimiter and store the strings in a vector.
+                        std::stringstream lineToSplit(currentLine);
+                        string segment;
+                        vector<string> splitStrings;
+                        while(getline(lineToSplit, segment, territoryDelimiter)){
+                            splitStrings.push_back(segment);
+                        }
+
+                        // Format of the map file is as follows for Territories:
+                        // (1) Name, (2) X-coordinate, (3) Y-coordinate, (4) Continent, ...[adjacent territories]
+
+                        // Check if current territory has adjacent territories
+                        if(splitStrings.size() > 4){
+
+                            // Start from index 4 to obtain adjacent territories
+                            int adjacentTerritoryIndex {4};
+                            string currentTerritoryName = splitStrings.at(0);
+                            Territory* currentTerritory = map->getTerritoryByName(currentTerritoryName);
+
+                            for(int i = adjacentTerritoryIndex; i < splitStrings.size(); i++){
+                                Territory* adjacentTerritory = map->getTerritoryByName(splitStrings.at(i));
+                                currentTerritory->addAdjacentTerritory(adjacentTerritory);
+                            }
+
+                        }
+
+                    }
+                }
             }
         }
 
@@ -431,6 +465,8 @@ int main(){
 
     MapLoader m;
     m.readMapFile("../maptest.map");
+    Map* map = m.getMap();
+    cout << map->validate();
 
 //    Continent* c1 = new Continent(1, "continent1", 5);
 //    Continent* c2 = new Continent(2, "continent2", 5);
