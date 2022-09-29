@@ -1,4 +1,7 @@
-#include <list>;
+#ifndef CARDS_H
+#define CARDS_H
+#include <list>
+
 int testing();
 
 class Deck{
@@ -42,3 +45,5 @@ public:
     Diplomacy();
     void play();
 };
+
+#endif
