@@ -1,0 +1,3 @@
+/Users/alihanni/GitHub/COMP345-Warzone/cmake-build-debug/CMakeFiles/COMP345_Warzone.dir
+/Users/alihanni/GitHub/COMP345-Warzone/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/alihanni/GitHub/COMP345-Warzone/cmake-build-debug/CMakeFiles/rebuild_cache.dir
