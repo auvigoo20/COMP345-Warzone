@@ -9,6 +9,12 @@ int testing(){
     return 123;
 }
 
+
+Bomb::Bomb(){
+
+}
+
+
 int main()
 {
     cout << testing() << endl;
