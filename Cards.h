@@ -4,50 +4,41 @@ int testing();
 class Deck{
 public:
     list<Card> deckList;
+};
 
-
-
+class Hand{
+    list<Card> playerHandList;
 };
 
 class Card{
-
-
 };
 
 class Bomb : Card{
 public:
-    int targetTerritory; //need to change for a node type
-
     Bomb();
-    play(int targetTerritory);
+    void play();
 };
 
 class Reinforcement : Card{
 public:
-    int armyUnits;
-
     Reinforcement();
+    void play();
 };
 
 class Blockage : Card{
 public:
-    int targetTerritory;  //need to change for a node type
-
     Blockage();
+    void play();
  };
 
 class Airlift : Card{
 public:
-    int armyUnits;
-    int sourceTerritory;  //need to change for a node type
-    int targetTerritory;  //need to change for a node type
-
     Airlift();
+    void play();
 };
 
 class Diplomacy : Card{
 public:
-    int targetPlayer;
-
     Diplomacy();
+    void play();
 };

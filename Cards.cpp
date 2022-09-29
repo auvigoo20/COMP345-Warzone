@@ -9,8 +9,36 @@ int testing(){
     return 123;
 }
 
-
 Bomb::Bomb(){
+
+}
+Reinforcement::Reinforcement() {
+
+}
+Blockage::Blockage() {
+
+}
+Airlift::Airlift() {
+
+}
+Diplomacy::Diplomacy() {
+
+}
+
+
+void Bomb::play() {
+
+}
+void Reinforcement::play() {
+
+}
+void Blockage::play() {
+
+}
+void Airlift::play() {
+
+}
+void Diplomacy::play() {
 
 }
 
