@@ -151,10 +151,6 @@ Deploy::Deploy(const Deploy& d)
     this->targetTerritory = d.targetTerritory;
 }
 
-/**
- * Destructor
- */
-
 ostream& Deploy::printOrder(ostream &output) const
 {
     output << "Deploying " << this->numOfArmies << " units to ";
@@ -176,4 +172,51 @@ bool Deploy::validate() const
 
 
 
+// -------------- ADVANCE ORDER --------------
+
+Advance::Advance()
+{
+    this -> numOfArmies = 0;
+    this -> sourceTerritory = "Source";
+    this -> targetTerritory = "Target";
+}
+
+Advance::Advance(int numOfArmies, string sourceTerritory, string targetTerritory)
+{
+    this->numOfArmies = numOfArmies;
+    this->sourceTerritory = sourceTerritory;
+    this->targetTerritory = targetTerritory;
+}
+
+
+/**
+ * Copy constructor
+ * @param a
+ */
+Advance::Advance(const Advance& a)
+{
+    this->numOfArmies = a.numOfArmies;
+    this->sourceTerritory = a.sourceTerritory;
+    this->targetTerritory = a.targetTerritory;
+}
+
+ostream& Advance::printOrder(ostream &output) const
+{
+    output << "Advancing " << this->numOfArmies << " units from ";
+    output << this->sourceTerritory << " territory " << " to ";
+    output << this->targetTerritory << " territory." << endl;
+    return output;
+}
+
+void Advance::execute() const
+{
+    cout << "Order being executed !" << endl;
+    cout << this;
+}
+
+bool Advance::validate() const
+{
+    cout << "Validation in progress ... " << endl;
+    return true;
+}
 

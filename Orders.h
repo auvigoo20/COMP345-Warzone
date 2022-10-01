@@ -62,7 +62,7 @@ class Advance: public Order
 public:
     Advance( );
     Advance(const Advance& a);
-    Advance(int numOfArmies, string* sourceTerritory, string* targetTerritory);
+    Advance(int numOfArmies, string sourceTerritory, string targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -70,8 +70,8 @@ public:
 
 private:
     int numOfArmies;
-    string* sourceTerritory; //***** Has to be changed to Territory object ptr *****
-    string* targetTerritory; //***** Has to be changed to Territory object ptr *****
+    string sourceTerritory; //***** Has to be changed to Territory object ptr *****
+    string targetTerritory; //***** Has to be changed to Territory object ptr *****
 
 };
 
