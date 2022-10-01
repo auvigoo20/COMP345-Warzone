@@ -10,10 +10,10 @@ class OrdersList;
 class Order
 {
 public:
-    virtual ostream& getOrder(ostream& output) const = 0;
+    virtual ostream& printOrder(ostream& output) const = 0;
     virtual bool validate() const = 0;
     virtual void execute() const = 0;
-    virtual ~Order() = 0;
+    virtual ~Order() = default;
 
 private:
     friend ostream& operator << (ostream& output, Order& o);
@@ -26,9 +26,11 @@ public:
     OrdersList(const OrdersList& o);
     void addOrder(Order* order);
     void removeOrder(int index);
-    void moveOrder(int index1, int index2);
+    void moveOrderUp(int index);
+    void moveOrderDown(int index);
     void executeOrders();
     int getSize();
+    ostream& printList(ostream& output);
     Order* getOrder(int index);
     ~OrdersList();
 
@@ -43,15 +45,15 @@ class Deploy: public Order
 public:
     Deploy( );
     Deploy(const Deploy& d);
-    Deploy(int numOfArmies, string* targetTerritory);
-    ostream& getOrder(ostream& output) const override;
+    Deploy(int numOfArmies, string targetTerritory);
+    ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
-    ~Deploy();
+    ~Deploy() override = default;
 
 private:
     int numOfArmies;
-    string* targetTerritory; //***** Has to be changed to Territory object ptr *****
+    string targetTerritory; //***** Has to be changed to Territory object ptr *****
 
 };
 
@@ -61,7 +63,7 @@ public:
     Advance( );
     Advance(const Advance& a);
     Advance(int numOfArmies, string* sourceTerritory, string* targetTerritory);
-    ostream& getOrder(ostream& output) const override;
+    ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
     ~Advance();
@@ -79,7 +81,7 @@ public:
     Bomb( );
     Bomb(const Bomb& b);
     Bomb(string* targetTerritory);
-    ostream& getOrder(ostream& output) const override;
+    ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
     ~Bomb();
@@ -95,7 +97,7 @@ public:
     Blockade( );
     Blockade(const Blockade& b);
     Blockade(string* targetTerritory);
-    ostream& getOrder(ostream& output) const override;
+    ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
     ~Blockade();
@@ -110,7 +112,7 @@ public:
     Airlift( );
     Airlift(const Airlift& b);
     Airlift(int numOfArmies, string* sourceTerritory, string* targetTerritory);
-    ostream& getOrder(ostream& output) const override;
+    ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
     ~Airlift();
@@ -127,7 +129,7 @@ public:
     Negotiate( );
     Negotiate(const Negotiate& b);
     Negotiate(string* targetPlayer);
-    ostream& getOrder(ostream& output) const override;
+    ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
     ~Negotiate();

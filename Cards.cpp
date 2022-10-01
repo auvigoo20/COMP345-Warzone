@@ -1,5 +1,6 @@
 #include "Cards.h"
 #include "Map.h"
+#include "OrdersDriver.h"
 
 #include <iostream>
 using std::cout;
@@ -11,6 +12,5 @@ int testing(){
 
 int main()
 {
-    cout << testing() << endl;
-    cout << testing2();
+    testOrdersLists();
 }
