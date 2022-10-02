@@ -1,0 +1,36 @@
+[Map]
+author=Bluebird
+image=Canada.bmp
+wrap=yes
+scroll=none
+warn=yes
+
+[Continents]
+Northern Islands=12
+Southern Islands=10
+Yukon=6
+Northwest Territories=14
+British Columbia=7
+Alberta=4
+Saskatchewan=5
+Manitoba=6
+Ontario=5
+Quebec=8
+Newfoundland=5
+Nova Scotia=2
+Prince Edward Island=1
+New Brunswick=2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
