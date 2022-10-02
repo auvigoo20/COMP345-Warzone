@@ -12,6 +12,7 @@ int testOrdersLists(){
     Deploy dep4(30, "USA");
 
     OrdersList ordersList;
+
     ordersList.addOrder(&dep1);
     ordersList.addOrder(&dep2);
     ordersList.addOrder(&dep3);
@@ -25,7 +26,7 @@ int testOrdersLists(){
     ordersList.moveOrderUp(4);
     ordersList.moveOrderUp(100);
 
+    cout << ordersList << endl;
 
-    cout << ordersList;
     return 0;
 }

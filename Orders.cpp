@@ -28,17 +28,17 @@ OrdersList::OrdersList()
   */
 void OrdersList::addOrder(Order* order)
 {
-    this -> ordersList.push_back(order);
+    ordersList.push_back(order);
 }
 
 int OrdersList::getSize()
 {
-    return this -> ordersList.size();
+    return ordersList.size();
 }
 
 Order* OrdersList::getOrder(int index)
 {
-    return this -> ordersList[index - 1];
+    return ordersList[index - 1];
 }
 
 void OrdersList::removeOrder(int index)
@@ -50,8 +50,8 @@ void OrdersList::removeOrder(int index)
     } else if(index  < 1 || index > size) {
         cout << "Index out of bound !";
     } else {
-        delete this->ordersList[index - 1];
-        this->ordersList.erase(this->ordersList.begin() + index - 1);
+        delete ordersList[index - 1];
+        ordersList.erase(ordersList.begin() + index - 1);
     }
 }
 
@@ -66,9 +66,9 @@ void OrdersList::moveOrderUp(int index)
     } else if (index < 1 || index > size) {
         cout << "Index out of bound !" << endl;
     } else {
-        Order* temp = this -> ordersList[index - 1];
-        this -> ordersList[index - 1] = this -> ordersList[index - 2];
-        this -> ordersList[index - 2] = temp;
+        Order* temp = ordersList[index - 1];
+        ordersList[index - 1] = ordersList[index - 2];
+        ordersList[index - 2] = temp;
     }
 }
 
@@ -83,9 +83,9 @@ void OrdersList::moveOrderDown(int index)
     } else if (index < 1 || index > size) {
         cout << "Index out of bound !" << endl;
     } else {
-        Order* temp = this -> ordersList[index - 1];
-        this -> ordersList[index - 1] = this -> ordersList[index];
-        this -> ordersList[index] = temp;
+        Order* temp = ordersList[index - 1];
+        ordersList[index - 1] = ordersList[index];
+        ordersList[index] = temp;
     }
 }
 
@@ -116,7 +116,7 @@ OrdersList::~OrdersList()
 /**
  * Stream insertion operator is overloaded for the Order
  * abstract class so polymorphism can be used to display
- * information of different type of order.
+ * information of different type of orders.
  * @param output
  * @param o
  * @return
@@ -220,3 +220,84 @@ bool Advance::validate() const
     return true;
 }
 
+// -------------- BOMB ORDER --------------
+
+Bomb::Bomb()
+{
+    this -> targetTerritory = "Target";
+}
+
+Bomb::Bomb(string targetTerritory)
+{
+    this->targetTerritory = targetTerritory;
+}
+
+
+/**
+ * Copy constructor
+ * @param b
+ */
+Bomb::Bomb(const Bomb& b)
+{
+    this->targetTerritory = b.targetTerritory;
+}
+
+ostream& Bomb::printOrder(ostream &output) const
+{
+    output << "Bombing " << this->targetTerritory << " territory.";
+    output << endl;
+    return output;
+}
+
+void Bomb::execute() const
+{
+    cout << "Order being executed !" << endl;
+    cout << this;
+}
+
+bool Bomb::validate() const
+{
+    cout << "Validation in progress ... " << endl;
+    return true;
+}
+
+// -------------- BLOCKADE ORDER --------------
+
+Blockade::Blockade()
+{
+    this -> targetTerritory = "Target";
+}
+
+Blockade::Blockade(string targetTerritory)
+{
+    this->targetTerritory = targetTerritory;
+}
+
+
+/**
+ * Copy constructor
+ * @param b
+ */
+Blockade::Blockade(const Blockade& b)
+{
+    this->targetTerritory = b.targetTerritory;
+}
+
+ostream& Blockade::printOrder(ostream &output) const
+{
+    output << "Blockade on " << this->targetTerritory << " territory.";
+    output << endl;
+    return output;
+}
+
+void Blockade::execute() const
+{
+    cout << "Order being executed !" << endl;
+    cout << this;
+}
+
+bool Blockade::validate() const
+{
+    cout << "Validation in progress ... " << endl;
+    return true;
+}

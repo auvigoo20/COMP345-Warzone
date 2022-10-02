@@ -66,7 +66,7 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
-    ~Advance();
+    ~Advance() override = default;
 
 private:
     int numOfArmies;
@@ -80,14 +80,14 @@ class Bomb: public Order
 public:
     Bomb( );
     Bomb(const Bomb& b);
-    Bomb(string* targetTerritory);
+    explicit Bomb(string targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
-    ~Bomb();
+    ~Bomb() override = default;
 
 private:
-    string* targetTerritory; //***** Has to be changed to Territory object ptr *****
+    string targetTerritory; //***** Has to be changed to Territory object ptr *****
 
 };
 
@@ -96,14 +96,14 @@ class Blockade: public Order
 public:
     Blockade( );
     Blockade(const Blockade& b);
-    Blockade(string* targetTerritory);
+    explicit Blockade(string targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
-    ~Blockade();
+    ~Blockade() override = default;
 
 private:
-    string* targetTerritory; //***** Has to be changed to Territory object ptr *****
+    string targetTerritory; //***** Has to be changed to Territory object ptr *****
 
 };
 
