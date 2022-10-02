@@ -111,16 +111,16 @@ class Airlift: public Order {
 public:
     Airlift( );
     Airlift(const Airlift& b);
-    Airlift(int numOfArmies, string* sourceTerritory, string* targetTerritory);
+    Airlift(int numOfArmies, string sourceTerritory, string targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
-    ~Airlift();
+    ~Airlift() override = default;
 
 private:
     int numOfArmies;
-    string* sourceTerritory; //***** Has to be changed to Territory object ptr *****
-    string* targetTerritory; //***** Has to be changed to Territory object ptr *****
+    string sourceTerritory; //***** Has to be changed to Territory object ptr *****
+    string targetTerritory; //***** Has to be changed to Territory object ptr *****
 
 };
 

@@ -301,3 +301,49 @@ bool Blockade::validate() const
     cout << "Validation in progress ... " << endl;
     return true;
 }
+
+// -------------- AIRLIFT ORDER --------------
+
+Airlift::Airlift()
+{
+    this -> targetTerritory = "Target";
+}
+
+Airlift::Airlift(int numOfArmies, string sourceTerritory, string targetTerritory)
+{
+    this->numOfArmies = numOfArmies;
+    this->sourceTerritory = sourceTerritory;
+    this->targetTerritory = targetTerritory;
+}
+
+
+/**
+ * Copy constructor
+ * @param a
+ */
+Airlift::Airlift(const Airlift& a)
+{
+    this->numOfArmies = a.numOfArmies;
+    this->sourceTerritory = a.sourceTerritory;
+    this->targetTerritory = a.targetTerritory;
+}
+
+ostream& Airlift::printOrder(ostream &output) const
+{
+    output << "Airlift " << this->numOfArmies << " units from ";
+    output << this->sourceTerritory << " territory " << " to ";
+    output << this->targetTerritory << " territory." << endl;
+    return output;
+}
+
+void Airlift::execute() const
+{
+    cout << "Order being executed !" << endl;
+    cout << this;
+}
+
+bool Airlift::validate() const
+{
+    cout << "Validation in progress ... " << endl;
+    return true;
+}
