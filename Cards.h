@@ -3,9 +3,7 @@
 #include <iostream>
 #include <vector>
 
-using std::cout;
-using std::endl;
-using std::vector;
+using namespace std;
 
 int testing();
 class Hand;
@@ -19,34 +17,42 @@ public:
     void removeCard(int index); //random card is removed from deckList at draw();
     void draw(Hand* hand);
     vector<Card*> getDeckList();
+    ostream& printDeck(ostream& output);
+private:
     vector<Card*> deckList;
+    friend ostream& operator << (ostream& output, Deck& d);
 };
 
 class Hand{
 public:
-    Hand();
+    Hand();      //creates empty handList and empty pointer
     Hand(const Hand& o);
+    Hand(Deck* deckList); //creates empty handList and pointer to existing deckList
     void addCard(Card* card); //card is added in player's handList
-    void removeCard(Card* card); //card is removed from hand to be played
-    void playCard(Card* card);
-
-
+    void removeCard(int index); //card is removed from hand to be played
+    void playCard(int index);
+    ostream& printHand(ostream& output);
 private:
     vector<Card*> handList;
-    Deck* deck;
+    Deck* deckList;
+    friend ostream& operator << (ostream& output, Hand& h);
 };
 
 class Card{
 public:
     virtual void play() const = 0;
-    Hand* handPlayer;
+    virtual ostream& printCard(ostream& output) const = 0;
+private:
+    friend ostream& operator << (ostream& output, Card& c);
 };
 
 class Bomb : public Card{
 public:
     Bomb();
     Bomb(const Bomb& b);
-    void play();
+    void play() const override;
+    ostream& printCard(ostream& output) const override;
+
 
 };
 
@@ -54,32 +60,32 @@ class Reinforcement : public Card{
 public:
     Reinforcement();
     Reinforcement(const Reinforcement& r);
-    void play();
-
+    void play() const override;
+    ostream& printCard(ostream& output) const override;
 };
 
 class Blockade : public Card{
 public:
     Blockade();
     Blockade(const Blockade& bl);
-    void play();
-
+    void play() const override;
+    ostream& printCard(ostream& output) const override;
  };
 
 class Airlift : public Card{
 public:
     Airlift();
     Airlift(const Airlift& a);
-    void play();
-
+    void play() const override;
+    ostream& printCard(ostream& output) const override;
 };
 
 class Diplomacy : public Card{
 public:
     Diplomacy();
     Diplomacy(const Diplomacy& d);
-    void play();
-
+    void play() const override;
+    ostream& printCard(ostream& output) const override;
 };
 
 #endif
