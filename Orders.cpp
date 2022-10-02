@@ -347,3 +347,44 @@ bool Airlift::validate() const
     cout << "Validation in progress ... " << endl;
     return true;
 }
+
+// -------------- NEGOTIATE ORDER --------------
+
+Negotiate::Negotiate()
+{
+    this -> targetPlayer = "Target Player";
+}
+
+Negotiate::Negotiate(string targetPlayer)
+{
+    this->targetPlayer = targetPlayer;
+}
+
+
+/**
+ * Copy constructor
+ * @param n
+ */
+Negotiate::Negotiate(const Negotiate& n)
+{
+    this->targetPlayer = n.targetPlayer;
+}
+
+ostream& Negotiate::printOrder(ostream &output) const
+{
+    output << "Negotiation order used on player " << this->targetPlayer;
+    output << endl;
+    return output;
+}
+
+void Negotiate::execute() const
+{
+    cout << "Order being executed !" << endl;
+    cout << this;
+}
+
+bool Negotiate::validate() const
+{
+    cout << "Validation in progress ... " << endl;
+    return true;
+}
