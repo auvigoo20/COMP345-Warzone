@@ -1,5 +1,6 @@
 #include "Orders.h"
 #include <iostream>
+#include <utility>
 
 using std::cout;
 using std::endl;
@@ -306,6 +307,8 @@ bool Blockade::validate() const
 
 Airlift::Airlift()
 {
+    this -> numOfArmies = 0;
+    this -> sourceTerritory = "Source";
     this -> targetTerritory = "Target";
 }
 
