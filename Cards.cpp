@@ -102,7 +102,7 @@ Diplomacy::Diplomacy() {
 }
 
 void Bomb::play() const{
-//create order bomb
+    cout << "output bomb card" << endl;                  //create order bomb
 }
 
 ostream& Bomb::printCard(std::ostream &output) const {
@@ -110,7 +110,7 @@ ostream& Bomb::printCard(std::ostream &output) const {
 }
 
 void Reinforcement::play() const{
-//create order reinforcement
+    cout << "output reinforcement card" << endl;                //create order reinforcement
 }
 
 ostream& Reinforcement::printCard(std::ostream &output) const {
@@ -118,7 +118,7 @@ ostream& Reinforcement::printCard(std::ostream &output) const {
 }
 
 void Blockade::play() const{
-//create order blockade
+    cout << "output blockade card" << endl;                    //create order blockade
 }
 
 ostream& Blockade::printCard(std::ostream &output) const {
@@ -126,14 +126,14 @@ ostream& Blockade::printCard(std::ostream &output) const {
 }
 
 void Airlift::play() const{
-//create order airlift
+    cout << "output airlift card" << endl;                   //create order airlift
 }
 
 ostream& Airlift::printCard(std::ostream &output) const {
     output << " Airlift Card " << endl;
 }
 void Diplomacy::play() const{
-//create order negotiate
+    cout << "output diplomacy card" << endl;                  //create order negotiate
 }
 
 ostream& Diplomacy::printCard(std::ostream &output) const {
