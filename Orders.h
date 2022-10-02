@@ -37,6 +37,7 @@ public:
 private:
     vector<Order*> ordersList;
     friend ostream& operator << (ostream& output, OrdersList& o);
+    OrdersList& operator = (const OrdersList& o);
 };
 
 
@@ -54,7 +55,7 @@ public:
 private:
     int numOfArmies;
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
-
+    Deploy& operator = (const Deploy& d);
 };
 
 class Advance: public Order
@@ -72,7 +73,7 @@ private:
     int numOfArmies;
     string sourceTerritory; //***** Has to be changed to Territory object ptr *****
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
-
+    Advance& operator = (const Advance& a);
 };
 
 class Bomb: public Order
@@ -88,6 +89,7 @@ public:
 
 private:
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Bomb& operator = (const Bomb& b);
 
 };
 
@@ -104,6 +106,7 @@ public:
 
 private:
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Blockade& operator = (const Blockade& b);
 
 };
 
@@ -121,6 +124,7 @@ private:
     int numOfArmies;
     string sourceTerritory; //***** Has to be changed to Territory object ptr *****
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Airlift& operator = (const Airlift& a);
 
 };
 
@@ -136,5 +140,6 @@ public:
 
 private:
     string targetPlayer;
+    Negotiate& operator = (const Negotiate& n);
 
 };

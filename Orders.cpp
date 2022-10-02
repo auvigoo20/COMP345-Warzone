@@ -100,9 +100,20 @@ ostream& OrdersList::printList(ostream& output)
     return output;
 }
 
+/**
+ * Stream insertion operator overloaded for OrdersList.
+ * @param output
+ * @param o
+ * @return
+ */
 ostream& operator << (ostream& output, OrdersList& o)
 {
     return o.printList(output);
+}
+
+OrdersList& OrdersList::operator=(const OrdersList &o)
+{
+    
 }
 
 OrdersList::~OrdersList()
@@ -171,6 +182,20 @@ bool Deploy::validate() const
     return true;
 }
 
+/**
+ * Assignment operator overload for Deploy class.
+ * @param d
+ * @return
+ */
+Deploy& Deploy::operator=(const Deploy &d)
+{
+    if (this != &d) { //Checking for self assignment
+        this->numOfArmies = d.numOfArmies;
+        this->targetTerritory = d.targetTerritory;
+    }
+    return *this;
+}
+
 
 
 // -------------- ADVANCE ORDER --------------
@@ -221,6 +246,21 @@ bool Advance::validate() const
     return true;
 }
 
+/**
+ * Assignment operator overload for Advance class.
+ * @param a
+ * @return
+ */
+Advance& Advance::operator=(const Advance &a)
+{
+    if (this != &a) { //Checking for self assignment
+        this->numOfArmies = a.numOfArmies;
+        this->sourceTerritory = a.sourceTerritory;
+        this->targetTerritory = a.targetTerritory;
+    }
+    return *this;
+}
+
 // -------------- BOMB ORDER --------------
 
 Bomb::Bomb()
@@ -262,6 +302,19 @@ bool Bomb::validate() const
     return true;
 }
 
+/**
+ * Assignment operator overload for Bomb class.
+ * @param b
+ * @return
+ */
+Bomb& Bomb::operator=(const Bomb &b)
+{
+    if (this != &b) { //Checking for self assignment
+        this->targetTerritory = b.targetTerritory;
+    }
+    return *this;
+}
+
 // -------------- BLOCKADE ORDER --------------
 
 Blockade::Blockade()
@@ -301,6 +354,19 @@ bool Blockade::validate() const
 {
     cout << "Validation in progress ... " << endl;
     return true;
+}
+
+/**
+ * Assignment operator overload for Blockade class.
+ * @param b
+ * @return
+ */
+Blockade& Blockade::operator=(const Blockade &b)
+{
+    if (this != &b) { //Checking for self assignment
+        this->targetTerritory = b.targetTerritory;
+    }
+    return *this;
 }
 
 // -------------- AIRLIFT ORDER --------------
@@ -351,6 +417,21 @@ bool Airlift::validate() const
     return true;
 }
 
+/**
+ * Assignment operator overload for Airlift class.
+ * @param a
+ * @return
+ */
+Airlift& Airlift::operator=(const Airlift &a)
+{
+    if (this != &a) { //Checking for self assignment
+        this->numOfArmies = a.numOfArmies;
+        this->sourceTerritory = a.sourceTerritory;
+        this->targetTerritory = a.targetTerritory;
+    }
+    return *this;
+}
+
 // -------------- NEGOTIATE ORDER --------------
 
 Negotiate::Negotiate()
@@ -390,4 +471,18 @@ bool Negotiate::validate() const
 {
     cout << "Validation in progress ... " << endl;
     return true;
+}
+
+/**
+ * Assignment operator overload for Negotiate class.
+ * @param n
+ * @return
+ */
+Negotiate& Negotiate::operator=(const Negotiate& n)
+{
+    if (this != &n) {  //Checking for self assignment
+        this->targetPlayer = n.targetPlayer;
+    }
+
+    return *this;
 }
