@@ -17,8 +17,8 @@ class Continent{
         Continent();
         Continent(const Continent &c);
         Continent(string name, int bonus);
-        string getName() { return name; }
-        int getBonus() { return bonus; }
+        string getName();
+        int getBonus();
         void setName(string name);
         void setBonus(int bonus);
 
@@ -40,13 +40,13 @@ class Territory{
         Territory(string name, int x, int y, Continent* continent);
         Territory(Player* owner, Continent* continent, int numOfArmies, string name, vector<Territory*>, int x, int y);
         Territory(Player *owner, Continent* continent, int numOfArmies, string name, int x, int y);
-        Player* getOwner() { return owner; }
-        Continent* getContinent() { return continent; }
-        int getNumOfArmies() { return numOfArmies; }
-        string getName() { return name; }
-        vector<Territory*> getAdjacentTerritories() { return adjacentTerritories; }
-        int getX() { return x; }
-        int getY() { return y; }
+        Player* getOwner();
+        Continent* getContinent();
+        int getNumOfArmies();
+        string getName();
+        vector<Territory*> getAdjacentTerritories();
+        int getX();
+        int getY();
 
         void setOwner(Player* player);
         void setContinent(Continent* continent);
@@ -73,8 +73,8 @@ class Map{
         Map(vector<Territory*> territories, vector<Continent*> continents);
         Map(const Map &map);
 
-        vector<Territory*> getAllTerritories() { return allTerritories; }
-        vector<Continent*> getAllContinents() { return allContinents; }
+        vector<Territory*> getAllTerritories();
+        vector<Continent*> getAllContinents();
         vector<Territory*> getAllTerritoriesByContinent(Continent* continent);
         void setAllTerritories(vector<Territory*> territories);
         void setAllContinents(vector<Continent*> continents);

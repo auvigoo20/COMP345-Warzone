@@ -37,6 +37,14 @@ Continent::Continent(string name, int bonus) {
     this->bonus = bonus;
 }
 
+string Continent::getName() {
+    return name;
+}
+
+int Continent::getBonus() {
+    return bonus;
+}
+
 void Continent::setBonus(int bonus) {
     this->bonus = bonus;
 }
@@ -97,27 +105,56 @@ Territory::Territory(Player *owner, Continent* continent, int numOfArmies, std::
     this->y = y;
 }
 
+Player* Territory::getOwner() {
+    return owner;
+}
+
 void Territory::setOwner(Player* player){
     this->owner = player;
+}
+
+Continent *Territory::getContinent() {
+    return continent;
 }
 
 void Territory::setContinent(Continent* continent){
     this->continent = continent;
 }
+
+int Territory::getNumOfArmies() {
+    return numOfArmies;
+}
+
 void Territory::setNumOfArmies(int numOfArmies){
     this->numOfArmies = numOfArmies;
+}
+
+string Territory::getName() {
+    return name;
 }
 
 void Territory::setName(string name){
     this->name = name;
 }
 
+vector<Territory *> Territory::getAdjacentTerritories() {
+    return adjacentTerritories;
+}
+
 void Territory::setAdjacentTerritories(vector<Territory*> territories){
     this->adjacentTerritories = territories;
 }
 
+int Territory::getX() {
+    return x;
+}
+
 void Territory::setX(int x){
     this->x = x;
+}
+
+int Territory::getY() {
+    return y;
 }
 
 void Territory::setY(int y){
@@ -157,8 +194,16 @@ Map::Map(const Map &map) {
     this->allContinents = map.allContinents;
 }
 
+vector<Territory *> Map::getAllTerritories() {
+    return allTerritories;
+}
+
 void Map::setAllTerritories(vector<Territory *> territories) {
     this->allTerritories = territories;
+}
+
+vector<Continent *> Map::getAllContinents() {
+    return allContinents;
 }
 
 void Map::setAllContinents(vector<Continent *> continents) {
