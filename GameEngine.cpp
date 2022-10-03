@@ -92,6 +92,8 @@ void GameEngine::setLatestCommand(std::string *latestCommand) {
     this->latestCommand = latestCommand;
 }
 
+State* GameEngine::start = new State("start", )
+
 void GameEngine::startGame() {
 
 }

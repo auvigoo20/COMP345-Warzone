@@ -54,6 +54,9 @@ public:
     void setCurrentState(State* currentState);
     void setLatestCommand(string* latestCommand);
 
+    static State* start;
+    static State* mapLoaded;
+
     void startGame();
 };
 
