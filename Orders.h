@@ -13,6 +13,7 @@ public:
     virtual ostream& printOrder(ostream& output) const = 0;
     virtual bool validate() const = 0;
     virtual void execute() const = 0;
+    virtual Order* copy() const = 0;
     virtual ~Order() = default;
 
 private:
@@ -32,7 +33,8 @@ public:
     int getSize();
     ostream& printList(ostream& output);
     Order* getOrder(int index);
-    OrdersList* operator = (OrdersList* o);
+    OrdersList& operator = (const OrdersList& o);
+    OrdersList& operator = (OrdersList* o);
     ~OrdersList();
 
 private:
@@ -50,6 +52,7 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Deploy* copy() const  override;
     Deploy& operator = (const Deploy& d);
     ~Deploy() override = default;
 
@@ -67,6 +70,7 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Advance* copy() const  override;
     Advance& operator = (const Advance& a);
     ~Advance() override = default;
 
@@ -85,6 +89,7 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Bomb* copy() const  override;
     Bomb& operator = (const Bomb& b);
     ~Bomb() override = default;
 
@@ -102,6 +107,7 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Blockade* copy() const  override;
     Blockade& operator = (const Blockade& b);
     ~Blockade() override = default;
 
@@ -117,6 +123,7 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Airlift* copy() const  override;
     Airlift& operator = (const Airlift& a);
     ~Airlift() override = default;
 
@@ -134,6 +141,7 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Negotiate* copy() const  override;
     Negotiate& operator = (const Negotiate& n);
     ~Negotiate() override = default;
 

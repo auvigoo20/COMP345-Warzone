@@ -112,17 +112,26 @@ ostream& operator << (ostream& output, OrdersList& o)
 }
 
 /**
- * Assignment operator overload.
+ * Assignment operator overload if a reference to a list
+ * is passed.
  * @param o
  * @return
  */
-OrdersList* OrdersList::operator=(OrdersList* o)
+OrdersList& OrdersList::operator=(const OrdersList& o)
 {
-   if (this != o) {
-       this->ordersList = o->ordersList;
-       return this;
+   if (this != &o) {
+       for(Order* order: ordersList) {
+           delete order; // Delete existing orders.
+       }
+       int size = o.ordersList.size();
+       //Initialize vector with same size as assigned object.
+       this->ordersList = vector<Order*>(size);
+       for(int i = 0; i < size; i++) {
+           ordersList[i] = o.ordersList[i]->copy();
+       }
+       return *this;
    }
-   return this;
+   return *this;
 }
 
 OrdersList::~OrdersList()
@@ -196,6 +205,15 @@ bool Deploy::validate() const
 }
 
 /**
+ * Used to make deep copies of Order objects.
+ * @return
+ */
+Deploy* Deploy::copy() const
+{
+    return new Deploy(*this);
+}
+
+/**
  * Assignment operator overload for Deploy class.
  * @param d
  * @return
@@ -263,6 +281,15 @@ bool Advance::validate() const
 }
 
 /**
+ * Used to make deep copies of Order objects.
+ * @return Reference to a new cloned Order object.
+ */
+Advance* Advance::copy() const
+{
+    return new Advance(*this);
+}
+
+/**
  * Assignment operator overload for Advance class.
  * @param a
  * @return
@@ -323,6 +350,15 @@ bool Bomb::validate() const
 }
 
 /**
+ * Used to make deep copies of Order objects.
+ * @return Reference to a new cloned Order object.
+ */
+Bomb* Bomb::copy() const
+{
+    return new Bomb(*this);
+}
+
+/**
  * Assignment operator overload for Bomb class.
  * @param b
  * @return
@@ -378,6 +414,15 @@ bool Blockade::validate() const
 {
     cout << "Validation in progress ... " << endl;
     return true;
+}
+
+/**
+ * Used to make deep copies of Order objects.
+ * @return Reference to a new cloned Order object.
+ */
+Blockade* Blockade::copy() const
+{
+    return new Blockade(*this);
 }
 
 /**
@@ -446,6 +491,15 @@ bool Airlift::validate() const
 }
 
 /**
+ * Used to make deep copies of Order objects.
+ * @return Reference to a new cloned Order object.
+ */
+Airlift* Airlift::copy() const
+{
+    return new Airlift(*this);
+}
+
+/**
  * Assignment operator overload for Airlift class.
  * @param a
  * @return
@@ -503,6 +557,15 @@ bool Negotiate::validate() const
 {
     cout << "Validation in progress ... " << endl;
     return true;
+}
+
+/**
+ * Used to make deep copies of Order objects.
+ * @return Reference to a new cloned Order object.
+ */
+Negotiate* Negotiate::copy() const
+{
+    return new Negotiate(*this);
 }
 
 /**

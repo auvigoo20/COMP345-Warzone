@@ -74,12 +74,17 @@ int testOrdersLists(){
     //Testing assignment operators:
     cout << "Testing assignment operator" << endl;
     list2 = *list1;
-    cout << *list1 << endl;
+
+    cout << list1 << endl;
     list1->removeOrder(1);
 
+    cout << "LIST 1 EXPECTED: Deploy, Blockade, Bombing, Airlift" << endl;
     cout << *list1 << endl;
+    cout << "LIST 2 EXPECTED: Advance, Deploy, Blockade, Bombing, Airlift" << endl;
     cout << list2 << endl;
-    cout << list2 << endl;
-
+    cout << "Size of list 1 expected 4." << endl;
+    cout << list1->getSize() << endl;
+    cout << "Size of list 2 expected 5" << endl;
+    cout << list2.getSize() << endl;
     return 0;
 }
