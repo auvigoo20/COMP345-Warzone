@@ -46,6 +46,11 @@ State::State(const State &s) {
     transitions = s.transitions;
 }
 
+State::State(std::string *name) {
+    this->name = name;
+    this->transitions = nullptr;
+}
+
 State::State(std::string *name, vector<Transition *>* transitions) {
     this->name = name;
     this->transitions = transitions;
@@ -94,14 +99,17 @@ void GameEngine::setCurrentState(State *currentState) {
 }
 
 
-State* GameEngine::start = new State(new string("start"), new vector<Transition*>()); // memory leak for str and vector
-State* GameEngine::mapLoaded = new State(new string("map loaded"), new vector<Transition*>());
-State* GameEngine::mapValidated = new State(new string("map validated"), new vector<Transition*>()); // memory leak for str and vector
-State* GameEngine::playersAdded = new State(new string("players added"), new vector<Transition*>()); // memory leak for str and vector
-State* GameEngine::assignReinforcement = new State(new string("assign reinforcement"), new vector<Transition*>()); // memory leak for str and vector
-State* GameEngine::issueOrders = new State(new string("issue orders"), new vector<Transition*>()); // memory leak for str and vector
-State* GameEngine::executeOrders = new State(new string("execute orders"), new vector<Transition*>()); // memory leak for str and vector
-State* GameEngine::win = new State(new string("win"), new vector<Transition*>()); // memory leak for str and vector
+
+// TODO: Everything here has a potential string memory leak that needs to be fixed.
+
+State* GameEngine::start = new State(new string("start"));
+State* GameEngine::mapLoaded = new State(new string("map loaded"));
+State* GameEngine::mapValidated = new State(new string("map validated"));
+State* GameEngine::playersAdded = new State(new string("players added"));
+State* GameEngine::assignReinforcement = new State(new string("assign reinforcement"));
+State* GameEngine::issueOrders = new State(new string("issue orders"));
+State* GameEngine::executeOrders = new State(new string("execute orders"));
+State* GameEngine::win = new State(new string("win"));
 
 Transition* GameEngine::loadmapTransition = new Transition(new string("loadmap"), GameEngine::mapLoaded);
 Transition* GameEngine::validatemapTransition = new Transition(new string("validatemap"), GameEngine::mapValidated);
@@ -116,6 +124,9 @@ Transition* GameEngine::playTransition = new Transition(new string("play"), Game
 Transition* GameEngine::endTransition = new Transition(new string("end"), nullptr);
 
 void GameEngine::initializeEngineStates() {
+
+    // TODO: Everything here has a potential vector memory leak that needs to be fixed.
+
     start->setTransitions(new vector<Transition*>({loadmapTransition}));
     mapLoaded->setTransitions(new vector<Transition*>({loadmapTransition, validatemapTransition}));
     mapValidated->setTransitions(new vector<Transition*>({addplayerTransition}));

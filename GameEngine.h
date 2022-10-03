@@ -31,6 +31,7 @@ private:
 public:
     State();
     State(const State &s);
+    explicit State(string* name);
     State(string* name, vector<Transition*>* transitions);
 
     string* getName();
