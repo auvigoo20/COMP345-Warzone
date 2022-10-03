@@ -1,4 +1,9 @@
 #include "GameEngine.h"
+#include <string>
+using std::string;
+
+#include <vector>
+using std::vector;
 
 Transition::Transition() {
     name = nullptr;
@@ -10,7 +15,7 @@ Transition::Transition(const Transition &t) {
     to = t.to;
 }
 
-Transition::Transition(std::string *name, State *to) {
+Transition::Transition(string *name, State *to) {
     this->name = name;
     this->to = to;
 }
@@ -33,6 +38,7 @@ void Transition::setTo(State *to) {
 
 State::State() {
     name = nullptr;
+    transitions = nullptr;
 }
 
 State::State(const State &s) {
@@ -40,7 +46,7 @@ State::State(const State &s) {
     transitions = s.transitions;
 }
 
-State::State(std::string *name, vector<Transition *> transitions) {
+State::State(std::string *name, vector<Transition *>* transitions) {
     this->name = name;
     this->transitions = transitions;
 }
@@ -49,7 +55,7 @@ string *State::getName() {
     return name;
 }
 
-vector<Transition *> State::getTransitions() {
+vector<Transition *>* State::getTransitions() {
     return transitions;
 }
 
@@ -57,7 +63,7 @@ void State::setName(std::string *name) {
     this->name = name;
 }
 
-void State::setTransitions(vector<Transition *> transitions) {
+void State::setTransitions(vector<Transition *>* transitions) {
     this->transitions = transitions;
 }
 
@@ -73,27 +79,16 @@ GameEngine::GameEngine(const GameEngine &g) {
 
 GameEngine::GameEngine(State *startingState) {
     currentState = startingState;
-    latestCommand = nullptr;
+    latestCommand = new string(); //Memory Leak
 }
 
 State *GameEngine::getCurrentState() {
     return currentState;
 }
 
-string *GameEngine::getLatestCommand() {
-    return latestCommand;
-}
-
 void GameEngine::setCurrentState(State *currentState) {
     this->currentState = currentState;
 }
 
-void GameEngine::setLatestCommand(std::string *latestCommand) {
-    this->latestCommand = latestCommand;
-}
-
-State* GameEngine::start = new State("start", )
-
-void GameEngine::startGame() {
-
-}
+State* GameEngine::mapLoaded = new State(new string("map loaded"), new vector<Transition*>());
+State* GameEngine::start = new State(new string("start"), new vector<Transition*>({new Transition(new string("loadmap"), GameEngine::mapLoaded)})); // memory leak for str and vector

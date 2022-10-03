@@ -27,16 +27,16 @@ public:
 class State {
 private:
     string* name;
-    vector<Transition*> transitions;
+    vector<Transition*>* transitions;
 public:
     State();
     State(const State &s);
-    State(string* name, vector<Transition*> transitions);
+    State(string* name, vector<Transition*>* transitions);
 
     string* getName();
-    vector<Transition*> getTransitions();
+    vector<Transition*>* getTransitions();
     void setName(string* name);
-    void setTransitions(vector<Transition*> transitions);
+    void setTransitions(vector<Transition*>* transitions);
 };
 
 class GameEngine {
@@ -47,18 +47,11 @@ public:
 
     GameEngine();
     GameEngine(const GameEngine &g);
-    GameEngine(State* startingState);
+    explicit GameEngine(State* startingState);
 
     State* getCurrentState();
-    string* getLatestCommand();
     void setCurrentState(State* currentState);
-    void setLatestCommand(string* latestCommand);
 
     static State* start;
     static State* mapLoaded;
-
-    void startGame();
 };
-
-//State* start;
-//State* mapLoaded;
