@@ -93,7 +93,7 @@ void OrdersList::moveOrderDown(int index)
 ostream& OrdersList::printList(ostream& output)
 {
     output << "Orders List: " << endl;
-    for (Order* order: this->ordersList) {
+    for (Order* order: ordersList) {
         output << " - ";
         output << *order << endl;
     }
@@ -111,9 +111,18 @@ ostream& operator << (ostream& output, OrdersList& o)
     return o.printList(output);
 }
 
-OrdersList& OrdersList::operator=(const OrdersList &o)
+/**
+ * Assignment operator overload.
+ * @param o
+ * @return
+ */
+OrdersList* OrdersList::operator=(OrdersList* o)
 {
-    
+   if (this != o) {
+       this->ordersList = o->ordersList;
+       return this;
+   }
+   return this;
 }
 
 OrdersList::~OrdersList()
@@ -172,8 +181,12 @@ ostream& Deploy::printOrder(ostream &output) const
 
 void Deploy::execute() const
 {
-    cout << "Order being executed !" << endl;
-    cout << this;
+    if(!validate()) {
+       cout << "Invalid Order !" << endl;
+    } else {
+        cout << "Order being executed !" << endl;
+        printOrder(cout);
+    }
 }
 
 bool Deploy::validate() const
@@ -195,7 +208,6 @@ Deploy& Deploy::operator=(const Deploy &d)
     }
     return *this;
 }
-
 
 
 // -------------- ADVANCE ORDER --------------
@@ -236,8 +248,12 @@ ostream& Advance::printOrder(ostream &output) const
 
 void Advance::execute() const
 {
-    cout << "Order being executed !" << endl;
-    cout << this;
+    if(!validate()) {
+        cout << "Invalid Order !" << endl;
+    } else {
+        cout << "Order being executed !" << endl;
+        printOrder(cout);
+    }
 }
 
 bool Advance::validate() const
@@ -292,8 +308,12 @@ ostream& Bomb::printOrder(ostream &output) const
 
 void Bomb::execute() const
 {
-    cout << "Order being executed !" << endl;
-    cout << this;
+    if(!validate()) {
+        cout << "Invalid Order !" << endl;
+    } else {
+        cout << "Order being executed !" << endl;
+        printOrder(cout);
+    }
 }
 
 bool Bomb::validate() const
@@ -346,8 +366,12 @@ ostream& Blockade::printOrder(ostream &output) const
 
 void Blockade::execute() const
 {
-    cout << "Order being executed !" << endl;
-    cout << this;
+    if(!validate()) {
+        cout << "Invalid Order !" << endl;
+    } else {
+        cout << "Order being executed !" << endl;
+        printOrder(cout);
+    }
 }
 
 bool Blockade::validate() const
@@ -407,8 +431,12 @@ ostream& Airlift::printOrder(ostream &output) const
 
 void Airlift::execute() const
 {
-    cout << "Order being executed !" << endl;
-    cout << this;
+    if(!validate()) {
+        cout << "Invalid Order !" << endl;
+    } else {
+        cout << "Order being executed !" << endl;
+        printOrder(cout);
+    }
 }
 
 bool Airlift::validate() const
@@ -463,8 +491,12 @@ ostream& Negotiate::printOrder(ostream &output) const
 
 void Negotiate::execute() const
 {
-    cout << "Order being executed !" << endl;
-    cout << this;
+    if(!validate()) {
+        cout << "Invalid Order !" << endl;
+    } else {
+        cout << "Order being executed !" << endl;
+        printOrder(cout);
+    }
 }
 
 bool Negotiate::validate() const

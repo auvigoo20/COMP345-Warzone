@@ -32,12 +32,12 @@ public:
     int getSize();
     ostream& printList(ostream& output);
     Order* getOrder(int index);
+    OrdersList* operator = (OrdersList* o);
     ~OrdersList();
 
 private:
     vector<Order*> ordersList;
     friend ostream& operator << (ostream& output, OrdersList& o);
-    OrdersList& operator = (const OrdersList& o);
 };
 
 
@@ -50,12 +50,12 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Deploy& operator = (const Deploy& d);
     ~Deploy() override = default;
 
 private:
     int numOfArmies;
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
-    Deploy& operator = (const Deploy& d);
 };
 
 class Advance: public Order
@@ -67,13 +67,13 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Advance& operator = (const Advance& a);
     ~Advance() override = default;
 
 private:
     int numOfArmies;
     string sourceTerritory; //***** Has to be changed to Territory object ptr *****
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
-    Advance& operator = (const Advance& a);
 };
 
 class Bomb: public Order
@@ -85,11 +85,11 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Bomb& operator = (const Bomb& b);
     ~Bomb() override = default;
 
 private:
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
-    Bomb& operator = (const Bomb& b);
 
 };
 
@@ -102,12 +102,11 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Blockade& operator = (const Blockade& b);
     ~Blockade() override = default;
 
 private:
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
-    Blockade& operator = (const Blockade& b);
-
 };
 
 class Airlift: public Order {
@@ -118,14 +117,13 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Airlift& operator = (const Airlift& a);
     ~Airlift() override = default;
 
 private:
     int numOfArmies;
     string sourceTerritory; //***** Has to be changed to Territory object ptr *****
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
-    Airlift& operator = (const Airlift& a);
-
 };
 
 class Negotiate: public Order {
@@ -136,10 +134,9 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    Negotiate& operator = (const Negotiate& n);
     ~Negotiate() override = default;
 
 private:
     string targetPlayer;
-    Negotiate& operator = (const Negotiate& n);
-
 };
