@@ -42,6 +42,7 @@ public:
 class GameEngine {
 private:
     State* currentState;
+    static void initializeEngineStates();
 public:
     string* latestCommand;
 
@@ -54,4 +55,22 @@ public:
 
     static State* start;
     static State* mapLoaded;
+    static State* mapValidated;
+    static State* playersAdded;
+    static State* assignReinforcement;
+    static State* issueOrders;
+    static State* executeOrders;
+    static State* win;
+
+    static Transition* loadmapTransition;
+    static Transition* validatemapTransition;
+    static Transition* addplayerTransition;
+    static Transition* assigncountriesTransition;
+    static Transition* issueorderTransition;
+    static Transition* endissueordersTransition;
+    static Transition* execorderTransition;
+    static Transition* endexecordersTransition;
+    static Transition* winTransition;
+    static Transition* endTransition;
+    static Transition* playTransition;
 };
