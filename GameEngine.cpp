@@ -63,7 +63,7 @@ void State::setTransitions(vector<Transition *> transitions) {
 
 GameEngine::GameEngine() {
     currentState = nullptr;
-    latestCommand = nullptr;
+    latestCommand = new string(); //Memory Leak
 }
 
 GameEngine::GameEngine(const GameEngine &g) {

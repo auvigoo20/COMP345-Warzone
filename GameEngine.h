@@ -42,8 +42,9 @@ public:
 class GameEngine {
 private:
     State* currentState;
-    string* latestCommand;
 public:
+    string* latestCommand;
+
     GameEngine();
     GameEngine(const GameEngine &g);
     GameEngine(State* startingState);
@@ -56,5 +57,5 @@ public:
     void startGame();
 };
 
-State* start;
-State* mapLoaded;
+//State* start;
+//State* mapLoaded;

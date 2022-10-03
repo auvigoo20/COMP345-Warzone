@@ -1,5 +1,6 @@
 #include "Cards.h"
 #include "Map.h"
+#include "GameEngineDriver.h"
 
 #include <iostream>
 using std::cout;
@@ -13,4 +14,7 @@ int main()
 {
     cout << testing() << endl;
     cout << testing2();
+    testGameStates();
+    return 0;
+
 }
