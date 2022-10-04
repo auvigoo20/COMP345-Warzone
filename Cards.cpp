@@ -4,10 +4,6 @@
 
 using namespace std;
 
-int testing(){
-    return 123;
-}
-
 Deck::Deck(){
 }
 
@@ -17,6 +13,7 @@ Deck::Deck(const Deck& d){
 
 void Deck::addCard(Card* card) {
     deckList.push_back(card);
+
 }
 
 void Deck::removeCard(int index) {
@@ -34,11 +31,12 @@ void Deck::draw(Hand* hand) {
     hand->addCard(cardDraw);
 }
 ostream& Deck::printDeck(std::ostream &output) {
-    output << "Number of Cards: " << deckList.size() << endl;
+    output << "Number of Cards in Deck: " << deckList.size() << endl;
     output << "Current Deck: " << endl;
-    for (Card* card: this->deckList){
-        output << " - " << card;
+    for (Card* card: deckList){
+        output << " - " << *card << endl;
     }
+    return output;
 }
 
 ostream& operator <<(ostream& output, Deck& d){
@@ -61,21 +59,22 @@ void Hand::addCard(Card* card) {
 }
 
 void Hand::removeCard(int index) {
-    handList.erase(handList.begin() + index);
+    handList.erase(handList.begin() + index-1);
 }
 
 void Hand::playCard(int index){
     Card* card = handList[index-1];
-    card->play();                      //create order
-    removeCard(index);                //remove card from hand player
+    card->play();                     //create order
+    removeCard(index);               //remove card from hand player
     deckList->addCard(card);        // add card to deck
 }
 ostream& Hand::printHand(std::ostream &output) {
-    output << "Number of Cards: " << handList.size() << endl;
+    output << "Number of Cards in Hand: " << handList.size() << endl;
     output << "Current Hand: " << endl;
-    for (Card* card: this->handList){
-        output << " - " << card;
+    for (Card* card: handList){
+        output << " - " << *card << endl;
     }
+    return output;
 }
 
 ostream& operator <<(ostream& output, Hand& h){
@@ -107,14 +106,16 @@ void Bomb::play() const{
 
 ostream& Bomb::printCard(std::ostream &output) const {
     output << " Bomb Card " << endl;
+    return output;
 }
 
 void Reinforcement::play() const{
-    cout << "output reinforcement card" << endl;                //create order reinforcement
+    cout << "output reinforcement card" << endl; //create order reinforcement
 }
 
 ostream& Reinforcement::printCard(std::ostream &output) const {
     output << " Reinforcement Card " << endl;
+    return output;
 }
 
 void Blockade::play() const{
@@ -123,6 +124,7 @@ void Blockade::play() const{
 
 ostream& Blockade::printCard(std::ostream &output) const {
     output << " Blockade Card " << endl;
+    return output;
 }
 
 void Airlift::play() const{
@@ -131,6 +133,7 @@ void Airlift::play() const{
 
 ostream& Airlift::printCard(std::ostream &output) const {
     output << " Airlift Card " << endl;
+    return output;
 }
 void Diplomacy::play() const{
     cout << "output diplomacy card" << endl;                  //create order negotiate
@@ -138,11 +141,11 @@ void Diplomacy::play() const{
 
 ostream& Diplomacy::printCard(std::ostream &output) const {
     output << " Diplomacy Card " << endl;
+    return output;
 }
 
 
 int main()
 {
-    cout << testing() << endl;
-    cout << testing2();
+    testCards();
 }

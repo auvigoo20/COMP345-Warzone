@@ -1,11 +1,12 @@
 #ifndef CARDS_H
 #define CARDS_H
+#pragma once
 #include <iostream>
 #include <vector>
 
 using namespace std;
 
-int testing();
+int testCards();
 class Hand;
 class Card;
 
@@ -52,8 +53,6 @@ public:
     Bomb(const Bomb& b);
     void play() const override;
     ostream& printCard(ostream& output) const override;
-
-
 };
 
 class Reinforcement : public Card{
