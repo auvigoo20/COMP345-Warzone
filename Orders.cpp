@@ -227,6 +227,13 @@ Deploy& Deploy::operator=(const Deploy &d)
     return *this;
 }
 
+/**
+ * Default Destructor (No inline definition allowed)
+ */
+Deploy::~Deploy()
+{
+}
+
 
 // -------------- ADVANCE ORDER --------------
 
@@ -304,6 +311,13 @@ Advance& Advance::operator=(const Advance &a)
     return *this;
 }
 
+/**
+ * Default Destructor (No inline definition allowed)
+ */
+Advance::~Advance()
+{
+}
+
 // -------------- BOMB ORDER --------------
 
 Bomb::Bomb()
@@ -371,6 +385,13 @@ Bomb& Bomb::operator=(const Bomb &b)
     return *this;
 }
 
+/**
+ * Default Destructor (No inline definition allowed)
+ */
+Bomb::~Bomb()
+{
+}
+
 // -------------- BLOCKADE ORDER --------------
 
 Blockade::Blockade()
@@ -436,6 +457,13 @@ Blockade& Blockade::operator=(const Blockade &b)
         this->targetTerritory = b.targetTerritory;
     }
     return *this;
+}
+
+/**
+ * Default Destructor (No inline definition allowed)
+ */
+Blockade::~Blockade()
+{
 }
 
 // -------------- AIRLIFT ORDER --------------
@@ -514,6 +542,13 @@ Airlift& Airlift::operator=(const Airlift &a)
     return *this;
 }
 
+/**
+ * Default Destructor (No inline definition allowed)
+ */
+Airlift::~Airlift()
+{
+}
+
 // -------------- NEGOTIATE ORDER --------------
 
 Negotiate::Negotiate()
@@ -581,3 +616,11 @@ Negotiate& Negotiate::operator=(const Negotiate& n)
 
     return *this;
 }
+
+/**
+ * Default Destructor (No inline definition allowed)
+ */
+Negotiate::~Negotiate()
+{
+}
+

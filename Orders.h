@@ -34,7 +34,6 @@ public:
     ostream& printList(ostream& output);
     Order* getOrder(int index);
     OrdersList& operator = (const OrdersList& o);
-    OrdersList& operator = (OrdersList* o);
     ~OrdersList();
 
 private:
@@ -54,7 +53,7 @@ public:
     bool validate() const override;
     Deploy* copy() const  override;
     Deploy& operator = (const Deploy& d);
-    ~Deploy() override = default;
+    ~Deploy() override;
 
 private:
     int numOfArmies;
@@ -72,7 +71,7 @@ public:
     bool validate() const override;
     Advance* copy() const  override;
     Advance& operator = (const Advance& a);
-    ~Advance() override = default;
+    ~Advance() override;
 
 private:
     int numOfArmies;
@@ -91,7 +90,7 @@ public:
     bool validate() const override;
     Bomb* copy() const  override;
     Bomb& operator = (const Bomb& b);
-    ~Bomb() override = default;
+    ~Bomb() override;
 
 private:
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
@@ -109,7 +108,7 @@ public:
     bool validate() const override;
     Blockade* copy() const  override;
     Blockade& operator = (const Blockade& b);
-    ~Blockade() override = default;
+    ~Blockade() override;
 
 private:
     string targetTerritory; //***** Has to be changed to Territory object ptr *****
@@ -125,7 +124,7 @@ public:
     bool validate() const override;
     Airlift* copy() const  override;
     Airlift& operator = (const Airlift& a);
-    ~Airlift() override = default;
+    ~Airlift() override;
 
 private:
     int numOfArmies;
@@ -143,7 +142,7 @@ public:
     bool validate() const override;
     Negotiate* copy() const  override;
     Negotiate& operator = (const Negotiate& n);
-    ~Negotiate() override = default;
+    ~Negotiate() override;
 
 private:
     string targetPlayer;
