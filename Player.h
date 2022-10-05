@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include "Map.h"
 
 using namespace std;
 
@@ -11,20 +12,18 @@ class Player {
 public:
     Player();
     // Default constructor
-    Player(string name, vector<string*> territory, vector<string*> handCard,vector<Order*>);
+    Player(string name, vector<Territory*> territory, vector<string> handCard,vector<Order*>);
     // Constructor
     Player(const Player&);
     // Copy constructor
-    ~Player();
-    //Destructor
 
     void toAttack();
     void toDefend();
-    void issueOrder(string);
+    void issueOrder(Order*);
 
 private:
     string name;
-    vector<string*> territory;
-    vector<string*> handCard;
+    vector<Territory*> territory;
+    vector<string> handCard;
     vector<Order*> orderList;
 };
