@@ -11,33 +11,33 @@ class State;
 
 class Transition {
 private:
-    string* name;
+    string name;
     State* to;
 public:
     Transition();
     Transition(const Transition &t);
-    Transition(string* name, State* to);
+    Transition(string name, State* to);
 
-    string* getName();
+    string getName();
     State* getTo();
-    void setName(string* name);
+    void setName(string name);
     void setTo(State* to);
 };
 
 class State {
 private:
-    string* name;
-    vector<Transition*>* transitions;
+    string name;
+    vector<Transition*> transitions;
 public:
     State();
     State(const State &s);
-    explicit State(string* name);
-    State(string* name, vector<Transition*>* transitions);
+    explicit State(string name);
+    State(string name, vector<Transition*> transitions);
 
-    string* getName();
-    vector<Transition*>* getTransitions();
-    void setName(string* name);
-    void setTransitions(vector<Transition*>* transitions);
+    string getName();
+    vector<Transition*> getTransitions();
+    void setName(string name);
+    void setTransitions(vector<Transition*> transitions);
 };
 
 class GameEngine {
@@ -45,7 +45,7 @@ private:
     State* currentState;
     static void initializeEngineStates();
 public:
-    string* latestCommand;
+    string latestCommand;
 
     GameEngine();
     GameEngine(const GameEngine &g);
