@@ -40,7 +40,7 @@ void testLoadMaps(){
     cout << "INVALID MAP: DISCONNECTED TERRITORIES" << endl;
     cout << "***********************************" << endl;
     Map* m4 = maploader.readMapFile(map_invalid_disconnected_territories);
-    cout << m4->validate();
+    m4->validate();
     cout << endl << endl;
 
     cout << "***********************************" << endl;
@@ -54,14 +54,14 @@ void testLoadMaps(){
     cout << "VALID MAP: CANADA" << endl;
     cout << "***********************************" << endl;
     Map* m6 = maploader.readMapFile(map_valid_canada);
-    cout << m6->validate();
+    m6->validate();
     cout << endl << endl;
 
     cout << "***********************************" << endl;
     cout << "VALID MAP: ABC MAP" << endl;
     cout << "***********************************" << endl;
     Map* m7 = maploader.readMapFile(map_valid_abc);
-    cout << m7->validate();
+    m7->validate();
     cout << endl << endl;
 
 
