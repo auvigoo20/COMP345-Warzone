@@ -35,6 +35,12 @@ Continent::Continent(const Continent &c) {
     bonus = c.bonus;
 }
 
+Continent& Continent::operator=(const Continent &c) {
+    this->name = c.name;
+    this->bonus = c.bonus;
+    return *this;
+}
+
 Continent::Continent(string name, int bonus) {
     this->name = name;
     this->bonus = bonus;
@@ -77,9 +83,23 @@ Territory::Territory(const Territory &t) {
     owner = t.owner;
     numOfArmies = t.numOfArmies;
     name = t.name;
-    adjacentTerritories = t.adjacentTerritories;
     x = t.x;
     y = t.y;
+    for(auto territory:t.adjacentTerritories){
+        adjacentTerritories.push_back(territory);
+    }
+}
+
+Territory& Territory::operator=(const Territory &t) {
+    owner = t.owner;
+    numOfArmies = t.numOfArmies;
+    name = t.name;
+    x = t.x;
+    y = t.y;
+    for(auto territory:t.adjacentTerritories){
+        adjacentTerritories.push_back(territory);
+    }
+    return *this;
 }
 
 Territory::Territory(string name, int x, int y, Continent* continent) {
@@ -193,8 +213,23 @@ Map::Map(vector<Territory *> territories, vector<Continent *> continents) {
 }
 
 Map::Map(const Map &map) {
-    this ->allTerritories = map.allTerritories;
-    this->allContinents = map.allContinents;
+    for(auto territory:allTerritories){
+        this->allTerritories.push_back(territory);
+    }
+    for(auto continent:allContinents){
+        this->allContinents.push_back(continent);
+    }
+
+}
+
+Map& Map::operator=(const Map &m) {
+    for(auto territory:allTerritories){
+        this->allTerritories.push_back(territory);
+    }
+    for(auto continent:allContinents){
+        this->allContinents.push_back(continent);
+    }
+    return *this;
 }
 
 vector<Territory *> Map::getAllTerritories() {
