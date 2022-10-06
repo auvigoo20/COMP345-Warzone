@@ -367,7 +367,16 @@ bool Map::isConnectedContinents() {
  *      designed to only be possible to belong to one continent)
  * */
 bool Map::validate() {
-    return isConnectedTerritories() && isConnectedContinents();
+    cout << "***STARTING MAP VALIDATION***" << endl;
+    bool connectedTerritories = isConnectedTerritories();
+    bool connectedContinents = isConnectedContinents();
+    if (connectedTerritories && connectedContinents){
+        cout << "MAP IS VALID!" << endl;
+    }
+    else{
+        cout << "MAP IS INVALID..." << endl;
+    }
+    return connectedTerritories && connectedContinents;
 }
 
 /*
