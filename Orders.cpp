@@ -161,10 +161,10 @@ ostream& operator << (ostream& output, Order& o)
 Deploy::Deploy()
 {
     this -> numOfArmies = 0;
-    this -> targetTerritory = "None";
+    this -> targetTerritory = nullptr;
 }
 
-Deploy::Deploy(int numOfArmies, string targetTerritory)
+Deploy::Deploy(int numOfArmies, Territory* targetTerritory)
 {
     this->numOfArmies = numOfArmies;
     this->targetTerritory = targetTerritory;
@@ -240,11 +240,11 @@ Deploy::~Deploy()
 Advance::Advance()
 {
     this -> numOfArmies = 0;
-    this -> sourceTerritory = "Source";
-    this -> targetTerritory = "Target";
+    this -> sourceTerritory = nullptr;
+    this -> targetTerritory = nullptr;
 }
 
-Advance::Advance(int numOfArmies, string sourceTerritory, string targetTerritory)
+Advance::Advance(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
 {
     this->numOfArmies = numOfArmies;
     this->sourceTerritory = sourceTerritory;
@@ -322,10 +322,10 @@ Advance::~Advance()
 
 Bomb::Bomb()
 {
-    this -> targetTerritory = "Target";
+    this -> targetTerritory = nullptr;
 }
 
-Bomb::Bomb(string targetTerritory)
+Bomb::Bomb(Territory* targetTerritory)
 {
     this->targetTerritory = targetTerritory;
 }
@@ -396,10 +396,10 @@ Bomb::~Bomb()
 
 Blockade::Blockade()
 {
-    this -> targetTerritory = "Target";
+    this -> targetTerritory = nullptr;
 }
 
-Blockade::Blockade(string targetTerritory)
+Blockade::Blockade(Territory* targetTerritory)
 {
     this->targetTerritory = targetTerritory;
 }
@@ -471,11 +471,11 @@ Blockade::~Blockade()
 Airlift::Airlift()
 {
     this -> numOfArmies = 0;
-    this -> sourceTerritory = "Source";
-    this -> targetTerritory = "Target";
+    this -> sourceTerritory = nullptr;
+    this -> targetTerritory = nullptr;
 }
 
-Airlift::Airlift(int numOfArmies, string sourceTerritory, string targetTerritory)
+Airlift::Airlift(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
 {
     this->numOfArmies = numOfArmies;
     this->sourceTerritory = sourceTerritory;

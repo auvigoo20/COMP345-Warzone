@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include "map.h"
 
 using namespace std;
 
@@ -47,7 +48,7 @@ class Deploy: public Order
 public:
     Deploy( );
     Deploy(const Deploy& d);
-    Deploy(int numOfArmies, string targetTerritory);
+    Deploy(int numOfArmies, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -57,7 +58,7 @@ public:
 
 private:
     int numOfArmies;
-    string targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
 };
 
 class Advance: public Order
@@ -65,7 +66,7 @@ class Advance: public Order
 public:
     Advance( );
     Advance(const Advance& a);
-    Advance(int numOfArmies, string sourceTerritory, string targetTerritory);
+    Advance(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -75,8 +76,8 @@ public:
 
 private:
     int numOfArmies;
-    string sourceTerritory; //***** Has to be changed to Territory object ptr *****
-    string targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* sourceTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
 };
 
 class Bomb: public Order
@@ -84,7 +85,7 @@ class Bomb: public Order
 public:
     Bomb( );
     Bomb(const Bomb& b);
-    explicit Bomb(string targetTerritory);
+    explicit Bomb(Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -93,7 +94,7 @@ public:
     ~Bomb() override;
 
 private:
-    string targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
 
 };
 
@@ -102,7 +103,7 @@ class Blockade: public Order
 public:
     Blockade( );
     Blockade(const Blockade& b);
-    explicit Blockade(string targetTerritory);
+    explicit Blockade(Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -111,14 +112,14 @@ public:
     ~Blockade() override;
 
 private:
-    string targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
 };
 
 class Airlift: public Order {
 public:
     Airlift( );
     Airlift(const Airlift& b);
-    Airlift(int numOfArmies, string sourceTerritory, string targetTerritory);
+    Airlift(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -128,8 +129,8 @@ public:
 
 private:
     int numOfArmies;
-    string sourceTerritory; //***** Has to be changed to Territory object ptr *****
-    string targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* sourceTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
 };
 
 class Negotiate: public Order {
