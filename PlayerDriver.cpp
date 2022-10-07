@@ -30,5 +30,4 @@ void testPlayer(){
     (*p1).toDefend();
     (*p1).printHand();
     (*p1).printOrder();
-
 }
