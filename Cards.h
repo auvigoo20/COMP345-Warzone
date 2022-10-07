@@ -30,6 +30,7 @@ public:
     void addCard(Card* card);
     void removeCard(int index);
     void playCard(int index);
+    void setOwner(Player* owner);
     ostream& printHand(ostream& output);
 private:
     vector<Card*> handList;

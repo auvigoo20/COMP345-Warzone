@@ -106,6 +106,10 @@ ostream& Hand::printHand(std::ostream &output) {
     return output;
 }
 
+void Hand::setOwner(Player* p) {
+    this->owner = p;
+}
+
 ostream& operator <<(ostream& output, Hand& h){
     return h.printHand(output);
 }
