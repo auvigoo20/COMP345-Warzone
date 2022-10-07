@@ -16,6 +16,7 @@ class Continent{
     public:
         Continent();
         Continent(const Continent &c);
+        Continent& operator =(const Continent& c);
         Continent(string name, int bonus);
         string getName();
         int getBonus();
@@ -37,6 +38,7 @@ class Territory{
     public:
         Territory();
         Territory(const Territory &t);
+        Territory& operator=(const Territory& t);
         Territory(string name, int x, int y, Continent* continent);
         Territory(Player* owner, Continent* continent, int numOfArmies, string name, vector<Territory*>, int x, int y);
         Territory(Player *owner, Continent* continent, int numOfArmies, string name, int x, int y);
@@ -72,6 +74,7 @@ class Map{
         ~Map();
         Map(vector<Territory*> territories, vector<Continent*> continents);
         Map(const Map &map);
+        Map& operator=(const Map &m);
 
         vector<Territory*> getAllTerritories();
         vector<Continent*> getAllContinents();
@@ -90,6 +93,7 @@ class MapLoader{
     public:
         MapLoader();
         Map* readMapFile(string filepath);
+
     private:
         Continent* getContinentByNameFromSet(vector<Continent*> continents, string continentName);
         Territory* getTerritoryByNameFromSet(vector<Territory*> territories, string territoryName);

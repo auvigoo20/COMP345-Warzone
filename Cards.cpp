@@ -143,9 +143,3 @@ ostream& Diplomacy::printCard(std::ostream &output) const {
     output << " Diplomacy Card " << endl;
     return output;
 }
-
-
-int main()
-{
-    testCards();
-}
