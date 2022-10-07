@@ -18,8 +18,8 @@ void testPlayer(){
     Airlift* hand_Airlift;
     Diplomacy* hand_Diplomacy;
 
-    Deck* deckList = new Deck();
-    deckList->addCard(bomb1);
+    vector<Hand*> handList;
+    handList.push_back(hand_Reinforcement);
 
     vector<Order*> OrderList1;
     Deploy* hand_deploy = new Deploy();
@@ -27,13 +27,10 @@ void testPlayer(){
     Blockade Order_Blockade;
     Airlift Order_Airlift;
     Negotiate Order_Negotiate;
-    OrderList1.push_back(&Order_Blockade);
-    OrderList1.push_back(&Order_Airlift);
-    OrderList1.push_back(&Order_Negotiate);
 
     cout << "========================================PLAYER=PART============================================" <<endl;
 
-    Player* p1 = new Player(name, territory1,handcard, orderList1);
+    Player* p1 = new Player(name, territory1,handList, OrderList1);
     (*p1).addTerritory(t1);
     (*p1).addTerritory(t2);
     (*p1).addTerritory(t3);

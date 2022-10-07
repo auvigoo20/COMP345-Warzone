@@ -12,7 +12,7 @@ Player::Player(){   //Default constructor
     vector<Order*> orderList;
 }
 
-Player::Player(string name, vector<Territory*> territory, vector<Hand*> handList,vector<Order*> orderList){  //Constructor
+Player::Player(string name, vector<Territory*> territory, vector<Hand*> handList,vector<Order*> orderList){   //Constructor
     this->name = name;
     this->territoryList = territory;
     this->handCard = handCard;
