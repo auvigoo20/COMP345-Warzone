@@ -266,7 +266,6 @@ void Map::dfs(vector<string> *visitedTerritoriesNames, Territory *currentTerrito
         return;
     }
 
-    cout << "visiting territory: " << *currentTerritory << std::endl;
     // Add current territory to visited territories
     visitedTerritoriesNames->push_back(currentTerritory->getName());
 
@@ -309,11 +308,9 @@ bool Map::isConnectedTerritories() {
 
 vector<Territory*> Map::getAllTerritoriesByContinent(Continent* continent) {
     vector<Territory*> continentTerritories;
-    cout << endl << continent->getName() << ":";
     for(int i = 0; i < allTerritories.size(); i++){
         if(allTerritories.at(i)->getContinent() == continent){
             continentTerritories.push_back(allTerritories.at(i));
-            cout << allTerritories.at(i)->getName() << " ";
         }
     }
     cout << endl;
@@ -341,7 +338,6 @@ void Map::dfs_continent(vector<string> *visitedTerritoriesNames, Territory *curr
         return;
     }
 
-    cout << "visiting territory: " << currentTerritory->getName() << std::endl;
     // Add current territory to visited territories
     visitedTerritoriesNames->push_back(currentTerritory->getName());
 

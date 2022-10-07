@@ -11,20 +11,20 @@ int testCards(){
 
     //creating different type of Cards
 
-    Bomb* bomb1 = new Bomb();
-    Bomb* bomb2 = new Bomb();
+    BombCard* bomb1 = new BombCard();
+    BombCard* bomb2 = new BombCard();
 
-    Reinforcement* reinforcement1 = new Reinforcement();
-    Reinforcement* reinforcement2 = new Reinforcement();
+    ReinforcementCard* reinforcement1 = new ReinforcementCard();
+    ReinforcementCard* reinforcement2 = new ReinforcementCard();
 
-    Blockade* blockade1 = new Blockade();
-    Blockade* blockade2 = new Blockade();
+    BlockadeCard* blockade1 = new BlockadeCard();
+    BlockadeCard* blockade2 = new BlockadeCard();
 
-    Airlift* airlift1 = new Airlift();
-    Airlift* airlift2 = new Airlift();
+    AirliftCard* airlift1 = new AirliftCard();
+    AirliftCard* airlift2 = new AirliftCard();
 
-    Diplomacy* diplomacy1 = new Diplomacy();
-    Diplomacy* diplomacy2 = new Diplomacy();
+    DiplomacyCard* diplomacy1 = new DiplomacyCard();
+    DiplomacyCard* diplomacy2 = new DiplomacyCard();
 
     //creating deck
 
