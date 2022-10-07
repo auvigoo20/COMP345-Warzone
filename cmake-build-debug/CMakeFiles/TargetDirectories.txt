@@ -1,3 +1,0 @@
-/Users/mariehazari/Desktop/comp345-project/COMP345-Warzone/cmake-build-debug/CMakeFiles/COMP345_Warzone.dir
-/Users/mariehazari/Desktop/comp345-project/COMP345-Warzone/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/mariehazari/Desktop/comp345-project/COMP345-Warzone/cmake-build-debug/CMakeFiles/rebuild_cache.dir
