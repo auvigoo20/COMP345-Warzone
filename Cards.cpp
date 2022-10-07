@@ -56,6 +56,7 @@ Hand::Hand(){
 
 Hand::Hand(const Hand& h){
     this -> handList = h.handList;
+    this -> owner = h.owner;
 }
 
 Hand::Hand(Deck* deckList) {
@@ -90,7 +91,7 @@ void Hand::removeCard(int index) {
 
 void Hand::playCard(int index){
     Card* card = handList[index-1];
-    card->play();                     //create order
+    card->play(this->owner->getOrdersList());                     //create order
     removeCard(index);               //remove card from hand player
     deckList->addCard(card);        // add card to deck
 }
@@ -131,9 +132,9 @@ DiplomacyCard::DiplomacyCard() {
  * Creating Order and adding the order in the Order List
  */
 
-void BombCard::play() const{
+void BombCard::play(OrdersList* ordersList) const{
     Bomb* bomb = new Bomb();
-    orderList->addOrder(bomb);
+    ordersList->addOrder(bomb);
     cout << "output bomb card" << endl;
 }
 
@@ -142,7 +143,7 @@ ostream& BombCard::printCard(std::ostream &output) const {
     return output;
 }
 
-void ReinforcementCard::play() const{  // Reinforcement Card does not create an order
+void ReinforcementCard::play(OrdersList* ordersList) const{  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
 
@@ -151,9 +152,9 @@ ostream& ReinforcementCard::printCard(std::ostream &output) const {
     return output;
 }
 
-void BlockadeCard::play() const{
+void BlockadeCard::play(OrdersList* ordersList) const{
     Blockade* blockade = new Blockade();
-    orderList->addOrder(blockade);
+    ordersList->addOrder(blockade);
     cout << "output blockade card" << endl;
 }
 
@@ -162,9 +163,9 @@ ostream& BlockadeCard::printCard(std::ostream &output) const {
     return output;
 }
 
-void AirliftCard::play() const{
+void AirliftCard::play(OrdersList* ordersList) const{
     Airlift* airlift = new Airlift();
-    orderList->addOrder(airlift);
+    ordersList->addOrder(airlift);
     cout << "output airlift card" << endl;
 }
 
@@ -172,9 +173,9 @@ ostream& AirliftCard::printCard(std::ostream &output) const {
     output << " Airlift Card " << endl;
     return output;
 }
-void DiplomacyCard::play() const{
+void DiplomacyCard::play(OrdersList* ordersList) const{
     Negotiate* negotiate = new Negotiate();
-    orderList->addOrder(negotiate);
+    ordersList->addOrder(negotiate);
     cout << "output diplomacy card" << endl;
 }
 
