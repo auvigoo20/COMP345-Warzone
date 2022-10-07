@@ -11,7 +11,7 @@ class Player {
 
 public:
     Player();
-    Player(string name);
+    Player(string name, Hand* hand, OrdersList* ordersList);
     Player(const Player&);
 
     vector<Territory*> getTerritories();

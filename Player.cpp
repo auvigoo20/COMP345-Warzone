@@ -9,6 +9,12 @@ using namespace std;
 Player::Player(){
 }
 
+Player::Player(string name, Hand* hand, OrdersList* ordersList) {
+    this->name = name;
+    this->hand =hand;
+    this->orderList = ordersList;
+}
+
 Player::Player(const Player &p){    //Copy constructor
     // TODO MAKE PROPER COPY CONSTRUCTOR
 }
@@ -45,21 +51,21 @@ void Player::addTerritory(Territory* t){
 vector<Territory*> Player::toAttack(){    //attack method
 
     vector<Territory*> listToReturn;
-    int numOfTerritories = rand() % ownedTerritories.size() - 1;
+    int random = rand();
+    int numOfTerritories = (random % ownedTerritories.size()) + 1; // generate number from 1 to number of owned territories
     for(int i = 0; i < numOfTerritories; i++) {
-        int randomIndex = rand() % ownedTerritories.size() - 1;
+        int randomIndex = rand() % (ownedTerritories.size()-1);
         listToReturn.push_back(ownedTerritories.at(randomIndex));
     }
     return listToReturn;
 
 }
 
-
 vector<Territory*> Player::toDefend(){    //defend method
     vector<Territory*> listToReturn;
-    int numOfTerritories = rand() % ownedTerritories.size() - 1;
+    int numOfTerritories = (rand() % ownedTerritories.size()) + 1; // generate number from 1 to number of owned territories
     for(int i = 0; i < numOfTerritories; i++) {
-        int randomIndex = rand() % ownedTerritories.size() - 1;
+        int randomIndex = rand() % (ownedTerritories.size()-1);
         listToReturn.push_back(ownedTerritories.at(randomIndex));
     }
     return listToReturn;
