@@ -21,20 +21,38 @@ using std::getline;
  * CONTINENT
  */
 
+/**
+ * Stream insertion operator overloading
+ * @param strm
+ * @param c
+ * @return ostream&
+ */
 ostream& operator<<(ostream &strm, const Continent &c){
     return strm << "CONTINENT: Name:" << c.name << " - Bonus:" << c.bonus << endl;
 }
 
+/**
+ * Default constructor
+ */
 Continent::Continent() {
     name = "";
     bonus = 0;
 }
 
+/**
+ * Copy constructor
+ * @param c
+ */
 Continent::Continent(const Continent &c) {
     name = c.name;
     bonus = c.bonus;
 }
 
+/**
+ * Assignment operator overloading
+ * @param c
+ * @return
+ */
 Continent& Continent::operator=(const Continent &c) {
     this->name = c.name;
     this->bonus = c.bonus;
@@ -66,6 +84,12 @@ void Continent::setName(std::string name) {
  * TERRITORY
  */
 
+/**
+ * Overloading stream insertion operator
+ * @param strm
+ * @param t
+ * @return
+ */
 ostream& operator<<(ostream &strm, const Territory &t){
     return strm << "TERRITORY: Name:" << t.name << " - Continent:" << t.continent->getName() << endl;
 }
@@ -78,7 +102,10 @@ Territory::Territory() {
     y = 0;
 }
 
-// Copy constructor
+/**
+ * Copy constructor (shallow because making a deep copy would lead to an infinite copy operation)
+ * @param t
+ */
 Territory::Territory(const Territory &t) {
     owner = t.owner;
     numOfArmies = t.numOfArmies;
@@ -90,6 +117,11 @@ Territory::Territory(const Territory &t) {
     }
 }
 
+/**
+ * Overloading assignment operator
+ * @param t
+ * @return
+ */
 Territory& Territory::operator=(const Territory &t) {
     owner = t.owner;
     numOfArmies = t.numOfArmies;
@@ -192,12 +224,21 @@ void Territory::addAdjacentTerritory(Territory *territory) {
  * MAP
  */
 
+/**
+ * Overloading stream insertion operator
+ * @param strm
+ * @param m
+ * @return
+ */
 ostream& operator<<(ostream &strm, const Map &m){
     return strm << "MAP: Number of territories:" << m.allTerritories.size() << " - Number of continents:" << m.allContinents.size() << endl;
 }
 
 Map::Map(){}
 
+/**
+ * Destructor for Map
+ */
 Map::~Map(){
     for(auto continent: allContinents){
         delete continent;
@@ -212,6 +253,10 @@ Map::Map(vector<Territory *> territories, vector<Continent *> continents) {
     this->allContinents = continents;
 }
 
+/**
+ * Copy constructor (shallow because making a deep copy would lead to an infinite copy operation)
+ * @param map
+ */
 Map::Map(const Map &map) {
     for(auto territory:allTerritories){
         this->allTerritories.push_back(territory);
@@ -222,6 +267,11 @@ Map::Map(const Map &map) {
 
 }
 
+/**
+ * Overloading assignment operator
+ * @param m
+ * @return
+ */
 Map& Map::operator=(const Map &m) {
     for(auto territory:allTerritories){
         this->allTerritories.push_back(territory);
@@ -256,7 +306,11 @@ void Map::addContinent(Continent *c) {
     allContinents.push_back(c);
 }
 
-// Depth-first search recursive algorithm to visit all adjacent territories to the current territory
+/**
+ * Depth-first search recursive algorithm to visit all adjacent territories to the current territory
+ * @param visitedTerritoriesNames
+ * @param currentTerritory
+ */
 void Map::dfs(vector<string> *visitedTerritoriesNames, Territory *currentTerritory) {
 
     vector<Territory*> currentAdjacentTerritories = currentTerritory->getAdjacentTerritories();
@@ -275,7 +329,10 @@ void Map::dfs(vector<string> *visitedTerritoriesNames, Territory *currentTerrito
     }
 }
 
-// Check if map is a connected graph
+/**
+ * Check if map is a connected graph
+ * @return
+ */
 bool Map::isConnectedTerritories() {
 
     vector<string> visitedTerritoriesNames;
@@ -317,11 +374,14 @@ vector<Territory*> Map::getAllTerritoriesByContinent(Continent* continent) {
     return continentTerritories;
 }
 
-/*
+/**
  * Depth-first search recursive algorithm to visit all adjacent territories to the current territory.
  * Slight variation in this algorithm since it does not take into account adjacent territories that are not part of
  * the currently searched Continent.
-*/
+ * @param visitedTerritoriesNames
+ * @param currentTerritory
+ * @param currentContinent
+ */
 void Map::dfs_continent(vector<string> *visitedTerritoriesNames, Territory *currentTerritory,
                         Continent* currentContinent) {
 
@@ -347,7 +407,10 @@ void Map::dfs_continent(vector<string> *visitedTerritoriesNames, Territory *curr
     }
 }
 
-// Check if Map's continents are connected subgraphs
+/**
+ * Check if Map's continents are connected subgraphs
+ * @return
+ */
 bool Map::isConnectedContinents() {
 
     // Create a map to store the connectivity of each Continent (initialize to false)
@@ -390,13 +453,14 @@ bool Map::isConnectedContinents() {
     return true;
 }
 
-/*
+/**
  * Does the following checks:
  * 1) Map is a connected graph
  * 2) Continents of the map are connected subgraphs
  * 3) Each territory belongs to one and only one continent (this is not explicitly checked since Territories have been
  *      designed to only be possible to belong to one continent)
- * */
+ * @return
+ */
 bool Map::validate() {
     cout << "***STARTING MAP VALIDATION***" << endl;
     bool connectedTerritories = isConnectedTerritories();
@@ -417,7 +481,12 @@ bool Map::validate() {
 MapLoader::MapLoader() {
 }
 
-// HELPER FUNCTION
+/**
+ * Helper function to get a Continent* from a vector of Continent*
+ * @param continents
+ * @param continentName
+ * @return
+ */
 Continent* MapLoader::getContinentByNameFromSet(vector<Continent *> continents, std::string continentName) {
     for(auto continent: continents){
         if(continent->getName() == continentName){
@@ -426,7 +495,12 @@ Continent* MapLoader::getContinentByNameFromSet(vector<Continent *> continents, 
     }
 }
 
-// HELPER FUNCTION
+/**
+ * Helper function to get a Territory* from a vector of Territory*
+ * @param territories
+ * @param territoryName
+ * @return
+ */
 Territory* MapLoader::getTerritoryByNameFromSet(vector<Territory *> territories, std::string territoryName) {
     for(auto territory:territories){
         if(territory->getName() == territoryName){
@@ -435,6 +509,11 @@ Territory* MapLoader::getTerritoryByNameFromSet(vector<Territory *> territories,
     }
 }
 
+/**
+ * Reads a .map file and creates a Map object. Includes file validation
+ * @param filepath
+ * @return
+ */
 Map* MapLoader::readMapFile(std::string filepath) {
 
     const char continentDelimiter = '=';
