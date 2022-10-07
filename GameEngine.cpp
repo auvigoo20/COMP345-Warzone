@@ -129,6 +129,3 @@ void GameEngine::initializeEngineStates() {
     executeOrders->setTransitions({execorderTransition, endexecordersTransition, winTransition});
     win->setTransitions({playTransition, endTransition});
 }
-
-
-

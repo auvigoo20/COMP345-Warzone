@@ -10,7 +10,7 @@ using std::string;
 int testGameStates(){
 
     bool done = false;
-    GameEngine testGameEngine = GameEngine(GameEngine::start);
+    GameEngine testGameEngine {GameEngine::start};
     cout << "\nCurrent State: " << testGameEngine.getCurrentState()->getName() << "\n";
 
     while(!done) {
