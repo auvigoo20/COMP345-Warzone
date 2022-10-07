@@ -20,10 +20,6 @@ void Deck::removeCard(int index) {
     deckList.erase(deckList.begin() + index);  //from the index we remove the pointer object in the deck list
 }
 
-vector<Card*> Deck::getDeckList() {
-    return deckList;
-}
-
 void Deck::draw(Hand* hand) {
     int index = rand() % deckList.size();
     Card* cardDraw = deckList[index];

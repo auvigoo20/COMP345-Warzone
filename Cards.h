@@ -14,10 +14,9 @@ class Deck{
 public:
     Deck();
     Deck(const Deck& o);
-    void addCard(Card* card);  //card being put back in the deck after play();
-    void removeCard(int index); //random card is removed from deckList at draw();
+    void addCard(Card* card);              // Card is put back in the deck after player play() his Card
+    void removeCard(int index);            // Random card is removed from the Deck at draw()
     void draw(Hand* hand);
-    vector<Card*> getDeckList();
     ostream& printDeck(ostream& output);
 private:
     vector<Card*> deckList;

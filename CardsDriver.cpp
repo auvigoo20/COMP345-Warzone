@@ -8,8 +8,11 @@ using std::endl;
 int testCards(){
     cout << "Testing Cards, HandLists and DeckLists" << endl;
 
+    /**
+     * Creating different type of Cards
+     */
 
-    //creating different type of Cards
+    creating different type of Cards
 
     BombCard* bomb1 = new BombCard();
     BombCard* bomb2 = new BombCard();
@@ -26,11 +29,15 @@ int testCards(){
     DiplomacyCard* diplomacy1 = new DiplomacyCard();
     DiplomacyCard* diplomacy2 = new DiplomacyCard();
 
-    //creating deck
+    /**
+     * Creating a Deck
+     */
 
     Deck* deckList = new Deck();
 
-    //adding all cards in deck
+    /**
+     * Adding all created Cards in the common Deck
+     */
 
     deckList->addCard(bomb1);
     deckList->addCard(bomb2);
@@ -45,20 +52,34 @@ int testCards(){
 
     cout << *deckList;
 
-    //creating player 1 hand list
+    /**
+     * Creating first player Hand List
+     */
 
     Hand* handList1  = new Hand(deckList);
 
-    //creating player 2 hand list
+    /**
+     * Creating second player Hand List
+     */
+
+    creating player 2 hand list
 
     Hand* handList2 = new Hand(deckList);
 
-    cout << "//testing draw() method on player 1 hand list" << endl;
+    /**
+     * Testing draw() method on first player Hand ; player draw a Card and places it in his Hands
+     */
+
+    cout << "//testing draw() method on player 1 Hand List" << endl;
 
     deckList->draw(handList1);
 
     cout <<*deckList << endl;
     cout <<*handList1 << endl;
+
+    /**
+     * Testing play() method with first player Hand
+     */
 
     cout << "//testing player play() method on this card" << endl;
 
@@ -66,8 +87,6 @@ int testCards(){
 
     cout <<*deckList << endl;
     cout <<*handList1 << endl;
-
-
 
     return 0;
 }
