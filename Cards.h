@@ -14,9 +14,9 @@ class Deck{
 public:
     Deck();
     Deck(const Deck& o);
-    void addCard(Card* card);              // Card is put back in the deck after player play() his Card
-    void removeCard(int index);            // Random card is removed from the Deck at draw()
-    void draw(Hand* hand);
+    void addCard(Card* card);
+    void removeCard(int index);
+    void draw(Hand* hand);            // Deck needs the Hand List of the player to add the draw card
     ostream& printDeck(ostream& output);
 private:
     vector<Card*> deckList;
@@ -25,11 +25,11 @@ private:
 
 class Hand{
 public:
-    Hand();      //creates empty handList and empty pointer
+    Hand();
     Hand(const Hand& o);
-    Hand(Deck* deckList); //creates empty handList and pointer to existing deckList
-    void addCard(Card* card); //card is added in player's handList
-    void removeCard(int index); //card is removed from hand to be played
+    Hand(Deck* deckList);          //Hand List needs the Deck list to place back the Card after play
+    void addCard(Card* card);
+    void removeCard(int index);
     void playCard(int index);
     ostream& printHand(ostream& output);
 private:

@@ -16,16 +16,28 @@ void Deck::addCard(Card* card) {
 
 }
 
+/**
+ * Used in draw method
+ * Remove the pointer Card in the Deck
+ * @param index
+ */
+
 void Deck::removeCard(int index) {
     deckList.erase(deckList.begin() + index);  //from the index we remove the pointer object in the deck list
 }
 
+/**
+ * Removes Card from Deck to add in player's Hand
+ * @param hand
+ */
+
 void Deck::draw(Hand* hand) {
-    int index = rand() % deckList.size();
+    int index = rand() % deckList.size() -1;
     Card* cardDraw = deckList[index];
     removeCard(index);
     hand->addCard(cardDraw);
 }
+
 ostream& Deck::printDeck(std::ostream &output) {
     output << "Number of Cards in Deck: " << deckList.size() << endl;
     output << "Current Deck: " << endl;
@@ -50,13 +62,31 @@ Hand::Hand(Deck* deckList) {
     this->deckList = deckList;
 }
 
+/**
+ * Add Card draw in players Hand
+ * @param card
+ */
+
 void Hand::addCard(Card* card) {
     handList.push_back(card);
 }
 
+/**
+ * Used when player wants to play a Card
+ * Card is removed from his Hands by removing the Card's pointer from Hand List
+ * @param index
+ */
+
 void Hand::removeCard(int index) {
     handList.erase(handList.begin() + index-1);
 }
+
+/**
+ * Card is played by giving its index
+ * Card is then removed from the player's Hand
+ * Card is placed back in the Deck after play
+ * @param index
+ */
 
 void Hand::playCard(int index){
     Card* card = handList[index-1];
@@ -64,6 +94,7 @@ void Hand::playCard(int index){
     removeCard(index);               //remove card from hand player
     deckList->addCard(card);        // add card to deck
 }
+
 ostream& Hand::printHand(std::ostream &output) {
     output << "Number of Cards in Hand: " << handList.size() << endl;
     output << "Current Hand: " << endl;
@@ -96,6 +127,10 @@ AirliftCard::AirliftCard() {
 DiplomacyCard::DiplomacyCard() {
 }
 
+/**
+ * Creating Order and adding the order in the Order List
+ */
+
 void BombCard::play() const{
     Bomb* bomb = new Bomb();
     orderList->addOrder(bomb);
@@ -107,7 +142,7 @@ ostream& BombCard::printCard(std::ostream &output) const {
     return output;
 }
 
-void ReinforcementCard::play() const{
+void ReinforcementCard::play() const{  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
 
