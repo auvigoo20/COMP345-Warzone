@@ -18,6 +18,10 @@ void testLoadMaps(){
     string map_invalid_disconnected_territories = "../map_files/canada_invalid_disconnected_territories.map";
     string map_invalid_disconnected_continents = "../map_files/canada_invalid_disconnected_continents.map";
 
+    cout << "****************************************" << endl;
+    cout << "*              MAP TEST                *" << endl;
+    cout << "****************************************" << endl;
+
     cout << "***********************************" << endl;
     cout << "INVALID MAP: MISSING SECTION" << endl;
     cout << "***********************************" << endl;
