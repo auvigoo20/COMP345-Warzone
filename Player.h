@@ -11,22 +11,26 @@ class Player {
 
 public:
     Player();
-    // Default constructor
-    Player(string name, vector<Territory*> territory, vector<Hand*> handCard,vector<Order*>orderList);
-    // Constructor
+    Player(string name);
     Player(const Player&);
-    // Copy constructor
 
-    void toAttack();
-    void toDefend();
+    vector<Territory*> getTerritories();
+    Hand* getHand();
+    OrdersList* getOrdersList();
+
+    void setTerritories(vector<Territory*> territories);
+    void setHand(Hand* hand);
+    void setOrdersList(OrdersList* ordersList);
+
     void addTerritory(Territory* t);
-    void issueOrder(Order*);
-    void printOrder();
-    void printHand();
+
+    vector<Territory*> toAttack();
+    vector<Territory*> toDefend();
+    void issueOrder();
 
 private:
     string name;
-    vector<Territory*> territoryList;
-    vector<Hand*> handCard;
-    vector<Order*> orderList;
+    vector<Territory*> ownedTerritories;
+    Hand* hand;
+    OrdersList* orderList;
 };

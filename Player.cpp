@@ -5,63 +5,94 @@
 
 using namespace std;
 
-Player::Player(){   //Default constructor
-    string name;
-    vector<Territory*> territory;
-    vector<Hand*> handList;
-    vector<Order*> orderList;
-}
-
-Player::Player(string name, vector<Territory*> territory, vector<Hand*> handList,vector<Order*> orderList){   //Constructor
-    this->name = name;
-    this->territoryList = territory;
-    this->handCard = handCard;
-    this->orderList = orderList;
+//Default constructor
+Player::Player(){
 }
 
 Player::Player(const Player &p){    //Copy constructor
-    this->name = p.name;
-    this->territoryList = p.territoryList;
-    this->handCard = p.handCard;
-    this->orderList = p.orderList;
+    // TODO MAKE PROPER COPY CONSTRUCTOR
 }
 
-void Player::toAttack(){    //attack method
-    cout << "The territories to attack: " << endl;
-    for(int i = 0; i < territoryList.size(); i++){
-        cout << *territoryList[i] << endl;
-    }
-    cout << endl;
+vector<Territory *> Player::getTerritories() {
+    return ownedTerritories;
 }
 
+void Player::setTerritories(vector<Territory *> territories) {
+    ownedTerritories = territories;
+}
 
-void Player::toDefend(){    //defend method
-    cout << "The territories to defend: " << endl;
-    for(int i = 0; i < territoryList.size(); i++){
-        cout << *territoryList[i] << endl;
-    }
-    cout << endl;
+Hand *Player::getHand() {
+    return hand;
+}
+
+void Player::setHand(Hand *hand) {
+    this->hand = hand;
+}
+
+OrdersList *Player::getOrdersList() {
+    return orderList
+}
+
+void Player::setOrdersList(OrdersList *ordersList) {
+    this->orderList = ordersList;
 }
 
 void Player::addTerritory(Territory* t){
-    this->territoryList.push_back(t);
+    this->ownedTerritories.push_back(t);
     t->setOwner(this);
 }
 
-void Player::issueOrder(Order* ord){
-    orderList.push_back(ord);
+vector<Territory*> Player::toAttack(){    //attack method
+
+    vector<Territory*> listToReturn;
+    int numOfTerritories = rand() % ownedTerritories.size() - 1;
+    for(int i = 0; i < numOfTerritories; i++) {
+        int randomIndex = rand() % ownedTerritories.size() - 1;
+        listToReturn.push_back(ownedTerritories.at(randomIndex));
+    }
+    return listToReturn;
+
 }
 
-void Player::printOrder(){
-    cout << "Player's orders: " << endl;
-    for (Order* i: orderList)
-        std::cout << i << ' ';
-    cout << "\n" << endl;
+
+vector<Territory*> Player::toDefend(){    //defend method
+    vector<Territory*> listToReturn;
+    int numOfTerritories = rand() % ownedTerritories.size() - 1;
+    for(int i = 0; i < numOfTerritories; i++) {
+        int randomIndex = rand() % ownedTerritories.size() - 1;
+        listToReturn.push_back(ownedTerritories.at(randomIndex));
+    }
+    return listToReturn;
 }
 
-void Player::printHand(){
-    cout << "Player's hands: " << endl;
-    for (Hand* i: handCard)
-        std::cout << i << ' ';
-    cout << "\n" << endl;
+void Player::issueOrder(){
+
+    int randomOrder = rand() % 5;
+
+    if(randomOrder == 0){
+        Deploy * deploy = new Deploy();
+        orderList->addOrder(deploy);
+    }
+    else if(randomOrder == 1){
+        Advance* advance = new Advance();
+        orderList->addOrder(advance);
+    }
+    else if(randomOrder == 2){
+        Bomb* bomb = new Bomb();
+        orderList->addOrder(bomb);
+    }
+    else if(randomOrder == 3){
+        Blockade* blockade = new Blockade();
+        orderList->addOrder(blockade);
+    }
+    else if(randomOrder == 4){
+        Airlift* airlift = new Airlift();
+        orderList->addOrder(airlift);
+    }
+    else if(randomOrder == 5){
+        Negotiate* negotiate = new Negotiate();
+        orderList->addOrder(negotiate);
+    }
+
+
 }
