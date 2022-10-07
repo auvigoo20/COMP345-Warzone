@@ -1,10 +1,9 @@
 #include "MapDriver.h"
+#include "PlayerDriver.h"
 
 int main(){
 
-    testLoadMaps();
-
-
+    testPlayer();
 
     return 1;
 }

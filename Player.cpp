@@ -9,17 +9,17 @@ Player::Player(){   //Default constructor
     string name;
     vector<Territory*> territory;
     vector<string> handCard;
-    vector<Order*> orderList;
+    vector<string> orderList;
 }
 
-Player::Player(string name, vector<Territory*> territory, vector<string> handCard,vector<Order*> orderList){  //Constructor
+Player::Player(string name, vector<Territory*> territory, vector<string> handCard,vector<string> orderList){  //Constructor
     this->name = name;
     this->territory = territory;
     this->handCard = handCard;
     this->orderList = orderList;
 }
 
-Player::Player(const Player& p){    //Copy constructor
+Player::Player(const Player &p){    //Copy constructor
     this->name = p.name;
     this->territory = p.territory;
     this->handCard = p.handCard;
@@ -44,7 +44,20 @@ void Player::toDefend(){    //defend method
 }
 
 
-void Player::issueOrder(Order* order){
-    Order *ord = new Order(order);
-    orderList.push_back(ord);
+void Player::issueOrder(string order){
+    orderList.push_back(order);
+}
+
+void Player::printOrder(){
+    cout << "Player's orders: " << endl;
+    for (string i: orderList)
+        std::cout << i << ' ';
+    cout << "\n" << endl;
+}
+
+void Player::printHand(){
+    cout << "Player's hands: " << endl;
+    for (string i: handCard)
+        std::cout << i << ' ';
+    cout << "\n" << endl;
 }
