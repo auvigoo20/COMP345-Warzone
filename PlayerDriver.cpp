@@ -3,42 +3,56 @@
 #include "Cards.h"
 #include "Map.h"
 
-void testPlayer(){
-    string name = "PLAYER";
+void testPlayer() {
 
     vector<Territory *> territory1;
-    Continent* c1 = new Continent("C1", 1);
-    Territory* t1 = new Territory("T1", 1, 2, c1);
-    Territory* t2 = new Territory("T2", 2, 4, c1);
-    Territory* t3 = new Territory("T3", 3, 6, c1);
+    Continent *c1 = new Continent("C1", 1);
+    Territory *t1 = new Territory("T1", 1, 2, c1);
+    Territory *t2 = new Territory("T2", 2, 4, c1);
+    Territory *t3 = new Territory("T3", 3, 6, c1);
+    Territory *t4 = new Territory("T4", 3, 6, c1);
 
-    Bomb* bomb1 = new Bomb();
-    Reinforcement* hand_Reinforcement = new Reinforcement();
-    Blockade* hand_Blockade;
-    Airlift* hand_Airlift;
-    Diplomacy* hand_Diplomacy;
+    Hand* hand = new Hand();
+    OrdersList* ordersList = new OrdersList();
 
-    vector<Hand*> handList;
-    handList.push_back(hand_Reinforcement);
+    Player *p1 = new Player("Player1", hand, ordersList);
+    p1->addTerritory(t1);
+    p1->addTerritory(t2);
+    p1->addTerritory(t3);
+    p1->addTerritory(t4);
 
-    vector<Order*> OrderList1;
-    Deploy* hand_deploy = new Deploy();
-    Advance* hand_advance = new Advance();
-    Blockade Order_Blockade;
-    Airlift Order_Airlift;
-    Negotiate Order_Negotiate;
+    vector<Territory *> territoriesToAttack = p1->toAttack();
+    vector<Territory *> territoriesToDefend = p1->toDefend();
 
-    cout << "========================================PLAYER=PART============================================" <<endl;
+    cout << "Territories to attack: " << endl;
+    for(auto territory:territoriesToAttack){
+        cout << *territory << endl;
+    }
 
-    Player* p1 = new Player(name, territory1,handList, OrderList1);
-    (*p1).addTerritory(t1);
-    (*p1).addTerritory(t2);
-    (*p1).addTerritory(t3);
-    (*p1).issueOrder(&Order_Blockade);
-    (*p1).issueOrder(&Order_Airlift);
-    (*p1).issueOrder(&Order_Negotiate);
-    (*p1).toAttack();
-    (*p1).toDefend();
-    (*p1).printHand();
-    (*p1).printOrder();
+    cout << "Territories to defend: " << endl;
+    for(auto territory:territoriesToDefend){
+        cout << *territory << endl;
+    }
+
+    p1->issueOrder();
+    cout << "Issued order: " << endl;
+    cout << *(p1->getOrdersList()->getOrder(0));
+
+    delete c1;
+    delete t1;
+    delete t2;
+    delete t3;
+    delete p1;
+    delete hand;
+    delete ordersList;
+    hand = nullptr;
+    ordersList = nullptr;
+    c1 = nullptr;
+    t1 = nullptr;
+    t2 = nullptr;
+    t3 = nullptr;
+    p1 = nullptr;
+
+
+
 }
