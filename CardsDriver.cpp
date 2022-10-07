@@ -53,7 +53,6 @@ int testCards(){
     /**
      * Creating first player Hand List
      */
-    Player* player = new Player();
     Hand* handList1  = new Hand(deckList);
 
     /**

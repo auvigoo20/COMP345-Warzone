@@ -1,10 +1,7 @@
-#ifndef CARDS_H
-#define CARDS_H
 #pragma once
 #include <iostream>
 #include <vector>
 #include "Orders.h"
-#include "Player.h"
 
 using namespace std;
 
@@ -88,5 +85,3 @@ public:
     void play(OrdersList* ordersList) const override;
     ostream& printCard(ostream& output) const override;
 };
-
-#endif
