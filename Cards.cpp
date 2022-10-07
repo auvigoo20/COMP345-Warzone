@@ -97,7 +97,9 @@ DiplomacyCard::DiplomacyCard() {
 }
 
 void BombCard::play() const{
-    cout << "output bomb card" << endl;                  //create order bomb
+    Bomb* bomb = new Bomb();
+    orderList->addOrder(bomb);
+    cout << "output bomb card" << endl;
 }
 
 ostream& BombCard::printCard(std::ostream &output) const {
@@ -106,7 +108,7 @@ ostream& BombCard::printCard(std::ostream &output) const {
 }
 
 void ReinforcementCard::play() const{
-    cout << "output reinforcement card" << endl; //create order reinforcement
+    cout << "output reinforcement card" << endl;
 }
 
 ostream& ReinforcementCard::printCard(std::ostream &output) const {
@@ -115,7 +117,9 @@ ostream& ReinforcementCard::printCard(std::ostream &output) const {
 }
 
 void BlockadeCard::play() const{
-    cout << "output blockade card" << endl;                    //create order blockade
+    Blockade* blockade = new Blockade();
+    orderList->addOrder(blockade);
+    cout << "output blockade card" << endl;
 }
 
 ostream& BlockadeCard::printCard(std::ostream &output) const {
@@ -124,7 +128,9 @@ ostream& BlockadeCard::printCard(std::ostream &output) const {
 }
 
 void AirliftCard::play() const{
-    cout << "output airlift card" << endl;                   //create order airlift
+    Airlift* airlift = new Airlift();
+    orderList->addOrder(airlift);
+    cout << "output airlift card" << endl;
 }
 
 ostream& AirliftCard::printCard(std::ostream &output) const {
@@ -132,7 +138,9 @@ ostream& AirliftCard::printCard(std::ostream &output) const {
     return output;
 }
 void DiplomacyCard::play() const{
-    cout << "output diplomacy card" << endl;                  //create order negotiate
+    Negotiate* negotiate = new Negotiate();
+    orderList->addOrder(negotiate);
+    cout << "output diplomacy card" << endl;
 }
 
 ostream& DiplomacyCard::printCard(std::ostream &output) const {
