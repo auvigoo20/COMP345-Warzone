@@ -60,8 +60,6 @@ int testCards(){
      * Creating second player Hand List
      */
 
-    creating player 2 hand list
-
     Hand* handList2 = new Hand(deckList);
 
     /**
