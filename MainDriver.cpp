@@ -1,9 +1,11 @@
 #include "MapDriver.h"
 #include "PlayerDriver.h"
+#include "OrdersDriver.h"
 
 int main(){
 
-    testPlayer();
+//    testLoadMaps();
+    testOrdersLists();
 
     return 1;
 }
