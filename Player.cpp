@@ -30,7 +30,7 @@ void Player::setHand(Hand *hand) {
 }
 
 OrdersList *Player::getOrdersList() {
-    return orderList
+    return orderList;
 }
 
 void Player::setOrdersList(OrdersList *ordersList) {
