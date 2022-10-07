@@ -85,61 +85,61 @@ ostream& operator <<(ostream& output, Card& c){
     return c.printCard(output);
 }
 
-Bomb::Bomb(){
+BombCard::BombCard(){
 }
 
-Reinforcement::Reinforcement() {
+ReinforcementCard::ReinforcementCard() {
 }
 
-Blockade::Blockade() {
+BlockadeCard::BlockadeCard() {
 }
 
-Airlift::Airlift() {
+AirliftCard::AirliftCard() {
 }
 
-Diplomacy::Diplomacy() {
+DiplomacyCard::DiplomacyCard() {
 }
 
-void Bomb::play() const{
+void BombCard::play() const{
     cout << "output bomb card" << endl;                  //create order bomb
 }
 
-ostream& Bomb::printCard(std::ostream &output) const {
+ostream& BombCard::printCard(std::ostream &output) const {
     output << " Bomb Card " << endl;
     return output;
 }
 
-void Reinforcement::play() const{
+void ReinforcementCard::play() const{
     cout << "output reinforcement card" << endl; //create order reinforcement
 }
 
-ostream& Reinforcement::printCard(std::ostream &output) const {
+ostream& ReinforcementCard::printCard(std::ostream &output) const {
     output << " Reinforcement Card " << endl;
     return output;
 }
 
-void Blockade::play() const{
+void BlockadeCard::play() const{
     cout << "output blockade card" << endl;                    //create order blockade
 }
 
-ostream& Blockade::printCard(std::ostream &output) const {
+ostream& BlockadeCard::printCard(std::ostream &output) const {
     output << " Blockade Card " << endl;
     return output;
 }
 
-void Airlift::play() const{
+void AirliftCard::play() const{
     cout << "output airlift card" << endl;                   //create order airlift
 }
 
-ostream& Airlift::printCard(std::ostream &output) const {
+ostream& AirliftCard::printCard(std::ostream &output) const {
     output << " Airlift Card " << endl;
     return output;
 }
-void Diplomacy::play() const{
+void DiplomacyCard::play() const{
     cout << "output diplomacy card" << endl;                  //create order negotiate
 }
 
-ostream& Diplomacy::printCard(std::ostream &output) const {
+ostream& DiplomacyCard::printCard(std::ostream &output) const {
     output << " Diplomacy Card " << endl;
     return output;
 }

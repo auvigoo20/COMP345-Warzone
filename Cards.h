@@ -47,42 +47,42 @@ private:
     friend ostream& operator << (ostream& output, Card& c);
 };
 
-class Bomb : public Card{
+class BombCard : public Card{
 public:
-    Bomb();
-    Bomb(const Bomb& b);
+    BombCard();
+    BombCard(const BombCard& b);
     void play() const override;
     ostream& printCard(ostream& output) const override;
 };
 
-class Reinforcement : public Card{
+class ReinforcementCard : public Card{
 public:
-    Reinforcement();
-    Reinforcement(const Reinforcement& r);
+    ReinforcementCard();
+    ReinforcementCard(const ReinforcementCard& r);
     void play() const override;
     ostream& printCard(ostream& output) const override;
 };
 
-class Blockade : public Card{
+class BlockadeCard : public Card{
 public:
-    Blockade();
-    Blockade(const Blockade& bl);
+    BlockadeCard();
+    BlockadeCard(const BlockadeCard& bl);
     void play() const override;
     ostream& printCard(ostream& output) const override;
  };
 
-class Airlift : public Card{
+class AirliftCard : public Card{
 public:
-    Airlift();
-    Airlift(const Airlift& a);
+    AirliftCard();
+    AirliftCard(const AirliftCard& a);
     void play() const override;
     ostream& printCard(ostream& output) const override;
 };
 
-class Diplomacy : public Card{
+class DiplomacyCard : public Card{
 public:
-    Diplomacy();
-    Diplomacy(const Diplomacy& d);
+    DiplomacyCard();
+    DiplomacyCard(const DiplomacyCard& d);
     void play() const override;
     ostream& printCard(ostream& output) const override;
 };
