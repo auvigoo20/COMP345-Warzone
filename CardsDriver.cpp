@@ -12,8 +12,6 @@ int testCards(){
      * Creating different type of Cards
      */
 
-    creating different type of Cards
-
     BombCard* bomb1 = new BombCard();
     BombCard* bomb2 = new BombCard();
 
