@@ -35,8 +35,9 @@ void testPlayer() {
     }
 
     p1->issueOrder();
+    p1->issueOrder();
     cout << "Issued order: " << endl;
-    cout << *(p1->getOrdersList()->getOrder(0));
+    cout << *(p1->getOrdersList());
 
     delete c1;
     delete t1;
