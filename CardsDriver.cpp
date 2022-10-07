@@ -1,5 +1,6 @@
 #include "CardsDriver.h"
 #include "Cards.h"
+#include "Player.h"
 #include <iostream>
 
 using std::cout;
@@ -60,6 +61,14 @@ int testCards(){
      */
 
     Hand* handList2 = new Hand(deckList);
+
+    /**
+     * Create dummy player
+     */
+
+    OrdersList* ordersList = new OrdersList();
+    Player* player = new Player("Bobby", handList1, ordersList);
+    handList1->setOwner(player);
 
     /**
      * Testing draw() method on first player Hand ; player draw a Card and places it in his Hands
