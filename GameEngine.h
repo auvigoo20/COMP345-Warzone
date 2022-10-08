@@ -3,6 +3,9 @@
 #include <string>
 using std::string;
 
+#include <iostream>
+using std::ostream;
+
 #include <vector>
 using std::vector;
 
@@ -11,6 +14,7 @@ class State;
 
 class Transition {
 private:
+    friend ostream& operator << (ostream&, const Transition&);
     string name;
     State* to;
 public:
@@ -26,6 +30,7 @@ public:
 
 class State {
 private:
+    friend ostream& operator << (ostream&, const State&);
     string name;
     vector<Transition*> transitions;
 public:
@@ -42,6 +47,7 @@ public:
 
 class GameEngine {
 private:
+    friend ostream& operator << (ostream&, const GameEngine&);
     State* currentState;
     static void initializeEngineStates();
 public:

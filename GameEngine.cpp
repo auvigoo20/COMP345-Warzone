@@ -2,6 +2,10 @@
 #include <string>
 using std::string;
 
+#include <iostream>
+using std::ostream;
+using std::endl;
+
 #include <vector>
 using std::vector;
 
@@ -34,6 +38,11 @@ void Transition::setName(string name) {
 
 void Transition::setTo(State *to) {
     this->to = to;
+}
+
+//  Stream Insertion Operator
+ostream& operator << (ostream &strm, const Transition &t){
+    return strm << "TRANSITION: Name: " << t.name << " - Transition State: " << t.to << endl;
 }
 
 State::State() {
@@ -70,6 +79,12 @@ void State::setTransitions(vector<Transition *> transitions) {
     this->transitions = transitions;
 }
 
+//  Stream Insertion Operator
+ostream& operator << (ostream &strm, const State &s){
+    return strm << "STATE: Name: " << s.name << " - Next States: " << s.getTransitions() << endl;
+}
+
+
 GameEngine::GameEngine() {
     currentState = nullptr;
     initializeEngineStates();
@@ -92,6 +107,11 @@ State *GameEngine::getCurrentState() {
 
 void GameEngine::setCurrentState(State *currentState) {
     this->currentState = currentState;
+}
+
+//  Stream Insertion Operator
+ostream& operator << (ostream &strm, const GameEngine &g){
+    return strm << "GAME ENGINE: Current State: " << g.currentState << " - Latest Command: " << g.latestCommand << endl;
 }
 
 
