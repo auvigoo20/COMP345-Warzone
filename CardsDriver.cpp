@@ -7,7 +7,9 @@ using std::cout;
 using std::endl;
 
 int testCards(){
-    cout << "Testing Cards, Hands and Decks" << endl;
+    cout << "****************************************" << endl;
+    cout << "*    Testing Cards, Hands and Decks    *" << endl;
+    cout << "****************************************" << endl;
 
     /**
      * Creating different type of Cards

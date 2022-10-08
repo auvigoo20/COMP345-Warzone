@@ -5,8 +5,10 @@
 
 int main(){
 
-//    testLoadMaps();
+    testLoadMaps();
+    testPlayer();
     testOrdersLists();
-//    testCards();
+    testCards();
+    //testGameEngine();
     return 1;
 }

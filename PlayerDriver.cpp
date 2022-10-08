@@ -5,6 +5,10 @@
 
 void testPlayer() {
 
+    cout << "****************************************" << endl;
+    cout << "*              PLAYER TEST             *" << endl;
+    cout << "****************************************" << endl;
+
     vector<Territory *> territory1;
     Continent *c1 = new Continent("C1", 1);
     Territory *t1 = new Territory("T1", 1, 2, c1);
@@ -34,11 +38,10 @@ void testPlayer() {
         cout << *territory << endl;
     }
 
+    cout << "Player1 Issuing 3 orders!" << endl;
     p1->issueOrder(0);
     p1->issueOrder(1);
     p1->issueOrder(2);
-    cout << "Issued orders: " << endl;
-    cout << *(p1->getOrdersList());
 
     cout << "Player information: " << endl;
     cout << *p1 << endl;
