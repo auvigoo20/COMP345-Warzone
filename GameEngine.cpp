@@ -112,7 +112,11 @@ void State::setTransitions(vector<Transition *> transitions) {
 
 //  Stream Insertion Operator
 ostream& operator << (ostream &strm, const State &s){
-    return strm << "STATE: Name: " << s.name << " - Next States: " << s.getTransitions() << endl;
+    strm << "STATE: Name: " << s.name << " - Next States: {";
+    for (auto i : s.transitions){
+        strm << i << ", ";
+    }
+    strm << "}" << endl;
 }
 
 

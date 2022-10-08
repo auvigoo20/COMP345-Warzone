@@ -13,6 +13,8 @@ int testGameStates(){
     GameEngine testGameEngine {GameEngine::start};
     cout << "\nCurrent State: " << testGameEngine.getCurrentState()->getName() << "\n";
 
+    cout << testGameEngine.getCurrentState();
+
     while(!done) {
         bool invalidCommand = true;
 
