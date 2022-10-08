@@ -5,8 +5,31 @@
 
 using namespace std;
 
-//Default constructor
+/**
+ * Overloading stream insertion operator
+ * @param strm
+ * @param p
+ * @return
+ */
+ostream & operator<<(ostream &strm, const Player &p){
+    return strm << "Player: " << p.name << " owns " << p.ownedTerritories.size() << " territories and has " << p.orderList->getSize() << " orders." << endl;
+}
+
+
+/**
+ * Default constructor
+ */
 Player::Player(){
+}
+
+/**
+ * Destructor
+ */
+Player::~Player() {
+    delete hand;
+    delete orderList;
+    hand = nullptr;
+    orderList = nullptr;
 }
 
 Player::Player(string name, Hand* hand, OrdersList* ordersList) {
@@ -15,8 +38,32 @@ Player::Player(string name, Hand* hand, OrdersList* ordersList) {
     this->orderList = ordersList;
 }
 
-Player::Player(const Player &p){    //Copy constructor
-    // TODO MAKE PROPER COPY CONSTRUCTOR
+/**
+ * Copy constructor (deep copy for hand and orderlist, but not territories)
+ * @param p
+ */
+Player::Player(const Player &p){
+    this->hand = new Hand();
+    this->orderList = new OrdersList(*p.orderList);
+    this->hand->setOwner(this);
+    for(auto territory:p.ownedTerritories){
+        ownedTerritories.push_back(territory);
+    }
+}
+
+/**
+ * Overloading assignment operator
+ * @param t
+ * @return
+ */
+Player& Player::operator=(const Player &p) {
+    this->hand = new Hand();
+    this->orderList = new OrdersList(*p.orderList);
+    this->hand->setOwner(this);
+    for(auto territory:p.ownedTerritories){
+        ownedTerritories.push_back(territory);
+    }
+    return *this;
 }
 
 vector<Territory *> Player::getTerritories() {
@@ -43,61 +90,86 @@ void Player::setOrdersList(OrdersList *ordersList) {
     this->orderList = ordersList;
 }
 
+/**
+ * Add territory to Player's owned territories list, and make the Player the owner of that territory
+ * @param t
+ */
 void Player::addTerritory(Territory* t){
     this->ownedTerritories.push_back(t);
     t->setOwner(this);
 }
 
+/**
+ * Returns a random list of territories (for now)
+ * @return
+ */
 vector<Territory*> Player::toAttack(){    //attack method
 
-    vector<Territory*> listToReturn;
-    int random = rand();
-    int numOfTerritories = (random % ownedTerritories.size()) + 1; // generate number from 1 to number of owned territories
-    for(int i = 0; i < numOfTerritories; i++) {
-        int randomIndex = rand() % (ownedTerritories.size()-1);
-        listToReturn.push_back(ownedTerritories.at(randomIndex));
-    }
-    return listToReturn;
+    vector<Territory*> attackTerritories;
 
-}
+    // Initialize random seed to ensure randomness
+    srand(time(NULL));
 
-vector<Territory*> Player::toDefend(){    //defend method
-    vector<Territory*> listToReturn;
     int numOfTerritories = (rand() % ownedTerritories.size()) + 1; // generate number from 1 to number of owned territories
     for(int i = 0; i < numOfTerritories; i++) {
         int randomIndex = rand() % (ownedTerritories.size()-1);
-        listToReturn.push_back(ownedTerritories.at(randomIndex));
+        attackTerritories.push_back(ownedTerritories.at(randomIndex));
     }
-    return listToReturn;
+    return attackTerritories;
+
 }
 
-void Player::issueOrder(){
+/**
+ * Returns a random list of territories (for now)
+ * @return
+ */
+vector<Territory*> Player::toDefend(){    //defend method
 
-    int randomOrder = rand() % 5;
+    vector<Territory*> defendTerritories;
 
-    if(randomOrder == 0){
+    // Initialize random seed to ensure randomness
+    srand(time(NULL));
+
+    int numOfTerritories = (rand() % ownedTerritories.size()) + 1; // generate number from 1 to number of owned territories
+    for(int i = 0; i < numOfTerritories; i++) {
+        int randomIndex = rand() % (ownedTerritories.size()-1);
+        defendTerritories.push_back(ownedTerritories.at(randomIndex));
+    }
+    return defendTerritories;
+}
+
+/**
+ * Create an order, and add it to the player's OrderList
+ * @param orderID
+ */
+void Player::issueOrder(int orderID){
+
+    if(orderID == 0){
         Deploy * deploy = new Deploy();
         orderList->addOrder(deploy);
     }
-    else if(randomOrder == 1){
+    else if(orderID == 1){
         Advance* advance = new Advance();
         orderList->addOrder(advance);
     }
-    else if(randomOrder == 2){
+    else if(orderID == 2){
         Bomb* bomb = new Bomb();
         orderList->addOrder(bomb);
     }
-    else if(randomOrder == 3){
+    else if(orderID == 3){
         Blockade* blockade = new Blockade();
         orderList->addOrder(blockade);
     }
-    else if(randomOrder == 4){
+    else if(orderID == 4){
         Airlift* airlift = new Airlift();
         orderList->addOrder(airlift);
     }
-    else if(randomOrder == 5){
+    else if(orderID == 5){
         Negotiate* negotiate = new Negotiate();
         orderList->addOrder(negotiate);
+    }
+    else{
+        cout << "Invalid order" << endl;
     }
 
 
