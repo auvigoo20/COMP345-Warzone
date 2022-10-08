@@ -44,7 +44,6 @@ void Deck::draw(Hand* hand) {
     // Initialize random seed to ensure randomness
     srand(time(NULL));
     int index = rand() % deckList.size();
-    cout << index << endl;
     Card* cardDraw = deckList[index];
     removeCard(index);
     hand->addCard(cardDraw);
@@ -76,6 +75,15 @@ ostream& operator <<(ostream& output, Deck& d){
          return *this;
      }
      return *this;
+}
+
+Deck::~Deck()
+{
+     for(auto card: deckList){
+         delete card;
+     }
+    //Swapping content to a non-instantiated vector will deallocate its memory.
+    vector<Card*>().swap(this->deckList);
 }
 
 Hand::Hand(){
@@ -157,6 +165,15 @@ Hand& Hand::operator=(const Hand &h)
        return *this;
     }
     return *this;
+}
+
+Hand::~Hand()
+{
+    for(auto card: handList){
+        delete card;
+    }
+    //Swapping content to a non-instantiated vector will deallocate its memory.
+    vector<Card*>().swap(this->handList);
 }
 
 ostream& operator <<(ostream& output, Hand& h){
@@ -252,6 +269,10 @@ ostream& BombCard::printCard(std::ostream &output) const {
     return new BombCard();
  }
 
+ BombCard::~BombCard()
+ {
+ }
+
 void ReinforcementCard::play(OrdersList* ordersList, Territory* territory) const {  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
@@ -269,6 +290,10 @@ ostream& ReinforcementCard::printCard(std::ostream &output) const {
 ReinforcementCard* ReinforcementCard::copy() const
 {
     return new ReinforcementCard();
+}
+
+ReinforcementCard::~ReinforcementCard()
+{
 }
 
 void BlockadeCard::play(OrdersList* ordersList, Territory* territory) const{
@@ -292,6 +317,10 @@ BlockadeCard* BlockadeCard::copy() const
     return new BlockadeCard();
 }
 
+BlockadeCard::~BlockadeCard()
+{
+}
+
 void AirliftCard::play(OrdersList* ordersList, Territory* territory) const{
     Airlift* airlift = new Airlift(12, territory, territory);
     ordersList->addOrder(airlift);
@@ -313,6 +342,10 @@ AirliftCard* AirliftCard::copy() const
     return new AirliftCard();
 }
 
+AirliftCard::~AirliftCard()
+{
+}
+
 void DiplomacyCard::play(OrdersList* ordersList, Territory* territory) const{
     Negotiate* negotiate = new Negotiate();
     ordersList->addOrder(negotiate);
@@ -331,5 +364,9 @@ ostream& DiplomacyCard::printCard(std::ostream &output) const {
 DiplomacyCard* DiplomacyCard::copy() const
 {
     return new DiplomacyCard();
+}
+
+DiplomacyCard::~DiplomacyCard()
+{
 }
 

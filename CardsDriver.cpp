@@ -98,5 +98,13 @@ int testCards(){
     cout << "Check if the order associated with the played card is in the Player's orderlist" << endl;
     cout << *player->getOrdersList() << endl;
 
+    delete player;
+    delete hand1;
+    delete deck;
+    delete ordersList;
+    delete continent;
+    delete territory;
+
+
     return 0;
 }
