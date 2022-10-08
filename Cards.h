@@ -17,6 +17,7 @@ public:
     void removeCard(int index);
     void draw(Hand* hand);            // Deck needs the Hand List of the player to add the draw card
     ostream& printDeck(ostream& output);
+    Deck& operator = (const Deck& d);
 private:
     vector<Card*> deckList;
     friend ostream& operator << (ostream& output, Deck& d);
@@ -43,6 +44,7 @@ class Card{
 public:
     virtual void play(OrdersList* ordersList) const = 0; //Need to pass ordersList as a parameter because Cards have no access to it.
     virtual ostream& printCard(ostream& output) const = 0;
+    virtual Card* copy() const = 0;
 private:
     friend ostream& operator << (ostream& output, Card& c);
 };
@@ -53,6 +55,7 @@ public:
     BombCard(const BombCard& b);
     void play(OrdersList* ordersList) const override;
     ostream& printCard(ostream& output) const override;
+    BombCard* copy() const override;
 };
 
 class ReinforcementCard : public Card{
@@ -61,6 +64,7 @@ public:
     ReinforcementCard(const ReinforcementCard& r);
     void play(OrdersList* ordersList) const override;
     ostream& printCard(ostream& output) const override;
+    ReinforcementCard* copy() const override;
 };
 
 class BlockadeCard : public Card{
@@ -69,6 +73,7 @@ public:
     BlockadeCard(const BlockadeCard& bl);
     void play(OrdersList* ordersList) const override;
     ostream& printCard(ostream& output) const override;
+    BlockadeCard* copy() const override;
  };
 
 class AirliftCard : public Card{
@@ -77,6 +82,7 @@ public:
     AirliftCard(const AirliftCard& a);
     void play(OrdersList* ordersList) const override;
     ostream& printCard(ostream& output) const override;
+    AirliftCard* copy() const override;
 };
 
 class DiplomacyCard : public Card{
@@ -85,4 +91,5 @@ public:
     DiplomacyCard(const DiplomacyCard& d);
     void play(OrdersList* ordersList) const override;
     ostream& printCard(ostream& output) const override;
+    DiplomacyCard* copy() const override;
 };

@@ -9,7 +9,9 @@ Deck::Deck(){
 }
 
 Deck::Deck(const Deck& d){
-    this -> deckList = d.deckList;
+    for (auto card: d.deckList) {
+        this->deckList.push_back(card->copy());
+    }
 }
 
 void Deck::addCard(Card* card) {
@@ -53,6 +55,21 @@ ostream& Deck::printDeck(std::ostream &output) {
 
 ostream& operator <<(ostream& output, Deck& d){
     return d.printDeck(output);
+}
+
+/**
+ * Assignment operator for the deck class.
+ * Performs deep copy of Deck object.
+ */
+ Deck& Deck::operator = (const Deck& d)
+{
+     if (this != &d) {
+         for (auto card: d.deckList) {
+             this->deckList.push_back(card->copy());
+         }
+         return *this;
+     }
+     return *this;
 }
 
 Hand::Hand(){
@@ -124,6 +141,11 @@ ostream& operator <<(ostream& output, Card& c){
 BombCard::BombCard(){
 }
 
+BombCard::BombCard(const BombCard& b)
+{
+
+}
+
 ReinforcementCard::ReinforcementCard() {
 }
 
@@ -151,6 +173,16 @@ ostream& BombCard::printCard(std::ostream &output) const {
     return output;
 }
 
+/**
+ * Creates a new Bombcard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+ BombCard* BombCard::copy() const
+ {
+    return new BombCard();
+ }
+
 void ReinforcementCard::play(OrdersList* ordersList) const{  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
@@ -158,6 +190,16 @@ void ReinforcementCard::play(OrdersList* ordersList) const{  // Reinforcement Ca
 ostream& ReinforcementCard::printCard(std::ostream &output) const {
     output << " Reinforcement Card " << endl;
     return output;
+}
+
+/**
+ * Creates a new Reinforcmentcard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+ReinforcementCard* ReinforcementCard::copy() const
+{
+    return new ReinforcementCard();
 }
 
 void BlockadeCard::play(OrdersList* ordersList) const{
@@ -171,6 +213,16 @@ ostream& BlockadeCard::printCard(std::ostream &output) const {
     return output;
 }
 
+/**
+ * Creates a new BlockadeCard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+BlockadeCard* BlockadeCard::copy() const
+{
+    return new BlockadeCard();
+}
+
 void AirliftCard::play(OrdersList* ordersList) const{
     Airlift* airlift = new Airlift();
     ordersList->addOrder(airlift);
@@ -181,6 +233,17 @@ ostream& AirliftCard::printCard(std::ostream &output) const {
     output << " Airlift Card " << endl;
     return output;
 }
+
+/**
+ * Creates a new Airliftcard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+AirliftCard* AirliftCard::copy() const
+{
+    return new AirliftCard();
+}
+
 void DiplomacyCard::play(OrdersList* ordersList) const{
     Negotiate* negotiate = new Negotiate();
     ordersList->addOrder(negotiate);
@@ -191,3 +254,13 @@ ostream& DiplomacyCard::printCard(std::ostream &output) const {
     output << " Diplomacy Card " << endl;
     return output;
 }
+/**
+ * Creates a new DiplomacyCard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+DiplomacyCard* DiplomacyCard::copy() const
+{
+    return new DiplomacyCard();
+}
+
