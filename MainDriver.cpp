@@ -6,7 +6,7 @@
 int main(){
 
 //    testLoadMaps();
-//    testOrdersLists();
-    testCards();
+    testOrdersLists();
+//    testCards();
     return 1;
 }
