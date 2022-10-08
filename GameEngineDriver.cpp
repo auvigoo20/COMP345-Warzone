@@ -4,6 +4,7 @@
 #include <iostream>
 using std::cin;
 using std::cout;
+using std::endl;
 #include <string>
 using std::string;
 
@@ -11,9 +12,8 @@ int testGameStates(){
 
     bool done = false;
     GameEngine testGameEngine {GameEngine::start};
-    cout << "\nCurrent State: " << testGameEngine.getCurrentState()->getName() << "\n";
 
-    cout << testGameEngine.getCurrentState();
+    cout << testGameEngine << endl;
 
     while(!done) {
         bool invalidCommand = true;
@@ -29,18 +29,18 @@ int testGameStates(){
                     break;
                 }
                 testGameEngine.setCurrentState(testGameEngine.getCurrentState()->getTransitions().at(i)->getTo());
-                cout << "Current State: " << testGameEngine.getCurrentState()->getName() << "\n";
+                cout << testGameEngine << endl;
                 invalidCommand = false;
                 break;
             }
         }
 
         if (invalidCommand) {
-            cout << "Invalid command.\n";
+            cout << "Invalid command." << endl;
         }
     }
 
-    cout << "Game ended.\n";
+    cout << "Game ended." << endl;
 
     return 0;
 }

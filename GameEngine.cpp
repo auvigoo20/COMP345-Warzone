@@ -54,7 +54,7 @@ void Transition::setTo(State *to) {
 
 //  Stream Insertion Operator
 ostream& operator << (ostream &strm, const Transition &t){
-    return strm << "TRANSITION: Name: " << t.name << " - Transition State: " << t.to << endl;
+    return strm << "TRANSITION: Name: " << t.name << ", Transition State: " << t.to->getName();
 }
 
 
@@ -112,11 +112,15 @@ void State::setTransitions(vector<Transition *> transitions) {
 
 //  Stream Insertion Operator
 ostream& operator << (ostream &strm, const State &s){
-    strm << "STATE: Name: " << s.name << " - Next States: {";
-    for (auto i : s.transitions){
-        strm << i << ", ";
+    strm << "STATE: Name: " << s.name << ", Next States: {";
+
+    for (int i=0; i<s.transitions.size(); i++){
+        strm << s.transitions.at(i)->getName();
+        if (i < s.transitions.size()-1) {
+            strm << ", ";
+        }
     }
-    strm << "}" << endl;
+    return strm << "}";
 }
 
 
@@ -155,9 +159,14 @@ void GameEngine::setCurrentState(State *currentState) {
     this->currentState = currentState;
 }
 
-//  Stream Insertion Operator
+/**
+ * GameEngine stream insertion operator
+ * @param strm
+ * @param g
+ * @return
+ */
 ostream& operator << (ostream &strm, const GameEngine &g){
-    return strm << "GAME ENGINE: Current State: " << g.currentState << " - Latest Command: " << g.latestCommand << endl;
+    return strm << "GAME ENGINE: Current State: {" << *g.currentState << "}, Latest Command: " << g.latestCommand;
 }
 
 
