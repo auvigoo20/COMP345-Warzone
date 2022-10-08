@@ -33,6 +33,9 @@ void Deck::removeCard(int index) {
  */
 
 void Deck::draw(Hand* hand) {
+
+    // Initialize random seed to ensure randomness
+    srand(time(NULL));
     int index = rand() % deckList.size() -1;
     Card* cardDraw = deckList[index];
     removeCard(index);
