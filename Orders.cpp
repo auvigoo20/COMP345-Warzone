@@ -42,6 +42,12 @@ Order* OrdersList::getOrder(int index)
     return ordersList[index - 1];
 }
 
+/**
+ * Removes from the order list the order that
+ * corresponds to the position given. Note that the
+ * first element will be at position 1 not 0.
+ * @param index
+ */
 void OrdersList::removeOrder(int index)
 {
     int size = this -> getSize();
@@ -56,6 +62,11 @@ void OrdersList::removeOrder(int index)
     }
 }
 
+/**
+ * Move the orders specified up one position on the list.
+ * Note that the first element will be at position 1 not 0.
+ * @param index
+ */
 void OrdersList::moveOrderUp(int index)
 {
     int size = this -> getSize();
@@ -73,6 +84,11 @@ void OrdersList::moveOrderUp(int index)
     }
 }
 
+/**
+ * Move the orders specified up one position on the list.
+ * Note that the first element will be at position 1 not 0.
+ * @param index
+ */
 void OrdersList::moveOrderDown(int index)
 {
     int size = this -> getSize();
@@ -134,12 +150,17 @@ OrdersList& OrdersList::operator=(const OrdersList& o)
    return *this;
 }
 
+/**
+ * Destructor for the OrdersList. First destroy the Orders pointed
+ * to by the list then deallocate the vector's memory.
+ */
 OrdersList::~OrdersList()
 {
     for(auto order: ordersList)
     {
         delete order;
     }
+    //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Order*>().swap(this->ordersList);
 };
 
@@ -192,6 +213,10 @@ ostream& Deploy::printOrder(ostream &output) const
     return output;
 }
 
+/**
+ * Verifies if order is valid then executes it.
+ * (Execution yet to be implemented).
+ */
 void Deploy::execute() const
 {
     if(!validate()) {
@@ -202,6 +227,11 @@ void Deploy::execute() const
     }
 }
 
+/**
+ * Verifies if given order is valid.
+ * (Validation yet to be implemented).
+ * @return
+ */
 bool Deploy::validate() const
 {
     cout << "Validation in progress ... " << endl;
@@ -275,6 +305,10 @@ ostream& Advance::printOrder(ostream &output) const
     return output;
 }
 
+/**
+ * Verifies if order is valid then executes it.
+ * (Execution yet to be implemented).
+ */
 void Advance::execute() const
 {
     if(!validate()) {
@@ -285,6 +319,11 @@ void Advance::execute() const
     }
 }
 
+/**
+ * Verifies if given order is valid.
+ * (Validation yet to be implemented).
+ * @return
+ */
 bool Advance::validate() const
 {
     cout << "Validation in progress ... " << endl;
@@ -351,6 +390,10 @@ ostream& Bomb::printOrder(ostream &output) const
     return output;
 }
 
+/**
+ * Verifies if order is valid then executes it.
+ * (Execution yet to be implemented).
+ */
 void Bomb::execute() const
 {
     if(!validate()) {
@@ -361,6 +404,11 @@ void Bomb::execute() const
     }
 }
 
+/**
+ * Verifies if given order is valid.
+ * (Validation yet to be implemented).
+ * @return
+ */
 bool Bomb::validate() const
 {
     cout << "Validation in progress ... " << endl;
@@ -425,6 +473,10 @@ ostream& Blockade::printOrder(ostream &output) const
     return output;
 }
 
+/**
+ * Verifies if order is valid then executes it.
+ * (Execution yet to be implemented).
+ */
 void Blockade::execute() const
 {
     if(!validate()) {
@@ -435,6 +487,11 @@ void Blockade::execute() const
     }
 }
 
+/**
+ * Verifies if given order is valid.
+ * (Validation yet to be implemented).
+ * @return
+ */
 bool Blockade::validate() const
 {
     cout << "Validation in progress ... " << endl;
@@ -506,6 +563,10 @@ ostream& Airlift::printOrder(ostream &output) const
     return output;
 }
 
+/**
+ * Verifies if order is valid then executes it.
+ * (Execution yet to be implemented).
+ */
 void Airlift::execute() const
 {
     if(!validate()) {
@@ -516,6 +577,11 @@ void Airlift::execute() const
     }
 }
 
+/**
+ * Verifies if given order is valid.
+ * (Validation yet to be implemented).
+ * @return
+ */
 bool Airlift::validate() const
 {
     cout << "Validation in progress ... " << endl;
@@ -582,6 +648,10 @@ ostream& Negotiate::printOrder(ostream &output) const
     return output;
 }
 
+/**
+ * Verifies if order is valid then executes it.
+ * (Execution yet to be implemented).
+ */
 void Negotiate::execute() const
 {
     if(!validate()) {
@@ -592,6 +662,11 @@ void Negotiate::execute() const
     }
 }
 
+/**
+ * Verifies if given order is valid.
+ * (Validation yet to be implemented).
+ * @return
+ */
 bool Negotiate::validate() const
 {
     cout << "Validation in progress ... " << endl;

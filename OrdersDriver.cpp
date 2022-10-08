@@ -10,7 +10,8 @@ int testOrdersLists(){
     cout << "Testing Orders and OrdersList classes" << endl;
     cout << "-------------------------------------" << endl;
 
-    // Creating different all type of orders using different constructors
+    //Creating multiple territories needed to create orders.
+
     Continent* continent =  new Continent("Africa", 12);
     Territory* ter1 = new Territory("Canada", 12, 13, continent);
     Territory* ter2 = new Territory("USA", 13, 14, continent);
@@ -20,6 +21,8 @@ int testOrdersLists(){
     Territory* ter6 = new Territory("Ontario", 12, 13, continent);
     Deploy* dep1 = new Deploy();
     Deploy* dep2 = new Deploy(12, ter1);
+
+    // Creating different all type of orders using different constructors
 
     Advance* adv1 = new Advance();
     Advance* adv2 = new Advance(10, ter1, ter2);
@@ -42,12 +45,12 @@ int testOrdersLists(){
     OrdersList list2;
 
     // Orders added to list1 in that order
-    list1->addOrder(dep1);
-    list1->addOrder(adv1);
-    list1->addOrder(bomb1);
-    list1->addOrder(block1);
-    list1->addOrder(air1);
-    list1->addOrder(neg1);
+    list1->addOrder(dep2);
+    list1->addOrder(adv2);
+    list1->addOrder(bomb2);
+    list1->addOrder(block2);
+    list1->addOrder(air2);
+    list1->addOrder(neg2);
 
     //Testing OrdersList moveOrder functions:
     cout << " -- Testing OrdersList moveOrder functions -- " << endl;
