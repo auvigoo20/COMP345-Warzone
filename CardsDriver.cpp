@@ -1,73 +1,94 @@
 #include "CardsDriver.h"
 #include "Cards.h"
+#include "Player.h"
 #include <iostream>
 
 using std::cout;
 using std::endl;
 
 int testCards(){
-    cout << "Testing Cards, HandLists and DeckLists" << endl;
+    cout << "Testing Cards, Hands and Decks" << endl;
+
+    /**
+     * Creating different type of Cards
+     */
+
+    BombCard* bomb1 = new BombCard();
+    BombCard* bomb2 = new BombCard();
+
+    ReinforcementCard* reinforcement1 = new ReinforcementCard();
+    ReinforcementCard* reinforcement2 = new ReinforcementCard();
+
+    BlockadeCard* blockade1 = new BlockadeCard();
+    BlockadeCard* blockade2 = new BlockadeCard();
+
+    AirliftCard* airlift1 = new AirliftCard();
+    AirliftCard* airlift2 = new AirliftCard();
+
+    DiplomacyCard* diplomacy1 = new DiplomacyCard();
+    DiplomacyCard* diplomacy2 = new DiplomacyCard();
+
+    /**
+     * Creating a Deck
+     */
+
+    Deck* deck = new Deck();
+
+    /**
+     * Adding all created Cards in the common Deck
+     */
+
+    deck->addCard(bomb1);
+    deck->addCard(bomb2);
+    deck->addCard(reinforcement1);
+    deck->addCard(reinforcement2);
+    deck->addCard(blockade1);
+    deck->addCard(blockade2);
+    deck->addCard(airlift1);
+    deck->addCard(airlift2);
+    deck->addCard(diplomacy1);
+    deck->addCard(diplomacy2);
 
 
-    //creating different type of Cards
+    cout << *deck;
 
-    Bomb* bomb1 = new Bomb();
-    Bomb* bomb2 = new Bomb();
+    /**
+     * Creating first player Hand
+     */
+    Hand* hand1  = new Hand(deck);
 
-    Reinforcement* reinforcement1 = new Reinforcement();
-    Reinforcement* reinforcement2 = new Reinforcement();
+    /**
+     * Create dummy player
+     */
 
-    Blockade* blockade1 = new Blockade();
-    Blockade* blockade2 = new Blockade();
+    OrdersList* ordersList = new OrdersList();
+    Player* player = new Player("Bobby", hand1, ordersList);
+    hand1->setOwner(player);
 
-    Airlift* airlift1 = new Airlift();
-    Airlift* airlift2 = new Airlift();
+    /**
+     * Testing draw() method on first player Hand ; player draw a Card and places it in his Hands
+     */
 
-    Diplomacy* diplomacy1 = new Diplomacy();
-    Diplomacy* diplomacy2 = new Diplomacy();
+    cout << "Calling draw() for player Bobby" << endl;
 
-    //creating deck
+    deck->draw(hand1);
 
-    Deck* deckList = new Deck();
+    cout << *deck << endl;
+    cout << *hand1 << endl;
 
-    //adding all cards in deck
+    /**
+     * Testing play() method with first player Hand
+     */
 
-    deckList->addCard(bomb1);
-    deckList->addCard(bomb2);
-    deckList->addCard(reinforcement1);
-    deckList->addCard(reinforcement2);
-    deckList->addCard(blockade1);
-    deckList->addCard(blockade2);
-    deckList->addCard(airlift1);
-    deckList->addCard(airlift2);
-    deckList->addCard(diplomacy1);
-    deckList->addCard(diplomacy2);
+    cout << "Player Bobby calling the play() method on this card" << endl;
 
-    cout << *deckList;
+    hand1->playCard(1);
 
-    //creating player 1 hand list
+    cout << *deck << endl;
+    cout << *hand1 << endl;
 
-    Hand* handList1  = new Hand(deckList);
-
-    //creating player 2 hand list
-
-    Hand* handList2 = new Hand(deckList);
-
-    cout << "//testing draw() method on player 1 hand list" << endl;
-
-    deckList->draw(handList1);
-
-    cout <<*deckList << endl;
-    cout <<*handList1 << endl;
-
-    cout << "//testing player play() method on this card" << endl;
-
-    handList1->playCard(1);
-
-    cout <<*deckList << endl;
-    cout <<*handList1 << endl;
-
-
+    cout << "Check if the order associated with the played card is in the Player's orderlist" << endl;
+    cout << *player->getOrdersList() << endl;
 
     return 0;
 }
