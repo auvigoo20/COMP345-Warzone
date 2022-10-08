@@ -136,6 +136,10 @@ OrdersList& OrdersList::operator=(const OrdersList& o)
 
 OrdersList::~OrdersList()
 {
+    for(auto order: ordersList)
+    {
+        delete order;
+    }
     vector<Order*>().swap(this->ordersList);
 };
 
