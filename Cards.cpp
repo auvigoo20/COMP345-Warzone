@@ -43,8 +43,9 @@ void Deck::draw(Hand* hand) {
 
     // Initialize random seed to ensure randomness
     srand(time(NULL));
-    int index = rand() % deckList.size() -1;
-    Card* cardDraw = deckList[0];
+    int index = rand() % deckList.size();
+    cout << index << endl;
+    Card* cardDraw = deckList[index];
     removeCard(index);
     hand->addCard(cardDraw);
 }
@@ -122,6 +123,11 @@ void Hand::playCard(int index, Territory* territory){
     card->play(this->owner->getOrdersList(), territory);                     //create order
     removeCard(index);               //remove card from hand player
     deckList->addCard(card);        // add card to deck
+}
+
+vector<Card*>* Hand::getHandList()
+{
+    return &this->handList;
 }
 
 ostream& Hand::printHand(std::ostream &output) {

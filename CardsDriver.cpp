@@ -74,6 +74,8 @@ int testCards(){
     cout << "Calling draw() for player Bobby" << endl;
 
     deck->draw(hand1);
+    deck->draw(hand1);
+    deck->draw(hand1);
 
     cout << *deck << endl;
     cout << *hand1 << endl;
@@ -86,6 +88,8 @@ int testCards(){
     Continent* continent = new Continent("RandomCont", 5);
     Territory* territory = new Territory("randomTer", 1, 2, continent);
 
+    hand1->playCard(1, territory);
+    hand1->playCard(1, territory);
     hand1->playCard(1, territory);
 
     cout << *deck << endl;
