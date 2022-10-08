@@ -1,6 +1,7 @@
 #include "Map.h"
 #include <string>
 #include <vector>
+#include <map>
 #include <iostream>
 #include <algorithm>
 #include <fstream>
@@ -8,6 +9,8 @@
 
 using std::string;
 using std::vector;
+using std::map;
+using std::pair;
 using std::cout;
 using std::endl;
 using std::ostream;
@@ -30,6 +33,12 @@ Continent::Continent() {
 Continent::Continent(const Continent &c) {
     name = c.name;
     bonus = c.bonus;
+}
+
+Continent& Continent::operator=(const Continent &c) {
+    this->name = c.name;
+    this->bonus = c.bonus;
+    return *this;
 }
 
 Continent::Continent(string name, int bonus) {
@@ -74,9 +83,23 @@ Territory::Territory(const Territory &t) {
     owner = t.owner;
     numOfArmies = t.numOfArmies;
     name = t.name;
-    adjacentTerritories = t.adjacentTerritories;
     x = t.x;
     y = t.y;
+    for(auto territory:t.adjacentTerritories){
+        adjacentTerritories.push_back(territory);
+    }
+}
+
+Territory& Territory::operator=(const Territory &t) {
+    owner = t.owner;
+    numOfArmies = t.numOfArmies;
+    name = t.name;
+    x = t.x;
+    y = t.y;
+    for(auto territory:t.adjacentTerritories){
+        adjacentTerritories.push_back(territory);
+    }
+    return *this;
 }
 
 Territory::Territory(string name, int x, int y, Continent* continent) {
@@ -190,8 +213,23 @@ Map::Map(vector<Territory *> territories, vector<Continent *> continents) {
 }
 
 Map::Map(const Map &map) {
-    this ->allTerritories = map.allTerritories;
-    this->allContinents = map.allContinents;
+    for(auto territory:allTerritories){
+        this->allTerritories.push_back(territory);
+    }
+    for(auto continent:allContinents){
+        this->allContinents.push_back(continent);
+    }
+
+}
+
+Map& Map::operator=(const Map &m) {
+    for(auto territory:allTerritories){
+        this->allTerritories.push_back(territory);
+    }
+    for(auto continent:allContinents){
+        this->allContinents.push_back(continent);
+    }
+    return *this;
 }
 
 vector<Territory *> Map::getAllTerritories() {
@@ -242,20 +280,31 @@ void Map::dfs(vector<string> *visitedTerritoriesNames, Territory *currentTerrito
 bool Map::isConnectedTerritories() {
 
     vector<string> visitedTerritoriesNames;
-    Territory* startTerritory = allTerritories.at(0);
+    bool isConnectedTerritories = false;
 
-    // start DFS at first territory
-    dfs(&visitedTerritoriesNames, startTerritory);
+    // Perform DFS on every single node (Territory) until all territories are visited. This ensures that every possible
+    // graph traversal is performed in the case that some edges are unidirectional
+    for (auto startTerritory: allTerritories) {
 
-    // check if all territories have been visited after DFS
-    for (int i = 0; i < allTerritories.size(); i++){
-        if(std::find(visitedTerritoriesNames.begin(), visitedTerritoriesNames.end(), allTerritories.at(i)->getName()) == visitedTerritoriesNames.end()){
-            cout << "Territories do not form a connected graph!" << endl;
-            return false;
+        cout << "STARTING DFS!!!!" << endl;
+        // start DFS at starting territory
+        dfs(&visitedTerritoriesNames, startTerritory);
+
+        // check if all territories have been visited after DFS
+        if (visitedTerritoriesNames.size() == allTerritories.size()) {
+            cout << "Territories form a connected graph!" << endl;
+            isConnectedTerritories = true;
+            break;
+
         }
+        visitedTerritoriesNames.clear();
+
     }
-    cout << "Territories form a connected graph!" << endl;
-    return true;
+    if(!isConnectedTerritories){
+        cout << "Territories do not form a connected graph!" << endl;
+    }
+
+    return isConnectedTerritories;
 }
 
 vector<Territory*> Map::getAllTerritoriesByContinent(Continent* continent) {
@@ -305,22 +354,43 @@ void Map::dfs_continent(vector<string> *visitedTerritoriesNames, Territory *curr
 // Check if Map's continents are connected subgraphs
 bool Map::isConnectedContinents() {
 
+    // Create a map to store the connectivity of each Continent (initialize to false)
+    map<string,bool> continentsConnectedMap;
+    for(auto continent:allContinents){
+        continentsConnectedMap.insert(pair<string,bool>(continent->getName(), false));
+    }
+
     for (int i = 0; i < allContinents.size(); i++){
         Continent* currentContinent = allContinents.at(i);
         vector<Territory*> currentContinentTerritories = getAllTerritoriesByContinent(currentContinent);
         vector<string> visitedTerritories;
-        Territory* startTerritory = currentContinentTerritories.at(0);
 
-        // Start DFS at first territory
-        dfs_continent(&visitedTerritories, startTerritory, currentContinent);
+        // Perform DFS on every single node (Territory) until all territories of the continent are visited.
+        // This ensures that every possible graph traversal is performed in the case that some edges are unidirectional
+        for(auto startTerritory:currentContinentTerritories){
 
-        // If number of visited territories is not equal to the number of territories of a given continent, it is not a connected subgraph
-        if (visitedTerritories.size() != currentContinentTerritories.size()){
-            cout << "Continents are not connected subgraphs!" << endl;
+            // Start DFS at first territory
+            dfs_continent(&visitedTerritories, startTerritory, currentContinent);
+
+            // If number of visited territories is equal to the number of territories of a given continent, it is a connected subgraph
+            if (visitedTerritories.size() == currentContinentTerritories.size()){
+                cout << "Continent: " << currentContinent->getName() << " is a connected subgraph!" << endl;
+                continentsConnectedMap.find(currentContinent->getName())->second = true;
+                break;
+            }
+            visitedTerritories.clear();
+        }
+    }
+
+    for(auto continentsKeyValue:continentsConnectedMap){
+        if(!continentsKeyValue.second){
+            cout << "Continent: " << continentsKeyValue.first << " is not a connected subgraph..." << endl;
             return false;
         }
     }
-    cout << "Continents are connected subgraphs!" << endl;
+
+
+    cout << "All continents are connected subgraphs!" << endl;
     return true;
 }
 
@@ -332,7 +402,16 @@ bool Map::isConnectedContinents() {
  *      designed to only be possible to belong to one continent)
  * */
 bool Map::validate() {
-    return isConnectedTerritories() && isConnectedContinents();
+    cout << "***STARTING MAP VALIDATION***" << endl;
+    bool connectedTerritories = isConnectedTerritories();
+    bool connectedContinents = isConnectedContinents();
+    if (connectedTerritories && connectedContinents){
+        cout << "MAP IS VALID!" << endl;
+    }
+    else{
+        cout << "MAP IS INVALID..." << endl;
+    }
+    return connectedTerritories && connectedContinents;
 }
 
 /*

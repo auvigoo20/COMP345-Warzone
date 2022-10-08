@@ -60,6 +60,8 @@ public:
     State* getCurrentState();
     void setCurrentState(State* currentState);
 
+    // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
+    // However, since the States and Transition depend on each other, they cannot be made both const and static.
     static State* start;
     static State* mapLoaded;
     static State* mapValidated;
