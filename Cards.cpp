@@ -163,21 +163,61 @@ ostream& operator <<(ostream& output, Card& c){
 BombCard::BombCard(){
 }
 
+/**
+ * Copy constructor for BombCard. Empty for now
+ * as class has no members to copy.
+ * @param b
+ */
 BombCard::BombCard(const BombCard& b)
 {
-
 }
 
 ReinforcementCard::ReinforcementCard() {
 }
 
+/**
+ * Copy constructor for ReinforcmentCard. Empty for now
+ * as class has no members to copy.
+ * @param b
+ */
+ReinforcementCard::ReinforcementCard(const ReinforcementCard& r)
+{
+}
+
 BlockadeCard::BlockadeCard() {
+}
+
+/**
+ * Copy constructor for BlockadeCard. Empty for now
+ * as class has no members to copy.
+ * @param r
+ */
+BlockadeCard::BlockadeCard(const BlockadeCard& r)
+{
 }
 
 AirliftCard::AirliftCard() {
 }
 
+/**
+ * Copy constructor for AirliftCard. Empty for now
+ * as class has no members to copy.
+ * @param a
+ */
+AirliftCard::AirliftCard(const AirliftCard& a)
+{
+}
+
 DiplomacyCard::DiplomacyCard() {
+}
+
+/**
+ * Copy constructor for DiplomacyCard. Empty for now
+ * as class has no members to copy.
+ * @param d
+ */
+DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
+{
 }
 
 /**
