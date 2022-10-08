@@ -12,8 +12,10 @@ class Player {
 
 public:
     Player();
+    ~Player();
     Player(string name, Hand* hand, OrdersList* ordersList);
     Player(const Player&);
+    Player& operator=(const Player &p);
 
     vector<Territory*> getTerritories();
     Hand* getHand();
@@ -27,9 +29,10 @@ public:
 
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
-    void issueOrder();
+    void issueOrder(int orderID);
 
 private:
+    friend ostream& operator<<(ostream&, const Player&);
     string name;
     vector<Territory*> ownedTerritories;
     Hand* hand;
