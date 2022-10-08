@@ -30,7 +30,7 @@ public:
     Hand(Deck* deckList);       //Hand List needs the Deck list to place back the Card after play
     void addCard(Card* card);
     void removeCard(int index);
-    void playCard(int index);
+    void playCard(int index, Territory* territory);
     void setOwner(Player* owner);
     ostream& printHand(ostream& output);
     Hand& operator = (const Hand& h);
@@ -43,7 +43,7 @@ private:
 
 class Card{
 public:
-    virtual void play(OrdersList* ordersList) const = 0; //Need to pass ordersList as a parameter because Cards have no access to it.
+    virtual void play(OrdersList* ordersList, Territory* t) const = 0; //Need to pass ordersList as a parameter because Cards have no access to it.
     virtual ostream& printCard(ostream& output) const = 0;
     virtual Card* copy() const = 0;
 private:
@@ -54,7 +54,8 @@ class BombCard : public Card{
 public:
     BombCard();
     BombCard(const BombCard& b);
-    void play(OrdersList* ordersList) const override;
+    using Card::play;
+    void play(OrdersList* ordersList, Territory* territory) const override;
     ostream& printCard(ostream& output) const override;
     BombCard* copy() const override;
 };
@@ -63,7 +64,7 @@ class ReinforcementCard : public Card{
 public:
     ReinforcementCard();
     ReinforcementCard(const ReinforcementCard& r);
-    void play(OrdersList* ordersList) const override;
+    void play(OrdersList* ordersList, Territory* territory) const override;
     ostream& printCard(ostream& output) const override;
     ReinforcementCard* copy() const override;
 };
@@ -72,7 +73,7 @@ class BlockadeCard : public Card{
 public:
     BlockadeCard();
     BlockadeCard(const BlockadeCard& bl);
-    void play(OrdersList* ordersList) const override;
+    void play(OrdersList* ordersList, Territory* territory) const override;
     ostream& printCard(ostream& output) const override;
     BlockadeCard* copy() const override;
  };
@@ -81,7 +82,7 @@ class AirliftCard : public Card{
 public:
     AirliftCard();
     AirliftCard(const AirliftCard& a);
-    void play(OrdersList* ordersList) const override;
+    void play(OrdersList* ordersList, Territory* territory) const override;
     ostream& printCard(ostream& output) const override;
     AirliftCard* copy() const override;
 };
@@ -90,7 +91,7 @@ class DiplomacyCard : public Card{
 public:
     DiplomacyCard();
     DiplomacyCard(const DiplomacyCard& d);
-    void play(OrdersList* ordersList) const override;
+    void play(OrdersList* ordersList, Territory* territory) const override;
     ostream& printCard(ostream& output) const override;
     DiplomacyCard* copy() const override;
 };

@@ -1,6 +1,7 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Player.h"
+#include "Orders.h"
 #include <iostream>
 
 using namespace std;
@@ -43,7 +44,7 @@ void Deck::draw(Hand* hand) {
     // Initialize random seed to ensure randomness
     srand(time(NULL));
     int index = rand() % deckList.size() -1;
-    Card* cardDraw = deckList[index];
+    Card* cardDraw = deckList[0];
     removeCard(index);
     hand->addCard(cardDraw);
 }
@@ -116,9 +117,9 @@ void Hand::removeCard(int index) {
  * @param index
  */
 
-void Hand::playCard(int index){
+void Hand::playCard(int index, Territory* territory){
     Card* card = handList[index-1];
-    card->play(this->owner->getOrdersList());                     //create order
+    card->play(this->owner->getOrdersList(), territory);                     //create order
     removeCard(index);               //remove card from hand player
     deckList->addCard(card);        // add card to deck
 }
@@ -224,8 +225,8 @@ DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
  * Creating Order and adding the order in the Order List
  */
 
-void BombCard::play(OrdersList* ordersList) const{
-    Bomb* bomb = new Bomb();
+void BombCard::play(OrdersList* ordersList, Territory* territory) const{
+    Bomb* bomb = new Bomb(territory);
     ordersList->addOrder(bomb);
     cout << "output bomb card" << endl;
 }
@@ -245,7 +246,7 @@ ostream& BombCard::printCard(std::ostream &output) const {
     return new BombCard();
  }
 
-void ReinforcementCard::play(OrdersList* ordersList) const{  // Reinforcement Card does not create an order
+void ReinforcementCard::play(OrdersList* ordersList, Territory* territory) const {  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
 
@@ -264,8 +265,8 @@ ReinforcementCard* ReinforcementCard::copy() const
     return new ReinforcementCard();
 }
 
-void BlockadeCard::play(OrdersList* ordersList) const{
-    Blockade* blockade = new Blockade();
+void BlockadeCard::play(OrdersList* ordersList, Territory* territory) const{
+    Blockade* blockade = new Blockade(territory);
     ordersList->addOrder(blockade);
     cout << "output blockade card" << endl;
 }
@@ -285,8 +286,8 @@ BlockadeCard* BlockadeCard::copy() const
     return new BlockadeCard();
 }
 
-void AirliftCard::play(OrdersList* ordersList) const{
-    Airlift* airlift = new Airlift();
+void AirliftCard::play(OrdersList* ordersList, Territory* territory) const{
+    Airlift* airlift = new Airlift(12, territory, territory);
     ordersList->addOrder(airlift);
     cout << "output airlift card" << endl;
 }
@@ -306,7 +307,7 @@ AirliftCard* AirliftCard::copy() const
     return new AirliftCard();
 }
 
-void DiplomacyCard::play(OrdersList* ordersList) const{
+void DiplomacyCard::play(OrdersList* ordersList, Territory* territory) const{
     Negotiate* negotiate = new Negotiate();
     ordersList->addOrder(negotiate);
     cout << "output diplomacy card" << endl;

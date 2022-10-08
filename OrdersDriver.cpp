@@ -37,7 +37,6 @@ int testOrdersLists(){
     Airlift* air2 = new Airlift(22, ter5, ter6);
 
     Negotiate* neg1 = new Negotiate();
-    Negotiate* neg2 = new Negotiate("Johnny");
 
     // Creation of two OrdersList objects for testing
 
@@ -50,7 +49,7 @@ int testOrdersLists(){
     list1->addOrder(bomb2);
     list1->addOrder(block2);
     list1->addOrder(air2);
-    list1->addOrder(neg2);
+    list1->addOrder(neg1);
 
     //Testing OrdersList moveOrder functions:
     cout << " -- Testing OrdersList moveOrder functions -- " << endl;
@@ -84,7 +83,7 @@ int testOrdersLists(){
     cout << "Testing assignment operator" << endl;
     list2 = *list1;
 
-    cout << list1 << endl;
+    cout << *list1 << endl;
     list1->removeOrder(1);
 
     cout << "LIST 1 EXPECTED: Deploy, Blockade, Bombing, Airlift" << endl;
@@ -95,5 +94,6 @@ int testOrdersLists(){
     cout << list1->getSize() << endl;
     cout << "Size of list 2 expected 5" << endl;
     cout << list2.getSize() << endl;
+//    cout << *adv2 << endl;
     return 0;
 }
