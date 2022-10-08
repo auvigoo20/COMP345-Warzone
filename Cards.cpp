@@ -8,6 +8,10 @@ using namespace std;
 Deck::Deck(){
 }
 
+/**
+ * Copy constructor for Deck class.
+ * @param d
+ */
 Deck::Deck(const Deck& d){
     for (auto card: d.deckList) {
         this->deckList.push_back(card->copy());
@@ -76,8 +80,10 @@ Hand::Hand(){
 }
 
 Hand::Hand(const Hand& h){
-    this -> handList = h.handList;
     this -> owner = h.owner;
+    for (auto card: h.handList) {
+        this->handList.push_back(card->copy());
+    }
 }
 
 Hand::Hand(Deck* deckList) {
@@ -128,6 +134,22 @@ ostream& Hand::printHand(std::ostream &output) {
 
 void Hand::setOwner(Player* p) {
     this->owner = p;
+}
+
+/**
+ * Assignment operator for hand class
+ * @param h
+ * @return
+ */
+Hand& Hand::operator=(const Hand &h)
+{
+    if (this != &h) {
+       for(auto card: h.handList) {
+           this->handList.push_back(card->copy());
+       }
+       return *this;
+    }
+    return *this;
 }
 
 ostream& operator <<(ostream& output, Hand& h){
