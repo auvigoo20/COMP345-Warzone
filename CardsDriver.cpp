@@ -74,6 +74,8 @@ int testCards(){
     cout << "Calling draw() for player Bobby" << endl;
 
     deck->draw(hand1);
+    deck->draw(hand1);
+    deck->draw(hand1);
 
     cout << *deck << endl;
     cout << *hand1 << endl;
@@ -83,14 +85,26 @@ int testCards(){
      */
 
     cout << "Player Bobby calling the play() method on this card" << endl;
+    Continent* continent = new Continent("RandomCont", 5);
+    Territory* territory = new Territory("randomTer", 1, 2, continent);
 
-    hand1->playCard(1);
+    hand1->playCard(1, territory);
+    hand1->playCard(1, territory);
+    hand1->playCard(1, territory);
 
     cout << *deck << endl;
     cout << *hand1 << endl;
 
     cout << "Check if the order associated with the played card is in the Player's orderlist" << endl;
     cout << *player->getOrdersList() << endl;
+
+    delete player;
+    delete hand1;
+    delete deck;
+    delete ordersList;
+    delete continent;
+    delete territory;
+
 
     return 0;
 }

@@ -623,10 +623,10 @@ Airlift::~Airlift()
 
 Negotiate::Negotiate()
 {
-    this -> targetPlayer = "Target Player";
+    this -> targetPlayer = nullptr;
 }
 
-Negotiate::Negotiate(string targetPlayer)
+Negotiate::Negotiate(Player* targetPlayer)
 {
     this->targetPlayer = targetPlayer;
 }

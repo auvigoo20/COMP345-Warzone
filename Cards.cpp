@@ -1,6 +1,7 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Player.h"
+#include "Orders.h"
 #include <iostream>
 
 using namespace std;
@@ -8,8 +9,14 @@ using namespace std;
 Deck::Deck(){
 }
 
+/**
+ * Copy constructor for Deck class.
+ * @param d
+ */
 Deck::Deck(const Deck& d){
-    this -> deckList = d.deckList;
+    for (auto card: d.deckList) {
+        this->deckList.push_back(card->copy());
+    }
 }
 
 void Deck::addCard(Card* card) {
@@ -36,7 +43,7 @@ void Deck::draw(Hand* hand) {
 
     // Initialize random seed to ensure randomness
     srand(time(NULL));
-    int index = rand() % deckList.size() -1;
+    int index = rand() % deckList.size();
     Card* cardDraw = deckList[index];
     removeCard(index);
     hand->addCard(cardDraw);
@@ -55,12 +62,38 @@ ostream& operator <<(ostream& output, Deck& d){
     return d.printDeck(output);
 }
 
+/**
+ * Assignment operator for the deck class.
+ * Performs deep copy of Deck object.
+ */
+ Deck& Deck::operator = (const Deck& d)
+{
+     if (this != &d) {
+         for (auto card: d.deckList) {
+             this->deckList.push_back(card->copy());
+         }
+         return *this;
+     }
+     return *this;
+}
+
+Deck::~Deck()
+{
+     for(auto card: deckList){
+         delete card;
+     }
+    //Swapping content to a non-instantiated vector will deallocate its memory.
+    vector<Card*>().swap(this->deckList);
+}
+
 Hand::Hand(){
 }
 
 Hand::Hand(const Hand& h){
-    this -> handList = h.handList;
     this -> owner = h.owner;
+    for (auto card: h.handList) {
+        this->handList.push_back(card->copy());
+    }
 }
 
 Hand::Hand(Deck* deckList) {
@@ -93,11 +126,16 @@ void Hand::removeCard(int index) {
  * @param index
  */
 
-void Hand::playCard(int index){
+void Hand::playCard(int index, Territory* territory){
     Card* card = handList[index-1];
-    card->play(this->owner->getOrdersList());                     //create order
+    card->play(this->owner->getOrdersList(), territory);                     //create order
     removeCard(index);               //remove card from hand player
     deckList->addCard(card);        // add card to deck
+}
+
+vector<Card*>* Hand::getHandList()
+{
+    return &this->handList;
 }
 
 ostream& Hand::printHand(std::ostream &output) {
@@ -113,6 +151,31 @@ void Hand::setOwner(Player* p) {
     this->owner = p;
 }
 
+/**
+ * Assignment operator for hand class
+ * @param h
+ * @return
+ */
+Hand& Hand::operator=(const Hand &h)
+{
+    if (this != &h) {
+       for(auto card: h.handList) {
+           this->handList.push_back(card->copy());
+       }
+       return *this;
+    }
+    return *this;
+}
+
+Hand::~Hand()
+{
+    for(auto card: handList){
+        delete card;
+    }
+    //Swapping content to a non-instantiated vector will deallocate its memory.
+    vector<Card*>().swap(this->handList);
+}
+
 ostream& operator <<(ostream& output, Hand& h){
     return h.printHand(output);
 }
@@ -124,24 +187,69 @@ ostream& operator <<(ostream& output, Card& c){
 BombCard::BombCard(){
 }
 
+/**
+ * Copy constructor for BombCard. Empty for now
+ * as class has no members to copy.
+ * @param b
+ */
+BombCard::BombCard(const BombCard& b)
+{
+}
+
 ReinforcementCard::ReinforcementCard() {
+}
+
+/**
+ * Copy constructor for ReinforcmentCard. Empty for now
+ * as class has no members to copy.
+ * @param b
+ */
+ReinforcementCard::ReinforcementCard(const ReinforcementCard& r)
+{
 }
 
 BlockadeCard::BlockadeCard() {
 }
 
+/**
+ * Copy constructor for BlockadeCard. Empty for now
+ * as class has no members to copy.
+ * @param r
+ */
+BlockadeCard::BlockadeCard(const BlockadeCard& r)
+{
+}
+
 AirliftCard::AirliftCard() {
+}
+
+/**
+ * Copy constructor for AirliftCard. Empty for now
+ * as class has no members to copy.
+ * @param a
+ */
+AirliftCard::AirliftCard(const AirliftCard& a)
+{
 }
 
 DiplomacyCard::DiplomacyCard() {
 }
 
 /**
+ * Copy constructor for DiplomacyCard. Empty for now
+ * as class has no members to copy.
+ * @param d
+ */
+DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
+{
+}
+
+/**
  * Creating Order and adding the order in the Order List
  */
 
-void BombCard::play(OrdersList* ordersList) const{
-    Bomb* bomb = new Bomb();
+void BombCard::play(OrdersList* ordersList, Territory* territory) const{
+    Bomb* bomb = new Bomb(territory);
     ordersList->addOrder(bomb);
     cout << "output bomb card" << endl;
 }
@@ -151,7 +259,21 @@ ostream& BombCard::printCard(std::ostream &output) const {
     return output;
 }
 
-void ReinforcementCard::play(OrdersList* ordersList) const{  // Reinforcement Card does not create an order
+/**
+ * Creates a new Bombcard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+ BombCard* BombCard::copy() const
+ {
+    return new BombCard();
+ }
+
+ BombCard::~BombCard()
+ {
+ }
+
+void ReinforcementCard::play(OrdersList* ordersList, Territory* territory) const {  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
 
@@ -160,8 +282,22 @@ ostream& ReinforcementCard::printCard(std::ostream &output) const {
     return output;
 }
 
-void BlockadeCard::play(OrdersList* ordersList) const{
-    Blockade* blockade = new Blockade();
+/**
+ * Creates a new Reinforcmentcard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+ReinforcementCard* ReinforcementCard::copy() const
+{
+    return new ReinforcementCard();
+}
+
+ReinforcementCard::~ReinforcementCard()
+{
+}
+
+void BlockadeCard::play(OrdersList* ordersList, Territory* territory) const{
+    Blockade* blockade = new Blockade(territory);
     ordersList->addOrder(blockade);
     cout << "output blockade card" << endl;
 }
@@ -171,8 +307,22 @@ ostream& BlockadeCard::printCard(std::ostream &output) const {
     return output;
 }
 
-void AirliftCard::play(OrdersList* ordersList) const{
-    Airlift* airlift = new Airlift();
+/**
+ * Creates a new BlockadeCard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+BlockadeCard* BlockadeCard::copy() const
+{
+    return new BlockadeCard();
+}
+
+BlockadeCard::~BlockadeCard()
+{
+}
+
+void AirliftCard::play(OrdersList* ordersList, Territory* territory) const{
+    Airlift* airlift = new Airlift(12, territory, territory);
     ordersList->addOrder(airlift);
     cout << "output airlift card" << endl;
 }
@@ -181,7 +331,22 @@ ostream& AirliftCard::printCard(std::ostream &output) const {
     output << " Airlift Card " << endl;
     return output;
 }
-void DiplomacyCard::play(OrdersList* ordersList) const{
+
+/**
+ * Creates a new Airliftcard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+AirliftCard* AirliftCard::copy() const
+{
+    return new AirliftCard();
+}
+
+AirliftCard::~AirliftCard()
+{
+}
+
+void DiplomacyCard::play(OrdersList* ordersList, Territory* territory) const{
     Negotiate* negotiate = new Negotiate();
     ordersList->addOrder(negotiate);
     cout << "output diplomacy card" << endl;
@@ -191,3 +356,17 @@ ostream& DiplomacyCard::printCard(std::ostream &output) const {
     output << " Diplomacy Card " << endl;
     return output;
 }
+/**
+ * Creates a new DiplomacyCard object. To assist
+ * in creation of deep copies in list, taking advantage
+ * of polymorphic capacities.
+ */
+DiplomacyCard* DiplomacyCard::copy() const
+{
+    return new DiplomacyCard();
+}
+
+DiplomacyCard::~DiplomacyCard()
+{
+}
+

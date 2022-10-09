@@ -19,25 +19,20 @@ int testOrdersLists(){
     Territory* ter4 = new Territory("Mexico", 12, 13, continent);
     Territory* ter5 = new Territory("Quebec", 12, 13, continent);
     Territory* ter6 = new Territory("Ontario", 12, 13, continent);
-    Deploy* dep1 = new Deploy();
-    Deploy* dep2 = new Deploy(12, ter1);
 
     // Creating different all type of orders using different constructors
 
-    Advance* adv1 = new Advance();
+    Deploy* dep2 = new Deploy(12, ter1);
+
     Advance* adv2 = new Advance(10, ter1, ter2);
 
-    Bomb* bomb1 = new Bomb();
     Bomb* bomb2 = new Bomb(ter3);
 
-    Blockade* block1 = new Blockade();
     Blockade* block2 = new Blockade(ter4);
 
-    Airlift* air1 = new Airlift();
     Airlift* air2 = new Airlift(22, ter5, ter6);
 
     Negotiate* neg1 = new Negotiate();
-    Negotiate* neg2 = new Negotiate("Johnny");
 
     // Creation of two OrdersList objects for testing
 
@@ -50,7 +45,7 @@ int testOrdersLists(){
     list1->addOrder(bomb2);
     list1->addOrder(block2);
     list1->addOrder(air2);
-    list1->addOrder(neg2);
+    list1->addOrder(neg1);
 
     //Testing OrdersList moveOrder functions:
     cout << " -- Testing OrdersList moveOrder functions -- " << endl;
@@ -84,7 +79,7 @@ int testOrdersLists(){
     cout << "Testing assignment operator" << endl;
     list2 = *list1;
 
-    cout << list1 << endl;
+    cout << *list1 << endl;
     list1->removeOrder(1);
 
     cout << "LIST 1 EXPECTED: Deploy, Blockade, Bombing, Airlift" << endl;
@@ -95,5 +90,15 @@ int testOrdersLists(){
     cout << list1->getSize() << endl;
     cout << "Size of list 2 expected 5" << endl;
     cout << list2.getSize() << endl;
+
+    delete list1;
+    delete continent;
+    delete ter1;
+    delete ter2;
+    delete ter3;
+    delete ter4;
+    delete ter5;
+    delete ter6;
+
     return 0;
 }
