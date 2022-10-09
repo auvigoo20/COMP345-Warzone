@@ -33,15 +33,9 @@ Transition::Transition(const Transition &t) {
  */
 Transition::Transition(string name, State *to) {
     this->name = name;
+
+    // Since we want transitions to a particular state to point to the same State object, a shallow copy is used here.
     this->to = to;
-}
-/**
- * Assignment Operator
- * @param t
- */
-Transition& Transition::operator=(const Transition& t) {
-    this->name = new string(t.name);
-    this->to = new State(t.to);
 }
 
 string Transition::getName() {
@@ -58,6 +52,18 @@ void Transition::setName(string name) {
 
 void Transition::setTo(State *to) {
     this->to = to;
+}
+
+/**
+ * Assignment Operator
+ * @param t
+ */
+Transition& Transition::operator=(const Transition& t) {
+    this->name = t.name;
+
+    // Since we want transitions to a particular state to point to the same State object, a shallow copy is used here.
+    this->to = t.to;
+    return *this;
 }
 
 //  Stream Insertion Operator
@@ -80,6 +86,8 @@ State::State() {
  */
 State::State(const State &s) {
     name = s.name;
+
+    // Since we want transitions from a particular state to point to the same Transition objects, a shallow copy is used here.
     transitions = s.transitions;
 }
 
@@ -102,11 +110,6 @@ State::State(std::string name, vector<Transition *> transitions) {
     this->transitions = transitions;
 }
 
-State& State::operator=(const State& s) {
-    this->name = new string(s.name);
-    this->transitions = new Transition(s.transitions);
-}
-
 string State::getName() {
     return name;
 }
@@ -123,7 +126,20 @@ void State::setTransitions(vector<Transition *> transitions) {
     this->transitions = transitions;
 }
 
-//  Stream Insertion Operator
+State& State::operator=(const State& s) {
+    this->name = s.name;
+
+    // Since we want transitions from a particular state to point to the same Transition objects, a shallow copy is used here.
+    this->transitions = s.transitions;
+    return *this;
+}
+
+/**
+ * Stream Insertion Operator
+ * @param strm
+ * @param s
+ * @return
+ */
 ostream& operator << (ostream &strm, const State &s){
     strm << "STATE: Name: " << s.name << ", Next States: {";
 
@@ -150,6 +166,8 @@ GameEngine::GameEngine() {
  * @param g the GameEngine to copy
  */
 GameEngine::GameEngine(const GameEngine &g) {
+    // If multiple game engines share the same particular current state, we want them to point to the same State object.
+    // Thus, a shallow copy is used here.
     currentState = g.currentState;
     latestCommand = g.latestCommand;
     initializeEngineStates();
@@ -164,17 +182,20 @@ GameEngine::GameEngine(State *startingState) {
     initializeEngineStates();
 }
 
-GameEngine& GameEngine::operator=(const GameEngine& g) {
-    this->currentState = new State(g.currentState);
-    this->latestCommand = new string(g.latestCommand);
-}
-
 State *GameEngine::getCurrentState() {
     return currentState;
 }
 
 void GameEngine::setCurrentState(State *currentState) {
     this->currentState = currentState;
+}
+
+GameEngine& GameEngine::operator=(const GameEngine& g) {
+    // If multiple game engines share the same particular current state, we want them to point to the same State object.
+    // Thus, a shallow copy is used here.
+    this->currentState = g.currentState;
+    this->latestCommand = g.latestCommand;
+    return *this;
 }
 
 /**
