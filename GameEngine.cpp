@@ -88,7 +88,7 @@ Transition& Transition::operator=(const Transition& t) {
  * @return strm
  */
 ostream& operator << (ostream &strm, const Transition &t){
-    return strm << "TRANSITION: Name: " << t.name << ", Transition State: " << t.to->getName();
+    return strm << "TRANSITION: Name: " << t.name << ", Target State: " << t.to->getName();
 }
 
 /**
@@ -162,7 +162,7 @@ void State::setTransitions(vector<Transition *> transitions) {
 }
 
 /**
- * Transition assignment operator
+ * State assignment operator
  * @param s The state to be assigned
  */
 State& State::operator=(const State& s) {
@@ -180,7 +180,7 @@ State& State::operator=(const State& s) {
  * @return strm
  */
 ostream& operator << (ostream &strm, const State &s){
-    strm << "STATE: Name: " << s.name << ", Next States: {";
+    strm << "STATE: Name: " << s.name << ", Transitions: {";
 
     for (int i=0; i<s.transitions.size(); i++){
         strm << s.transitions.at(i)->getName();
@@ -230,11 +230,27 @@ State *GameEngine::getCurrentState() {
 }
 
 /**
+ * Getter for the "latestCommand" variable
+ * @return latestCommand
+ */
+string GameEngine::getLatestCommand() {
+    return latestCommand;
+}
+
+/**
  * Setter for the "currentState" variable
  * @param currentState
  */
 void GameEngine::setCurrentState(State *currentState) {
     this->currentState = currentState;
+}
+
+/**
+ * Setter for the "latestCommand" variable
+ * @param latestCommand
+ */
+void GameEngine::setLatestCommand(std::string latestCommand) {
+    this->latestCommand = latestCommand;
 }
 
 /**

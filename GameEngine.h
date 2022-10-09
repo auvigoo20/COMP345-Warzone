@@ -49,19 +49,21 @@ public:
 
 class GameEngine {
 private:
-    friend ostream& operator << (ostream&, const GameEngine&);
     State* currentState;
-    static void initializeEngineStates();
-public:
     string latestCommand;
 
+    friend ostream& operator << (ostream&, const GameEngine&);
+    static void initializeEngineStates();
+public:
     GameEngine();
     GameEngine(const GameEngine &g);
     explicit GameEngine(State* startingState);
     GameEngine& operator = (const GameEngine& g);
 
     State* getCurrentState();
+    string getLatestCommand();
     void setCurrentState(State* currentState);
+    void setLatestCommand(string latestCommand);
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.
