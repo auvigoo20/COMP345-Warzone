@@ -10,6 +10,11 @@ using std::string;
 
 int testGameStates(){
 
+
+    cout << "****************************************" << endl;
+    cout << "*          Testing Game Engine         *" << endl;
+    cout << "****************************************" << endl;
+
     bool done = false;
     GameEngine testGameEngine {GameEngine::start};
     string latestCommand;
@@ -41,6 +46,8 @@ int testGameStates(){
         if (invalidCommand) {
             cout << "Invalid command." << endl;
         }
+
+        cout << endl;
     }
 
     cout << "Game ended." << endl;

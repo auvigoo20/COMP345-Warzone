@@ -6,9 +6,9 @@ using std::cout;
 using std::endl;
 
 int testOrdersLists(){
-    cout << "-------------------------------------" << endl;
-    cout << "Testing Orders and OrdersList classes" << endl;
-    cout << "-------------------------------------" << endl;
+    cout << "*****************************************" << endl;
+    cout << "* Testing Orders and OrdersList classes *" << endl;
+    cout << "*****************************************" << endl;
 
     //Creating multiple territories needed to create orders.
 
