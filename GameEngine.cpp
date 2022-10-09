@@ -35,6 +35,14 @@ Transition::Transition(string name, State *to) {
     this->name = name;
     this->to = to;
 }
+/**
+ * Assignment Operator
+ * @param t
+ */
+Transition& Transition::operator=(const Transition& t) {
+    this->name = new string(t.name);
+    this->to = new State(t.to);
+}
 
 string Transition::getName() {
     return name;
@@ -94,6 +102,11 @@ State::State(std::string name, vector<Transition *> transitions) {
     this->transitions = transitions;
 }
 
+State& State::operator=(const State& s) {
+    this->name = new string(s.name);
+    this->transitions = new Transition(s.transitions);
+}
+
 string State::getName() {
     return name;
 }
@@ -149,6 +162,11 @@ GameEngine::GameEngine(const GameEngine &g) {
 GameEngine::GameEngine(State *startingState) {
     currentState = startingState;
     initializeEngineStates();
+}
+
+GameEngine& GameEngine::operator=(const GameEngine& g) {
+    this->currentState = new State(g.currentState);
+    this->latestCommand = new string(g.latestCommand);
 }
 
 State *GameEngine::getCurrentState() {

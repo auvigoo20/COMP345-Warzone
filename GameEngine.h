@@ -21,6 +21,7 @@ public:
     Transition();
     Transition(const Transition &t);
     Transition(string name, State* to);
+    Transition& operator = (const Transition& t);
 
     string getName();
     State* getTo();
@@ -38,6 +39,7 @@ public:
     State(const State &s);
     explicit State(string name);
     State(string name, vector<Transition*> transitions);
+    State& operator = (const State& s);
 
     string getName();
     vector<Transition*> getTransitions();
@@ -56,6 +58,7 @@ public:
     GameEngine();
     GameEngine(const GameEngine &g);
     explicit GameEngine(State* startingState);
+    GameEngine& operator = (const GameEngine& g);
 
     State* getCurrentState();
     void setCurrentState(State* currentState);
