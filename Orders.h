@@ -30,7 +30,6 @@ public:
     void removeOrder(int index);
     void moveOrderUp(int index);
     void moveOrderDown(int index);
-    void executeOrders();
     int getSize();
     ostream& printList(ostream& output);
     Order* getOrder(int index);

@@ -5,6 +5,10 @@
 
 void testPlayer() {
 
+    cout << "****************************************" << endl;
+    cout << "*              PLAYER TEST             *" << endl;
+    cout << "****************************************" << endl;
+
     vector<Territory *> territory1;
     Continent *c1 = new Continent("C1", 1);
     Territory *t1 = new Territory("T1", 1, 2, c1);
@@ -34,20 +38,19 @@ void testPlayer() {
         cout << *territory << endl;
     }
 
-    p1->issueOrder();
-    p1->issueOrder();
-    cout << "Issued order: " << endl;
-    cout << *(p1->getOrdersList());
+    cout << "Player1 Issuing 3 orders!" << endl;
+    p1->issueOrder(0);
+    p1->issueOrder(1);
+    p1->issueOrder(2);
+
+    cout << "Player information: " << endl;
+    cout << *p1 << endl;
 
     delete c1;
     delete t1;
     delete t2;
     delete t3;
     delete p1;
-    delete hand;
-    delete ordersList;
-    hand = nullptr;
-    ordersList = nullptr;
     c1 = nullptr;
     t1 = nullptr;
     t2 = nullptr;
