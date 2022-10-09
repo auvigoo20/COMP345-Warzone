@@ -19,7 +19,7 @@ Transition::Transition() {
 
 /**
  * Transition copy constructor
- * @param t The Transition to copy
+ * @param t Transition to copy
  */
 Transition::Transition(const Transition &t) {
     name = t.name;
@@ -33,30 +33,45 @@ Transition::Transition(const Transition &t) {
  */
 Transition::Transition(string name, State *to) {
     this->name = name;
-
     // Since we want transitions to a particular state to point to the same State object, a shallow copy is used here.
     this->to = to;
 }
 
+/**
+ * Getter for the "name" variable
+ * @return name
+ */
 string Transition::getName() {
     return name;
 }
 
+/**
+ * Getter for the "to" variable
+ * @return to
+ */
 State *Transition::getTo() {
     return to;
 }
 
+/**
+ * Setter for the "name" variable
+ * @param name The new name for the transition
+ */
 void Transition::setName(string name) {
     this->name = name;
 }
 
+/**
+ * Setter for the "to" variable
+ * @param to The new state pointer for the transition
+ */
 void Transition::setTo(State *to) {
     this->to = to;
 }
 
 /**
- * Assignment Operator
- * @param t
+ * Transition assignment operator
+ * @param t The transition to be assigned
  */
 Transition& Transition::operator=(const Transition& t) {
     this->name = t.name;
@@ -66,11 +81,15 @@ Transition& Transition::operator=(const Transition& t) {
     return *this;
 }
 
-//  Stream Insertion Operator
+/**
+ * Transition stream insertion operator
+ * @param strm
+ * @param s
+ * @return strm
+ */
 ostream& operator << (ostream &strm, const Transition &t){
     return strm << "TRANSITION: Name: " << t.name << ", Transition State: " << t.to->getName();
 }
-
 
 /**
  * State default constructor
@@ -110,22 +129,42 @@ State::State(std::string name, vector<Transition *> transitions) {
     this->transitions = transitions;
 }
 
+/**
+ * Getter for the "name" variable
+ * @return name
+ */
 string State::getName() {
     return name;
 }
 
+/**
+ * Getter for the "transitions" variable
+ * @return transitions
+ */
 vector<Transition *> State::getTransitions() {
     return transitions;
 }
 
+/**
+ * Setter for the "name" variable
+ * @param name The new name for the state
+ */
 void State::setName(std::string name) {
     this->name = name;
 }
 
+/**
+ * Setter for the "transitions" variable
+ * @param transitions The new transitions vector for the state
+ */
 void State::setTransitions(vector<Transition *> transitions) {
     this->transitions = transitions;
 }
 
+/**
+ * Transition assignment operator
+ * @param s The state to be assigned
+ */
 State& State::operator=(const State& s) {
     this->name = s.name;
 
@@ -135,10 +174,10 @@ State& State::operator=(const State& s) {
 }
 
 /**
- * Stream Insertion Operator
+ * State stream insertion operator
  * @param strm
  * @param s
- * @return
+ * @return strm
  */
 ostream& operator << (ostream &strm, const State &s){
     strm << "STATE: Name: " << s.name << ", Next States: {";
@@ -154,7 +193,7 @@ ostream& operator << (ostream &strm, const State &s){
 
 
 /**
- * Default GameEngine constructor
+ * GameEngine default constructor
  */
 GameEngine::GameEngine() {
     currentState = nullptr;
@@ -162,7 +201,7 @@ GameEngine::GameEngine() {
 }
 
 /**
- * Copy GameEngine constructor
+ * GameEngine copy constructor
  * @param g the GameEngine to copy
  */
 GameEngine::GameEngine(const GameEngine &g) {
@@ -182,14 +221,26 @@ GameEngine::GameEngine(State *startingState) {
     initializeEngineStates();
 }
 
+/**
+ * Getter for the "currentState" variable
+ * @return currentState
+ */
 State *GameEngine::getCurrentState() {
     return currentState;
 }
 
+/**
+ * Setter for the "currentState" variable
+ * @param currentState
+ */
 void GameEngine::setCurrentState(State *currentState) {
     this->currentState = currentState;
 }
 
+/**
+ * GameEngine assignment operator
+ * @param g The state to be assigned
+ */
 GameEngine& GameEngine::operator=(const GameEngine& g) {
     // If multiple game engines share the same particular current state, we want them to point to the same State object.
     // Thus, a shallow copy is used here.
@@ -202,7 +253,7 @@ GameEngine& GameEngine::operator=(const GameEngine& g) {
  * GameEngine stream insertion operator
  * @param strm
  * @param g
- * @return
+ * @return strm
  */
 ostream& operator << (ostream &strm, const GameEngine &g){
     return strm << "GAME ENGINE: Current State: {" << *g.currentState << "}, Latest Command: " << g.latestCommand;
