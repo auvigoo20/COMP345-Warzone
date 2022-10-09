@@ -136,7 +136,7 @@ class Negotiate: public Order {
 public:
     Negotiate( );
     Negotiate(const Negotiate& b);
-    explicit Negotiate(string targetPlayer);
+    explicit Negotiate(Player* targetPlayer);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -145,5 +145,5 @@ public:
     ~Negotiate() override;
 
 private:
-    string targetPlayer;
+    Player* targetPlayer;
 };
