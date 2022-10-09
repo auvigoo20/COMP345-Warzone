@@ -1,14 +1,15 @@
 #include "MapDriver.h"
+#include "GameEngineDriver.h"
 #include "PlayerDriver.h"
 #include "OrdersDriver.h"
 #include "CardsDriver.h"
 
 int main(){
-
     testLoadMaps();
     testPlayer();
     testOrdersLists();
     testCards();
-    //testGameEngine();
-    return 1;
+    testGameStates();
+
+    return 0;
 }

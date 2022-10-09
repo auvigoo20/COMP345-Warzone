@@ -99,12 +99,9 @@ int testCards(){
     cout << *player->getOrdersList() << endl;
 
     delete player;
-    delete hand1;
     delete deck;
-    delete ordersList;
     delete continent;
     delete territory;
-
 
     return 0;
 }
