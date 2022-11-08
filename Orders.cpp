@@ -355,6 +355,8 @@ void Advance::attackSimulation() const {
         currentPlayer->addTerritory(targetTerritory);
         targetTerritory->setOwner(currentPlayer);
         targetTerritory->setNumOfArmies(remainingAttackers);
+        // ****** Must notify the game engine to give card to attacking player for this win
+        // (MAX 1 SUCH CARD PER TURN)
     } else {
         cout << "Territory successfully defended !" << endl;
         targetTerritory->setNumOfArmies(remainingDefenders);
@@ -364,7 +366,6 @@ void Advance::attackSimulation() const {
 
 /**
  * Verifies if order is valid then executes it.
- * (Execution yet to be implemented).
  */
 void Advance::execute() const
 {
@@ -648,19 +649,25 @@ void Airlift::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
-        printOrder(cout);
+        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
+        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
+
     }
 }
 
 /**
- * Verifies if given order is valid.
- * (Validation yet to be implemented).
- * @return
+ * Verifies if both target and source territories are
+ * owned by the issuing player.
+ * @return True if both target and source territory are owned by
+ * the issuing player.
  */
 bool Airlift::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName() ||
+    this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+        cout << "Source and/or target territory are not owned" << endl;
+        return false;
+    }
     return true;
 }
 
