@@ -85,6 +85,10 @@ void Player::setHand(Hand *hand) {
     this->hand = hand;
 }
 
+string Player::getName() {
+    return this->name;
+}
+
 OrdersList *Player::getOrdersList() {
     return this->orderList;
 }

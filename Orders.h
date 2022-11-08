@@ -47,7 +47,7 @@ class Deploy: public Order
 public:
     Deploy( );
     Deploy(const Deploy& d);
-    Deploy(int numOfArmies, Territory* targetTerritory);
+    Deploy(Player* currentPlayer, int numOfArmies, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -56,8 +56,9 @@ public:
     ~Deploy() override;
 
 private:
+    Player* currentPlayer;
     int numOfArmies;
-    Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* targetTerritory;
 };
 
 class Advance: public Order
@@ -65,7 +66,7 @@ class Advance: public Order
 public:
     Advance( );
     Advance(const Advance& a);
-    Advance(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory);
+    Advance(Player* currentPlayer, int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -74,6 +75,7 @@ public:
     ~Advance() override;
 
 private:
+    Player* currentPlayer;
     int numOfArmies;
     Territory* sourceTerritory; //***** Has to be changed to Territory object ptr *****
     Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
@@ -84,7 +86,7 @@ class Bomb: public Order
 public:
     Bomb( );
     Bomb(const Bomb& b);
-    explicit Bomb(Territory* targetTerritory);
+    explicit Bomb(Player* currentPlayer, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -93,6 +95,7 @@ public:
     ~Bomb() override;
 
 private:
+    Player* currentPlayer;
     Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
 
 };
@@ -102,7 +105,7 @@ class Blockade: public Order
 public:
     Blockade( );
     Blockade(const Blockade& b);
-    explicit Blockade(Territory* targetTerritory);
+    explicit Blockade(Player* currentPlayer, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -111,6 +114,7 @@ public:
     ~Blockade() override;
 
 private:
+    Player* currentPlayer;
     Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
 };
 
@@ -118,7 +122,7 @@ class Airlift: public Order {
 public:
     Airlift( );
     Airlift(const Airlift& b);
-    Airlift(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory);
+    Airlift(Player* currentPlayer, int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -127,6 +131,7 @@ public:
     ~Airlift() override;
 
 private:
+    Player* currentPlayer;
     int numOfArmies;
     Territory* sourceTerritory; //***** Has to be changed to Territory object ptr *****
     Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
@@ -136,7 +141,7 @@ class Negotiate: public Order {
 public:
     Negotiate( );
     Negotiate(const Negotiate& b);
-    explicit Negotiate(Player* targetPlayer);
+    explicit Negotiate(Player* currentPlayer, Player* targetPlayer);
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
@@ -145,5 +150,6 @@ public:
     ~Negotiate() override;
 
 private:
+    Player* currentPlayer;
     Player* targetPlayer;
 };

@@ -1,6 +1,7 @@
 #include "Orders.h"
 #include <iostream>
 #include <utility>
+#include "player.h"
 
 using std::cout;
 using std::endl;
@@ -187,10 +188,12 @@ Deploy::Deploy()
 {
     this -> numOfArmies = 0;
     this -> targetTerritory = nullptr;
+    this -> currentPlayer == nullptr;
 }
 
-Deploy::Deploy(int numOfArmies, Territory* targetTerritory)
+Deploy::Deploy(Player* currentPlayer, int numOfArmies, Territory* targetTerritory)
 {
+    this->currentPlayer = currentPlayer;
     this->numOfArmies = numOfArmies;
     this->targetTerritory = targetTerritory;
 }
@@ -204,6 +207,7 @@ Deploy::Deploy(const Deploy& d)
 {
     this->numOfArmies = d.numOfArmies;
     this->targetTerritory = d.targetTerritory;
+    this->currentPlayer = d.currentPlayer;
 }
 
 ostream& Deploy::printOrder(ostream &output) const
@@ -222,19 +226,21 @@ void Deploy::execute() const
     if(!validate()) {
        cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        this->targetTerritory->setNumOfArmies(this->targetTerritory->getNumOfArmies() + this->numOfArmies);
         printOrder(cout);
     }
 }
 
 /**
  * Verifies if given order is valid.
- * (Validation yet to be implemented).
- * @return
+ * @return bool true if targetTerritory belongs to player
  */
 bool Deploy::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if (this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+        cout << "Specified territory is not owned" << endl;
+        return false;
+    }
     return true;
 }
 
@@ -257,6 +263,7 @@ Deploy& Deploy::operator=(const Deploy &d)
     if (this != &d) { //Checking for self assignment
         this->numOfArmies = d.numOfArmies;
         this->targetTerritory = d.targetTerritory;
+        this->currentPlayer = d.currentPlayer;
     }
     return *this;
 }
@@ -276,13 +283,15 @@ Advance::Advance()
     this -> numOfArmies = 0;
     this -> sourceTerritory = nullptr;
     this -> targetTerritory = nullptr;
+    this->currentPlayer = nullptr;
 }
 
-Advance::Advance(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
+Advance::Advance(Player* currentPlayer, int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
 {
     this->numOfArmies = numOfArmies;
     this->sourceTerritory = sourceTerritory;
     this->targetTerritory = targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -295,6 +304,7 @@ Advance::Advance(const Advance& a)
     this->numOfArmies = a.numOfArmies;
     this->sourceTerritory = a.sourceTerritory;
     this->targetTerritory = a.targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 ostream& Advance::printOrder(ostream &output) const
@@ -350,6 +360,7 @@ Advance& Advance::operator=(const Advance &a)
         this->numOfArmies = a.numOfArmies;
         this->sourceTerritory = a.sourceTerritory;
         this->targetTerritory = a.targetTerritory;
+        this->currentPlayer = a.currentPlayer;
     }
     return *this;
 }
@@ -366,11 +377,13 @@ Advance::~Advance()
 Bomb::Bomb()
 {
     this -> targetTerritory = nullptr;
+    this -> currentPlayer = nullptr;
 }
 
-Bomb::Bomb(Territory* targetTerritory)
+Bomb::Bomb(Player* currentPlayer, Territory* targetTerritory)
 {
     this->targetTerritory = targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -381,6 +394,7 @@ Bomb::Bomb(Territory* targetTerritory)
 Bomb::Bomb(const Bomb& b)
 {
     this->targetTerritory = b.targetTerritory;
+    this->currentPlayer = b.currentPlayer;
 }
 
 ostream& Bomb::printOrder(ostream &output) const
@@ -449,11 +463,13 @@ Bomb::~Bomb()
 Blockade::Blockade()
 {
     this -> targetTerritory = nullptr;
+    this -> currentPlayer = nullptr;
 }
 
-Blockade::Blockade(Territory* targetTerritory)
+Blockade::Blockade(Player* currentPlayer, Territory* targetTerritory)
 {
     this->targetTerritory = targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -464,6 +480,7 @@ Blockade::Blockade(Territory* targetTerritory)
 Blockade::Blockade(const Blockade& b)
 {
     this->targetTerritory = b.targetTerritory;
+    this->currentPlayer = b.currentPlayer;
 }
 
 ostream& Blockade::printOrder(ostream &output) const
@@ -516,6 +533,7 @@ Blockade& Blockade::operator=(const Blockade &b)
 {
     if (this != &b) { //Checking for self assignment
         this->targetTerritory = b.targetTerritory;
+        this->currentPlayer = b.currentPlayer;
     }
     return *this;
 }
@@ -534,13 +552,15 @@ Airlift::Airlift()
     this -> numOfArmies = 0;
     this -> sourceTerritory = nullptr;
     this -> targetTerritory = nullptr;
+    this -> currentPlayer = nullptr;
 }
 
-Airlift::Airlift(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
+Airlift::Airlift(Player* currentPlayer, int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
 {
     this->numOfArmies = numOfArmies;
     this->sourceTerritory = sourceTerritory;
     this->targetTerritory = targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -553,6 +573,7 @@ Airlift::Airlift(const Airlift& a)
     this->numOfArmies = a.numOfArmies;
     this->sourceTerritory = a.sourceTerritory;
     this->targetTerritory = a.targetTerritory;
+    this->currentPlayer = a.currentPlayer;
 }
 
 ostream& Airlift::printOrder(ostream &output) const
@@ -608,6 +629,7 @@ Airlift& Airlift::operator=(const Airlift &a)
         this->numOfArmies = a.numOfArmies;
         this->sourceTerritory = a.sourceTerritory;
         this->targetTerritory = a.targetTerritory;
+        this->currentPlayer = a.currentPlayer;
     }
     return *this;
 }
@@ -626,9 +648,10 @@ Negotiate::Negotiate()
     this -> targetPlayer = nullptr;
 }
 
-Negotiate::Negotiate(Player* targetPlayer)
+Negotiate::Negotiate(Player* currentPlayer, Player* targetPlayer)
 {
     this->targetPlayer = targetPlayer;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -639,6 +662,7 @@ Negotiate::Negotiate(Player* targetPlayer)
 Negotiate::Negotiate(const Negotiate& n)
 {
     this->targetPlayer = n.targetPlayer;
+    this->currentPlayer = n.currentPlayer;
 }
 
 ostream& Negotiate::printOrder(ostream &output) const
@@ -691,6 +715,7 @@ Negotiate& Negotiate::operator=(const Negotiate& n)
 {
     if (this != &n) {  //Checking for self assignment
         this->targetPlayer = n.targetPlayer;
+        this->currentPlayer = n.currentPlayer;
     }
 
     return *this;

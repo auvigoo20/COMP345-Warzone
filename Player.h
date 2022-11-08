@@ -30,6 +30,7 @@ public:
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
     void issueOrder(int orderID);
+    string getName();
 
 private:
     friend ostream& operator<<(ostream&, const Player&);
