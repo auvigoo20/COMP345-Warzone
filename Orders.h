@@ -70,6 +70,7 @@ public:
     ostream& printOrder(ostream& output) const override;
     void execute() const override;
     bool validate() const override;
+    void attackSimulation() const;
     Advance* copy() const  override;
     Advance& operator = (const Advance& a);
     ~Advance() override;

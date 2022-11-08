@@ -188,7 +188,7 @@ Deploy::Deploy()
 {
     this -> numOfArmies = 0;
     this -> targetTerritory = nullptr;
-    this -> currentPlayer == nullptr;
+    this -> currentPlayer = nullptr;
 }
 
 Deploy::Deploy(Player* currentPlayer, int numOfArmies, Territory* targetTerritory)
@@ -316,28 +316,83 @@ ostream& Advance::printOrder(ostream &output) const
 }
 
 /**
+ * Simulates an attack by a certain number of army units
+ * from a source territory to a target territory.
+ */
+void Advance::attackSimulation() const {
+    sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
+    srand((unsigned) time(0));
+    int randomNumber;
+    int attackersKilled = 0;
+    int defendersKilled = 0;
+
+    for(int i = 0; i < numOfArmies; i++) {
+        if(defendersKilled < targetTerritory->getNumOfArmies()) {
+            randomNumber = (rand() % 100) + 1;
+            if(randomNumber <= 60) {
+                defendersKilled++;
+            }
+        } else {
+            break;
+        }
+    }
+
+    for(int i = 0; i < targetTerritory->getNumOfArmies(); i++) {
+       if(attackersKilled < numOfArmies) {
+           randomNumber = (rand() % 100) + 1;
+           if(randomNumber <= 70) {
+               attackersKilled++;
+           }
+       } else {
+           break;
+       }
+    }
+    int remainingAttackers = numOfArmies - attackersKilled;
+    int remainingDefenders = targetTerritory->getNumOfArmies() - defendersKilled;
+
+    if(remainingDefenders == 0 && remainingAttackers > 0) {
+        cout << "Territory conquered !" << endl;
+        currentPlayer->addTerritory(targetTerritory);
+        targetTerritory->setOwner(currentPlayer);
+        targetTerritory->setNumOfArmies(remainingAttackers);
+    } else {
+        cout << "Territory successfully defended !" << endl;
+        targetTerritory->setNumOfArmies(remainingDefenders);
+        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() + remainingAttackers);
+    }
+}
+
+/**
  * Verifies if order is valid then executes it.
  * (Execution yet to be implemented).
  */
 void Advance::execute() const
 {
-    if(!validate()) {
-        cout << "Invalid Order !" << endl;
-    } else {
-        cout << "Order being executed !" << endl;
-        printOrder(cout);
-    }
+   if(!validate()) {
+       cout << "Invalid Order !" << endl;
+   } else if(targetTerritory->getOwner()->getName() == sourceTerritory->getOwner()->getName()) {
+       sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
+       targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
+   } else {
+       attackSimulation();
+   }
 }
 
 /**
- * Verifies if given order is valid.
- * (Validation yet to be implemented).
- * @return
+ * Verifies if source territory is owned by current player and if
+ * targetTerritory is adjacent to sourceTerritory
+ * @return true if conditions are met.
  */
 bool Advance::validate() const
 {
-    cout << "Validation in progress ... " << endl;
-    return true;
+   if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+       cout << "Source territory is not owned" << endl;
+       return false;
+   } else if (!this->targetTerritory->isAdjacentTerritory(targetTerritory)) {
+       cout << "Source and target territory are not adjacent. Move is impossible !" << endl;
+       return false;
+   }
+   return true;
 }
 
 /**
