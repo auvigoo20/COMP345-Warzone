@@ -5,7 +5,6 @@
 
 using namespace std;
 
-int testCards();
 class Hand;
 class Card;
 
