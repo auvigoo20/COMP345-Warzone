@@ -32,10 +32,11 @@ Player::~Player() {
     orderList = nullptr;
 }
 
-Player::Player(string name, Hand* hand, OrdersList* ordersList) {
+Player::Player(string name, Hand* hand, OrdersList* ordersList, int reinforcementPool) {
     this->name = name;
     this->hand =hand;
     this->orderList = ordersList;
+    this->reinforcementPool = reinforcementPool;
 }
 
 /**
@@ -43,9 +44,10 @@ Player::Player(string name, Hand* hand, OrdersList* ordersList) {
  * @param p
  */
 Player::Player(const Player &p){
-    this->hand = new Hand();
-    this->orderList = new OrdersList(*p.orderList);
+    this->hand = new Hand(*(p.hand));
+    this->orderList = new OrdersList(*(p.orderList));
     this->hand->setOwner(this);
+    this->reinforcementPool = p.reinforcementPool;
     for(auto territory:p.ownedTerritories){
         ownedTerritories.push_back(territory);
     }
@@ -57,9 +59,10 @@ Player::Player(const Player &p){
  * @return
  */
 Player& Player::operator=(const Player &p) {
-    this->hand = new Hand();
+    this->hand = new Hand(*(p.hand));
     this->orderList = new OrdersList(*p.orderList);
     this->hand->setOwner(this);
+    this->reinforcementPool = p.reinforcementPool;
     for(auto territory:p.ownedTerritories){
         ownedTerritories.push_back(territory);
     }

@@ -13,7 +13,7 @@ class Player {
 public:
     Player();
     ~Player();
-    Player(string name, Hand* hand, OrdersList* ordersList);
+    Player(string name, Hand* hand, OrdersList* ordersList, int reinforcementPool);
     Player(const Player&);
     Player& operator=(const Player &p);
 
@@ -37,4 +37,5 @@ private:
     vector<Territory*> ownedTerritories;
     Hand* hand;
     OrdersList* orderList;
+    int reinforcementPool;
 };

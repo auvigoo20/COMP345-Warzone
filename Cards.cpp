@@ -91,6 +91,7 @@ Hand::Hand(){
 
 Hand::Hand(const Hand& h){
     this -> owner = h.owner;
+    this -> deckList = new Deck(*(h.deckList));
     for (auto card: h.handList) {
         this->handList.push_back(card->copy());
     }
