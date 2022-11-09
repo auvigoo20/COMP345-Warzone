@@ -5,13 +5,16 @@ class Command{
     private:
         string command;
         string effect;
-    public:
+        friend ostream& operator<<(ostream&, const Command&);
+public:
         Command();
         Command(string command);
         string getCommand();
         void saveEffect(string effect);
-
 };
+
+ostream& operator<<(ostream &strm, const Command &c);
+
 
 class CommandProcessor{
     private:
@@ -22,8 +25,10 @@ class CommandProcessor{
     public:
         CommandProcessor();
         CommandProcessor(GameEngine*);
+        ~CommandProcessor();
         Command* getCommand();
         bool validate(Command*);
+        vector<Command*> getAllCommands();
 
 
 };

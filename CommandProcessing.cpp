@@ -6,6 +6,8 @@
 using std::string;
 using std::cout;
 using std::cin;
+using std::endl;
+using std::getline;
 
 
 Command::Command() {}
@@ -20,13 +22,24 @@ string Command::getCommand() {
     return command;
 }
 
+ostream& operator<<(ostream &strm, const Command &c){
+    return strm << "Command: " << c.command << endl << "Effect: " << c.effect << endl;
+}
+
 CommandProcessor::CommandProcessor() {}
 
 CommandProcessor::CommandProcessor(GameEngine* gameEngine): gameEngine(gameEngine) {}
 
+CommandProcessor::~CommandProcessor() {
+    for(auto cmd:commands){
+        delete cmd;
+        cmd = nullptr;
+    }
+}
+
 string CommandProcessor::readCommand() {
     string command;
-    cin >> command;
+    getline(cin, command);
     return command;
 }
 
@@ -35,17 +48,19 @@ void CommandProcessor::saveCommand(Command *command) {
 }
 
 Command* CommandProcessor::getCommand() {
+    cout << "Enter a command: " << endl;
     string userCommand = readCommand();
     Command* command = new Command(userCommand);
     saveCommand(command);
     return command;
 }
 
+
 bool CommandProcessor::validate(Command* command) {
     string currentState = gameEngine->getCurrentState()->getName();
     bool commandIsValid = false;
 
-    if(command->getCommand().find("loadmap") != string::npos){
+    if(command->getCommand().find("loadmap") != string::npos && (currentState == "start" || currentState == "map loaded")){
         // Check if command is followed by a file name
         // Split each line by delimiter and store the strings in a vector.
         std::stringstream commandToSplit(command->getCommand());
@@ -57,15 +72,14 @@ bool CommandProcessor::validate(Command* command) {
         if(splitCommand.size() != 2){
             command->saveEffect("Invalid command due to invalid number of arguments.");
         }
-
-        if(currentState == "start" || currentState == "map loaded"){
+        else{
             commandIsValid = true;
         }
     }
     else if(command->getCommand() == "validatemap" && currentState == "map loaded"){
         commandIsValid = true;
     }
-    else if (command->getCommand().find("addplayer") != string::npos){
+    else if (command->getCommand().find("addplayer") != string::npos && (currentState == "map validated" || currentState == "players added")){
         // Check if command is followed by a player name
         // Split each line by delimiter and store the strings in a vector.
         std::stringstream commandToSplit(command->getCommand());
@@ -77,8 +91,7 @@ bool CommandProcessor::validate(Command* command) {
         if(splitCommand.size() != 2){
             command->saveEffect("Invalid command due to invalid number of arguments.");
         }
-
-        if(currentState == "map validated" || currentState == "players added"){
+        else{
             commandIsValid = true;
         }
     }
@@ -89,11 +102,13 @@ bool CommandProcessor::validate(Command* command) {
         commandIsValid = true;
     }
     else{
-        command->saveEffect("Invalid command in current state.");
+        command->saveEffect("Invalid command.");
     }
 
     return commandIsValid;
+}
 
-
+vector<Command *> CommandProcessor::getAllCommands() {
+    return commands;
 }
 
