@@ -300,13 +300,13 @@ State* GameEngine::win = new State("win");
 Transition* GameEngine::loadmapTransition = new Transition("loadmap", GameEngine::mapLoaded);
 Transition* GameEngine::validatemapTransition = new Transition("validatemap", GameEngine::mapValidated);
 Transition* GameEngine::addplayerTransition = new Transition("addplayer", GameEngine::playersAdded);
-Transition* GameEngine::assigncountriesTransition = new Transition("assigncountries", GameEngine::assignReinforcement);
+Transition* GameEngine::gamestartTransition = new Transition("gamestart", GameEngine::assignReinforcement);
 Transition* GameEngine::issueorderTransition = new Transition("issueorder", GameEngine::issueOrders);
 Transition* GameEngine::endissueordersTransition = new Transition("endissueorders", GameEngine::executeOrders);
 Transition* GameEngine::execorderTransition = new Transition("execorder", GameEngine::executeOrders);
 Transition* GameEngine::endexecordersTransition = new Transition("endexecorders", GameEngine::assignReinforcement);
 Transition* GameEngine::winTransition = new Transition("win", GameEngine::win);
-Transition* GameEngine::playTransition = new Transition("play", GameEngine::start);
+Transition* GameEngine::replayTransition = new Transition("replay", GameEngine::start);
 // The 'end' Transition effectively finishes the GameEngine flow; thus it does not point to any other state.
 Transition* GameEngine::endTransition = new Transition("end", nullptr);
 
@@ -318,9 +318,9 @@ void GameEngine::initializeEngineStates() {
     start->setTransitions({loadmapTransition});
     mapLoaded->setTransitions({loadmapTransition, validatemapTransition});
     mapValidated->setTransitions({addplayerTransition});
-    playersAdded->setTransitions({addplayerTransition, assigncountriesTransition});
+    playersAdded->setTransitions({addplayerTransition, gamestartTransition});
     assignReinforcement->setTransitions({issueorderTransition});
     issueOrders->setTransitions({issueorderTransition, endissueordersTransition});
     executeOrders->setTransitions({execorderTransition, endexecordersTransition, winTransition});
-    win->setTransitions({playTransition, endTransition});
+    win->setTransitions({replayTransition, endTransition});
 }
