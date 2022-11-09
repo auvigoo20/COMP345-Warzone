@@ -85,6 +85,6 @@ public:
     static Transition* execorderTransition;
     static Transition* endexecordersTransition;
     static Transition* winTransition;
-    static Transition* endTransition;
+    static Transition* quitTransition;
     static Transition* replayTransition;
 };

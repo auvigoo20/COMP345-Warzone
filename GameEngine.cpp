@@ -308,7 +308,7 @@ Transition* GameEngine::endexecordersTransition = new Transition("endexecorders"
 Transition* GameEngine::winTransition = new Transition("win", GameEngine::win);
 Transition* GameEngine::replayTransition = new Transition("replay", GameEngine::start);
 // The 'end' Transition effectively finishes the GameEngine flow; thus it does not point to any other state.
-Transition* GameEngine::endTransition = new Transition("end", nullptr);
+Transition* GameEngine::quitTransition = new Transition("quit", nullptr);
 
 /**
  * Initializes the states by providing them with the vector of possible transitions away from these states.
@@ -322,5 +322,5 @@ void GameEngine::initializeEngineStates() {
     assignReinforcement->setTransitions({issueorderTransition});
     issueOrders->setTransitions({issueorderTransition, endissueordersTransition});
     executeOrders->setTransitions({execorderTransition, endexecordersTransition, winTransition});
-    win->setTransitions({replayTransition, endTransition});
+    win->setTransitions({replayTransition, quitTransition});
 }
