@@ -114,7 +114,6 @@ int testOrdersLists(){
     cout << "Size of list 2 expected 5" << endl;
     cout << list2.getSize() << endl;
 
-    delete list1;
     delete continent;
     delete ter1;
     delete ter2;
@@ -122,6 +121,8 @@ int testOrdersLists(){
     delete ter4;
     delete ter5;
     delete ter6;
+    delete player;
+    delete player2;
 
     return 0;
 }

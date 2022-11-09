@@ -81,6 +81,7 @@ Deck::~Deck()
 {
      for(auto card: deckList){
          delete card;
+         card = nullptr;
      }
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Card*>().swap(this->deckList);
@@ -177,6 +178,7 @@ Hand::~Hand()
 {
     for(auto card: handList){
         delete card;
+        card = nullptr;
     }
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Card*>().swap(this->handList);

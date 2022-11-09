@@ -111,7 +111,7 @@ ostream& OrdersList::printList(ostream& output)
 {
     output << "Orders List: " << endl;
     for (Order* order: ordersList) {
-        output << " - " << endl;
+        output << " - ";
         output << *order << endl;
     }
     return output;
@@ -160,6 +160,7 @@ OrdersList::~OrdersList()
     for(auto order: ordersList)
     {
         delete order;
+        order = nullptr;
     }
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Order*>().swap(this->ordersList);
