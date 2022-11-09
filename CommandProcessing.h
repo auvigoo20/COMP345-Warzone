@@ -8,6 +8,7 @@ class Command{
     public:
         Command();
         Command(string command);
+        string getCommand();
         void saveEffect(string effect);
 
 };
