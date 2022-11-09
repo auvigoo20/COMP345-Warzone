@@ -7,7 +7,10 @@
 int main(){
 //    testLoadMaps();
 //    testPlayer();
-    testOrdersLists();
+
+//    testOrdersLists();
+    testOrderExecution();
+
 //    testCards();
 //    testGameStates();
 

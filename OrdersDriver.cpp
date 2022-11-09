@@ -126,3 +126,105 @@ int testOrdersLists(){
 
     return 0;
 }
+
+int testOrderExecution(){
+
+    cout << "*****************************************" << endl;
+    cout << "*        Testing Orders' Execution       *" << endl;
+    cout << "*****************************************" << endl;
+
+    cout << "-- Test that orders are verified before execution --\n" << endl;
+
+    //Create necessary object to test the orders' execution
+
+    Hand* hand1 = new Hand();
+    Hand* hand2 = new Hand();
+
+    OrdersList* ordersList1 = new OrdersList();
+    OrdersList* ordersList2 = new OrdersList();
+
+    Player* player1 = new Player("Current Player", hand1, ordersList1, 10);
+    Player* player2 = new Player("Enemy Player", hand2, ordersList2, 10);
+
+    hand1->setOwner(player1);
+    hand2->setOwner(player2);
+
+    Continent* continent =  new Continent("Africa", 12);
+    Territory* ownedTerritory1 = new Territory("ownedTerritory1", 1, 1, continent);
+    Territory* enemyTerritory1 = new Territory("enemyTerritory1", 1, 2, continent);
+    Territory* enemyNonAdjacentTer = new Territory("enemyNonAdjacentTer", 20, 10, continent);
+    Territory* alliedNonAdjacentTer = new Territory("alliedNonAdjacentTer", 12, 12, continent);
+    Territory* alliedAdjacentTer = new Territory("alliedAdjacentTer", 2, 1, continent);
+
+    ownedTerritory1->setOwner(player1);
+    alliedNonAdjacentTer->setOwner(player1);
+    alliedAdjacentTer->setOwner(player1);
+    enemyTerritory1->setOwner(player2);
+    enemyNonAdjacentTer->setOwner(player2);
+
+    ownedTerritory1->addAdjacentTerritory(enemyTerritory1);
+    ownedTerritory1->addAdjacentTerritory(alliedAdjacentTer);
+
+    // *********** TESTING DEPLOY ORDER VALIDATION
+    cout << "Testing Deploy order\n" << endl;
+
+    cout << "Valid Deploy Order" << endl;
+    Order* validDeploy = new Deploy(player1, 3, ownedTerritory1);
+    validDeploy->execute();
+    cout << "\n" << endl;
+
+    cout << "Invalid Deploy Order" << endl;
+    Order* invalidDeploy = new Deploy(player1, 3, enemyTerritory1);
+    invalidDeploy->execute();
+    cout << "\n" << endl;
+
+    // *********** TESTING ADVANCE ORDER VALIDATION
+    cout << "Testing Advance order\n" << endl;
+
+    cout << "Valid Advance Order" << endl;
+    Order* validAdvance = new Advance(player1, 4, ownedTerritory1, alliedAdjacentTer);
+    validAdvance->execute();
+    cout << "\n" << endl;
+
+    cout << "Invalid Advance Order (Target territory not adjacent to source):" << endl;
+    Order* invalidAdvance = new Advance(player1, 4, ownedTerritory1, enemyNonAdjacentTer);
+    invalidAdvance->execute();
+    cout << "\n" << endl;
+
+    cout << "Invalid Advance Order (Source territory not owned):" << endl;
+    Order* invalidAdvance2 = new Advance(player1, 4, enemyTerritory1, ownedTerritory1);
+    invalidAdvance2->execute();
+    cout << "\n" << endl;
+
+
+    // TESTING AIRLIFT ORDER VALIDATION
+    cout << "Testing Airlift order\n" << endl;
+
+    cout << "Valid Airlift Order" << endl;
+    Order* validAirlift = new Airlift(player1, 5, ownedTerritory1, alliedNonAdjacentTer);
+    validAirlift->execute();
+    cout << "\n" << endl;
+
+    cout << "Invalid Airlift Order (Source territory not owned)" << endl;
+    Order* invalidAirliftOrder = new Airlift(player1, 5, enemyTerritory1, ownedTerritory1);
+    invalidAirliftOrder->execute();
+    cout << "\n" << endl;
+
+    cout << "Invalid Airlift Order (Target territory not owned)" << endl;
+    Order* invalidAirliftOrder2 = new Airlift(player1, 5, ownedTerritory1, enemyTerritory1);
+    invalidAirliftOrder2->execute();
+    cout << "\n" << endl;
+
+
+
+    cout << " -- Testing that territory ownership is transferred given successful attack" << endl;
+    Order* successfulAttack = new Advance(player1, 5, ownedTerritory1, enemyTerritory1);
+    cout << "Print 'enemyTerritory1 owner before successful attack" << endl;
+    cout << enemyTerritory1->getOwner()->getName() << endl;
+    successfulAttack->execute();
+    cout << "Print 'enemyTerritory1 owner after successful attack" << endl;
+    cout << enemyTerritory1->getOwner()->getName() << endl;
+    cout << "\n" << endl;
+
+    return 0;
+}

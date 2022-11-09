@@ -242,6 +242,7 @@ bool Deploy::validate() const
         cout << "Specified territory is not owned" << endl;
         return false;
     }
+    cout << "Order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
@@ -390,10 +391,11 @@ bool Advance::validate() const
    if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
        cout << "Source territory is not owned" << endl;
        return false;
-   } else if (!this->targetTerritory->isAdjacentTerritory(targetTerritory)) {
+   } else if (!this->sourceTerritory->isAdjacentTerritory(targetTerritory)) {
        cout << "Source and target territory are not adjacent. Move is impossible !" << endl;
        return false;
    }
+   cout << "Order successfully verified. Ready for execution !" << endl;
    return true;
 }
 
@@ -670,6 +672,7 @@ bool Airlift::validate() const
         cout << "Source and/or target territory are not owned" << endl;
         return false;
     }
+    cout << "Order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
