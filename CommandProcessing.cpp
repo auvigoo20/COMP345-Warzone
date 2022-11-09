@@ -22,6 +22,10 @@ string Command::getCommand() {
     return command;
 }
 
+string Command::getEffect() {
+    return effect;
+}
+
 ostream& operator<<(ostream &strm, const Command &c){
     return strm << "Command: " << c.command << endl << "Effect: " << c.effect << endl;
 }
@@ -108,7 +112,11 @@ bool CommandProcessor::validate(Command* command) {
     return commandIsValid;
 }
 
-vector<Command *> CommandProcessor::getAllCommands() {
-    return commands;
+ostream& operator<<(ostream &strm, const CommandProcessor &c){
+    for(auto command : c.commands){
+       strm << command->getCommand() << ": " << command->getEffect() << endl;
+    }
+    return strm;
 }
+
 

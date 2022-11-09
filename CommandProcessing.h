@@ -10,6 +10,7 @@ public:
         Command();
         Command(string command);
         string getCommand();
+        string getEffect();
         void saveEffect(string effect);
 };
 
@@ -22,13 +23,11 @@ class CommandProcessor{
         GameEngine* gameEngine;
         string readCommand();
         void saveCommand(Command* command);
-    public:
+        friend ostream& operator<<(ostream&, const CommandProcessor&);
+public:
         CommandProcessor();
         CommandProcessor(GameEngine*);
         ~CommandProcessor();
         Command* getCommand();
         bool validate(Command*);
-        vector<Command*> getAllCommands();
-
-
 };

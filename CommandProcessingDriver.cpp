@@ -3,6 +3,7 @@
 #include "CommandProcessing.h"
 #include <iostream>
 using std::cout;
+using std::endl;
 
 void testCommandProcessor(){
     GameEngine* gameEngine = new GameEngine(GameEngine::start);
@@ -95,63 +96,8 @@ void testCommandProcessor(){
         cout << *cmd;
     }
 
-
-
-
-
-
-
-
-
-
-
-//
-//    if(commandProcessor->validate(cmd) ){
-//        cmd->saveEffect("The map has been loaded.");
-//        gameEngine->setCurrentState(GameEngine::mapValidated);
-//        cout << *cmd;
-//    }
-//    else {
-//        cout << *cmd;
-//        while (!commandProcessor->validate(cmd)) {
-//
-//
-//            if (commandProcessor->validate(cmd)) {
-//                if (cmd->getCommand() == "validatemap") {
-//                    cmd->saveEffect("The map has been validated.");
-//                    gameEngine->setCurrentState(GameEngine::mapValidated);
-//                    break;
-//                } else {
-//                    cmd->saveEffect("The map has been loaded.");
-//                    cmd = commandProcessor->getCommand();
-//                }
-//            }
-//            else{
-//                cmd = commandProcessor->getCommand();
-//                continue;
-//            }
-//            cout << *cmd;
-//        }
-//    }
-//
-
-
-//    // Validate command in MAP LOADED state
-//    while(!commandProcessor->validate(cmd) || gameEngine->getCurrentState() != GameEngine::mapValidated){
-//
-//        cmd = commandProcessor->getCommand();
-//        if(commandProcessor->validate(cmd)){
-//            if(cmd->getCommand() == "validatemap"){
-//                cmd->saveEffect("The map has been validated.");
-//                gameEngine->setCurrentState(GameEngine::mapValidated);
-//            }
-//            else{
-//                cmd->saveEffect("The map has been loaded.");
-//            }
-//        }
-//        cout << *cmd;
-//    }
-
+    cout << "\n\nDISPLAYING ALL COMMANDS:" << endl;
+    cout << *commandProcessor;
     delete gameEngine;
     delete commandProcessor;
     gameEngine = nullptr;
