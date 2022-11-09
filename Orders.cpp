@@ -1,7 +1,7 @@
 #include "Orders.h"
 #include <iostream>
 #include <utility>
-#include "player.h"
+#include "Player.h"
 
 using std::cout;
 using std::endl;
@@ -111,7 +111,7 @@ ostream& OrdersList::printList(ostream& output)
 {
     output << "Orders List: " << endl;
     for (Order* order: ordersList) {
-        output << " - ";
+        output << " - " << endl;
         output << *order << endl;
     }
     return output;
@@ -213,7 +213,7 @@ Deploy::Deploy(const Deploy& d)
 ostream& Deploy::printOrder(ostream &output) const
 {
     output << "Deploying " << this->numOfArmies << " units to ";
-    output << *this->targetTerritory << " territory." << endl;
+    output << this->targetTerritory << " territory." << endl;
     return output;
 }
 
@@ -310,8 +310,8 @@ Advance::Advance(const Advance& a)
 ostream& Advance::printOrder(ostream &output) const
 {
     output << "Advancing " << this->numOfArmies << " units from ";
-    output << *this->sourceTerritory << " territory " << " to ";
-    output << *this->targetTerritory << " territory." << endl;
+    output << this->sourceTerritory << " territory " << " to ";
+    output << this->targetTerritory << " territory." << endl;
     return output;
 }
 
@@ -455,7 +455,7 @@ Bomb::Bomb(const Bomb& b)
 
 ostream& Bomb::printOrder(ostream &output) const
 {
-    output << "Bombing " << *this->targetTerritory << " territory.";
+    output << "Bombing " << this->targetTerritory << " territory.";
     output << endl;
     return output;
 }
@@ -541,7 +541,7 @@ Blockade::Blockade(const Blockade& b)
 
 ostream& Blockade::printOrder(ostream &output) const
 {
-    output << "Blockade on " << *this->targetTerritory << " territory.";
+    output << "Blockade on " << this->targetTerritory << " territory.";
     output << endl;
     return output;
 }
@@ -635,8 +635,8 @@ Airlift::Airlift(const Airlift& a)
 ostream& Airlift::printOrder(ostream &output) const
 {
     output << "Airlift " << this->numOfArmies << " units from ";
-    output << *this->sourceTerritory << " territory " << " to ";
-    output << *this->targetTerritory << " territory." << endl;
+    output << this->sourceTerritory << " territory " << " to ";
+    output << this->targetTerritory << " territory." << endl;
     return output;
 }
 
@@ -651,6 +651,7 @@ void Airlift::execute() const
     } else {
         sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
+        printOrder(cout);
 
     }
 }

@@ -1,5 +1,7 @@
 #include "OrdersDriver.h"
 #include "Orders.h"
+#include "Player.h"
+#include "Cards.h"
 #include <iostream>
 
 using std::cout;
@@ -14,30 +16,51 @@ int testOrdersLists(){
 
     Continent* continent =  new Continent("Africa", 12);
     Territory* ter1 = new Territory("Canada", 12, 13, continent);
-    Territory* ter2 = new Territory("USA", 13, 14, continent);
+    ter1->setNumOfArmies(10);
+    Territory* ter2 = new Territory("USA", 12, 14, continent);
+    ter2->setNumOfArmies(10);
     Territory* ter3 = new Territory("France", 12, 13, continent);
+    ter3->setNumOfArmies(10);
     Territory* ter4 = new Territory("Mexico", 12, 13, continent);
+    ter4->setNumOfArmies(10);
     Territory* ter5 = new Territory("Quebec", 12, 13, continent);
+    ter5->setNumOfArmies(30);
     Territory* ter6 = new Territory("Ontario", 12, 13, continent);
-
-    // Creating different all type of orders using different constructors
-
-    Deploy* dep2 = new Deploy(12, ter1);
-
-    Advance* adv2 = new Advance(10, ter1, ter2);
-
-    Bomb* bomb2 = new Bomb(ter3);
-
-    Blockade* block2 = new Blockade(ter4);
-
-    Airlift* air2 = new Airlift(22, ter5, ter6);
-
-    Negotiate* neg1 = new Negotiate();
+    ter6->setNumOfArmies(10);
 
     // Creation of two OrdersList objects for testing
 
     OrdersList* list1 = new OrdersList();
+    OrdersList* testList = new OrdersList();
     OrdersList list2;
+
+    // Creation of a hand object
+    Hand* hand = new Hand();
+    Hand* hand2 = new Hand();
+
+    // Creation of the player
+
+    Player* player = new Player("John", hand, list1, 3);
+    Player* player2 = new Player("Bob", hand2, testList, 3);
+
+    // Creating different all type of orders using different constructors
+
+    Deploy* dep2 = new Deploy(player, 12, ter1);
+    ter1->setOwner(player);
+
+    Advance* adv2 = new Advance(player, 16, ter1, ter2);
+    ter2->setOwner(player2);
+
+    Bomb* bomb2 = new Bomb(player, ter3);
+
+    Blockade* block2 = new Blockade(player, ter4);
+
+    Airlift* air2 = new Airlift(player, 22, ter5, ter6);
+    ter5->setOwner(player);
+    ter6->setOwner(player);
+
+    Negotiate* neg1 = new Negotiate();
+
 
     // Orders added to list1 in that order
     list1->addOrder(dep2);

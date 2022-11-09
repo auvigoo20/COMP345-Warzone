@@ -153,6 +153,10 @@ void Hand::setOwner(Player* p) {
     this->owner = p;
 }
 
+void Hand::setDeckList(Deck *deckList) {
+    this->deckList = deckList;
+}
+
 /**
  * Assignment operator for hand class
  * @param h
