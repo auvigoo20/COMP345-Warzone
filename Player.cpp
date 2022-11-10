@@ -30,12 +30,16 @@ Player::~Player() {
     delete orderList;
     hand = nullptr;
     orderList = nullptr;
+    vector<Territory*>().swap(this->ownedTerritories);
+    vector<Player*>().swap(this->allyPlayerList);
+
 }
 
-Player::Player(string name, Hand* hand, OrdersList* ordersList) {
+Player::Player(string name, Hand* hand, OrdersList* ordersList, int reinforcementPool) {
     this->name = name;
     this->hand =hand;
     this->orderList = ordersList;
+    this->reinforcementPool = reinforcementPool;
 }
 
 /**
@@ -43,11 +47,15 @@ Player::Player(string name, Hand* hand, OrdersList* ordersList) {
  * @param p
  */
 Player::Player(const Player &p){
-    this->hand = new Hand();
-    this->orderList = new OrdersList(*p.orderList);
+    this->hand = new Hand(*(p.hand));
+    this->orderList = new OrdersList(*(p.orderList));
     this->hand->setOwner(this);
+    this->reinforcementPool = p.reinforcementPool;
     for(auto territory:p.ownedTerritories){
         ownedTerritories.push_back(territory);
+    }
+    for(auto player: p.allyPlayerList){
+        allyPlayerList.push_back(player);
     }
 }
 
@@ -57,11 +65,15 @@ Player::Player(const Player &p){
  * @return
  */
 Player& Player::operator=(const Player &p) {
-    this->hand = new Hand();
+    this->hand = new Hand(*(p.hand));
     this->orderList = new OrdersList(*p.orderList);
     this->hand->setOwner(this);
+    this->reinforcementPool = p.reinforcementPool;
     for(auto territory:p.ownedTerritories){
         ownedTerritories.push_back(territory);
+    }
+    for(auto player : p.allyPlayerList){
+        allyPlayerList.push_back(player);
     }
     return *this;
 }
@@ -82,6 +94,10 @@ void Player::setHand(Hand *hand) {
     this->hand = hand;
 }
 
+string Player::getName() {
+    return this->name;
+}
+
 OrdersList *Player::getOrdersList() {
     return this->orderList;
 }
@@ -97,6 +113,14 @@ void Player::setOrdersList(OrdersList *ordersList) {
 void Player::addTerritory(Territory* t){
     this->ownedTerritories.push_back(t);
     t->setOwner(this);
+}
+
+/**
+ * Adds a player to the list of ally
+ * @param p  Player to be added as an ally for this turn
+ */
+void Player::addAlly(Player* p) {
+   allyPlayerList.push_back(p);
 }
 
 /**
@@ -171,6 +195,36 @@ void Player::issueOrder(int orderID){
     else{
         cout << "Invalid order" << endl;
     }
+}
 
+/**
+ * Validate if the targetTerritory is adjacent to one territory owned by the currentPlayer
+ * @param targetTerritory
+ * @return
+ */
+bool Player::isAdjacentTerritory(Territory* targetTerritory) {
+    for(auto& territory : ownedTerritories){
+        if(territory->isAdjacentTerritory(targetTerritory)){
+            return true;
+        }
+    }
+    return false;
+}
 
+vector<Player*> Player::getAllyPlayerList() {
+    return this->allyPlayerList;
+}
+
+/**
+ * Verifies if the target player is an ally.
+ * @param targetPlayer
+ * @return
+ */
+bool Player::isAlly(Player* targetPlayer) {
+    for(auto player:allyPlayerList){
+        if(targetPlayer->getName() == player->getName()){
+            return true;
+        }
+    }
+    return false;
 }
