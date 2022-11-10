@@ -526,12 +526,12 @@ Map* MapLoader::readMapFile(std::string filepath) {
 
     input.open(filepath);
     if (!input) {
-        cout << "ERROR: File does not exist";
+        cout << "ERROR: File does not exist" << endl;
         return nullptr;
     }
     else {
         if (input.peek() == std::ifstream::traits_type::eof()) {
-            cout << "ERROR: File is empty";
+            cout << "ERROR: File is empty" << endl;
             return nullptr;
         }
         else {

@@ -343,8 +343,9 @@ void GameEngine::startupPhase() {
     Command* currentCommand;
     CommandProcessor* commandProcessor= new CommandProcessor(this);
     string stateName, fileDirectory;
-    string const directory = "../map_files/";
+//    string const directory = "../map_files/";
     bool done = false;
+    Map* map;
 
     while(!done) {
         // Receive the command from Console input using the getCommand()
@@ -352,15 +353,13 @@ void GameEngine::startupPhase() {
         this->setLatestCommand(currentCommand);
         stateName = currentState->getName();
         MapLoader mapLoader;
-        cout << "input received\n";
+
         // If the command is valid
         if (!commandProcessor->validate(currentCommand)){
             cout << "Invalid Command," << endl;
         }
         else {
-            cout << "inside if 1\n";
             if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start" || stateName == "map loaded")){
-                cout << "inside if 2\n";
 
                 std::stringstream commandToSplit(currentCommand->getCommand());
                 string segment;
@@ -369,16 +368,23 @@ void GameEngine::startupPhase() {
                     splitCommand.push_back(segment);
                 }
 
-                cout << "File Directory Creation\n";
-                fileDirectory = directory + splitCommand[1];
-                cout << fileDirectory << endl;
-                cout << "Starting Map Loading\n";
-                Map* map = mapLoader.readMapFile(fileDirectory);
-                cout << "Map Loaded\n";
+                fileDirectory = splitCommand[1];
 
-                if (stateName == "start"){
-                    this->setCurrentState(mapLoaded);
+                cout << "Loading Map..." << endl;
+                map = mapLoader.readMapFile(fileDirectory);
+                if (map != nullptr){
+                    cout << *map << endl;
+                    if (stateName == "start"){
+                        this->setCurrentState(mapLoaded);
+                    }
                 }
+                else{
+                    cout << "Please enter another file directory." << endl;
+                }
+            }
+            else if(currentCommand->getCommand() == "validatemap" && stateName == "map loaded"){
+                map->validate();
+                this->setCurrentState(mapValidated);
             }
         }
         if(currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {
