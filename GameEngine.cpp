@@ -377,7 +377,7 @@ void GameEngine::startupPhase() {
                 cout << "Map Loaded\n";
 
                 if (stateName == "start"){
-                    this->currentState = mapLoaded;
+                    this->setCurrentState(mapLoaded);
                 }
             }
         }
