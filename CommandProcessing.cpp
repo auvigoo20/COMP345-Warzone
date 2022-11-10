@@ -14,8 +14,24 @@ Command::Command() {}
 
 Command::Command(string command): command(command){}
 
-void Command::saveEffect(string effect) {
-    this->effect = effect;
+/**
+ * Copy constructor
+ * @param c
+ */
+Command::Command(const Command &c) {
+    this->command = c.command;
+    this->effect = c.effect;
+}
+
+/**
+ * Overloading assignment operator
+ * @param c
+ * @return
+ */
+Command& Command::operator=(const Command &c) {
+    this->command = c.command;
+    this->effect = c.effect;
+    return *this;
 }
 
 string Command::getCommand() {
@@ -26,19 +42,52 @@ string Command::getEffect() {
     return effect;
 }
 
+void Command::saveEffect(string effect) {
+    this->effect = effect;
+}
+
+/**
+ * Overloading stream insertion operator
+ * @param strm
+ * @param c
+ * @return
+ */
 ostream& operator<<(ostream &strm, const Command &c){
     return strm << "Command: " << c.command << endl << "Effect: " << c.effect << endl;
 }
 
+
 CommandProcessor::CommandProcessor() {}
 
 CommandProcessor::CommandProcessor(GameEngine* gameEngine): gameEngine(gameEngine) {}
+
+/**
+ * Copy constructor that creates deep copies of Command objects
+ * @param c
+ */
+CommandProcessor::CommandProcessor(const CommandProcessor &c) {
+    for(auto cmd: c.commands){
+        this->commands.push_back(new Command(*cmd));
+    }
+}
 
 CommandProcessor::~CommandProcessor() {
     for(auto cmd:commands){
         delete cmd;
         cmd = nullptr;
     }
+}
+
+/**
+ * Overloading assignment operator
+ * @param c
+ * @return
+ */
+CommandProcessor &CommandProcessor::operator=(const CommandProcessor &c) {
+    for(auto cmd: c.commands){
+        this->commands.push_back(new Command(*cmd));
+    }
+    return *this;
 }
 
 string CommandProcessor::readCommand() {
@@ -58,7 +107,6 @@ Command* CommandProcessor::getCommand() {
     saveCommand(command);
     return command;
 }
-
 
 bool CommandProcessor::validate(Command* command) {
     string currentState = gameEngine->getCurrentState()->getName();
@@ -112,11 +160,94 @@ bool CommandProcessor::validate(Command* command) {
     return commandIsValid;
 }
 
+/**
+ * Overloading output stream operator
+ * @param strm
+ * @param c
+ * @return
+ */
 ostream& operator<<(ostream &strm, const CommandProcessor &c){
     for(auto command : c.commands){
        strm << command->getCommand() << ": " << command->getEffect() << endl;
     }
     return strm;
 }
+
+FileLineReader::FileLineReader(string fileName) {
+    this->fileName = fileName;
+    input.open(fileName);
+}
+
+FileLineReader::FileLineReader() {}
+
+FileLineReader::~FileLineReader() {
+    input.close();
+}
+
+string FileLineReader::readLineFromFile() {
+    if(!input){
+        cout << "ERROR: FILE COULD NOT BE READ" << endl;
+        exit(0);
+    }
+    string line;
+    getline(input, line);
+    return line;
+}
+
+/**
+ * Overloading stream insertion operator
+ * @param strm
+ * @param f
+ * @return
+ */
+ostream& operator<<(ostream &strm, const FileLineReader &f){
+    return strm << "FileLineReader reading file: " << f.fileName << endl;
+}
+
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(GameEngine *gameEngine, std::string fileName) : CommandProcessor(gameEngine){
+    flr = new FileLineReader(fileName);
+}
+
+/**
+ * Copy constructor. Shallow copy to use the same file line reader to maintain current cursor position in file
+ * @param f
+ */
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(const FileCommandProcessorAdapter &f) {
+    this->flr = f.flr;
+}
+
+FileCommandProcessorAdapter::~FileCommandProcessorAdapter() {
+    delete flr;
+    flr = nullptr;
+}
+
+/**
+ * Overloading assignment operator
+ * @param f
+ * @return
+ */
+FileCommandProcessorAdapter &FileCommandProcessorAdapter::operator=(const FileCommandProcessorAdapter &f) {
+    this->flr = f.flr;
+    return *this;
+}
+
+string FileCommandProcessorAdapter::readCommand() {
+    return flr->readLineFromFile();
+}
+
+/**
+ * Overloading output stream operator
+ * @param strm
+ * @param f
+ * @return
+ */
+ostream& operator<<(ostream &strm, const FileCommandProcessorAdapter &f){
+    for(auto command : f.commands){
+        strm << command->getCommand() << ": " << command->getEffect() << endl;
+    }
+    return strm;
+}
+
+
 
 
