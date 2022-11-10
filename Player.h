@@ -33,6 +33,7 @@ public:
     string getName();
     bool isAdjacentTerritory(Territory* targetTerritory);
     vector<Player*> getAllyPlayerList ();
+    bool isAlly(Player* targetPlayer);
 
 private:
     friend ostream& operator<<(ostream&, const Player&);

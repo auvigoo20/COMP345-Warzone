@@ -399,8 +399,10 @@ bool Advance::validate() const
    } else if (!this->sourceTerritory->isAdjacentTerritory(targetTerritory)) {
        cout << "Source and target territory are not adjacent. Move is impossible !" << endl;
        return false;
+   }else if(currentPlayer->isAlly(targetTerritory->getOwner())){
+       cout << "Target territory owner is an ally; cant attack!" << endl;
+       return false;
    }
-   cout << "Order successfully verified. Ready for execution !" << endl;
    return true;
 }
 
@@ -584,6 +586,9 @@ bool Blockade::validate() const
 {
     if(this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()){
         cout << "Target territory is not owned by the player issuing the order" << endl;
+        return false;
+    }else if(currentPlayer->isAlly(targetTerritory->getOwner())){
+        cout << "Target territory owner is an ally; cant attack!" << endl;
         return false;
     }
     return true;

@@ -206,3 +206,17 @@ bool Player::isAdjacentTerritory(Territory* targetTerritory) {
 vector<Player*> Player::getAllyPlayerList() {
     return this->allyPlayerList;
 }
+
+/**
+ * Verifies if the target player is an ally.
+ * @param targetPlayer
+ * @return
+ */
+bool Player::isAlly(Player* targetPlayer) {
+    for(auto player:allyPlayerList){
+        if(targetPlayer->getName() == player->getName()){
+            return true;
+        }
+    }
+    return false;
+}
