@@ -9,7 +9,8 @@ using std::ostream;
 #include <vector>
 using std::vector;
 
-#include "CommandProcessing.h"
+// Forward declaration for Command in CommandProcessing.cpp
+class Command;
 
 
 // Declared here (forward declaration) because Transition needs to know State exists.

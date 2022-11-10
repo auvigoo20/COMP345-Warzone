@@ -1,7 +1,11 @@
 #include "GameEngine.h"
 #include "CommandProcessing.h"
+#include "Map.h"
+
 #include <string>
 using std::string;
+
+#include <sstream>
 
 #include <iostream>
 using std::cin;
@@ -331,6 +335,61 @@ void GameEngine::initializeEngineStates() {
 }
 
 void GameEngine::startupPhase() {
+    cout << "****************************************" << endl;
+    cout << "*       Initiating Startup Phase       *" << endl;
+    cout << "****************************************" << endl;
 
+    this->currentState = start;
+    Command* currentCommand;
+    CommandProcessor* commandProcessor= new CommandProcessor(this);
+    string stateName, fileDirectory;
+    string const directory = "../map_files/";
+    bool done = false;
 
+    while(!done) {
+        // Receive the command from Console input using the getCommand()
+        currentCommand = commandProcessor->getCommand();
+        this->setLatestCommand(currentCommand);
+        stateName = currentState->getName();
+        MapLoader mapLoader;
+        cout << "input received\n";
+        // If the command is valid
+        if (!commandProcessor->validate(currentCommand)){
+            cout << "Invalid Command," << endl;
+        }
+        else {
+            cout << "inside if 1\n";
+            if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start" || stateName == "map loaded")){
+                cout << "inside if 2\n";
+
+                std::stringstream commandToSplit(currentCommand->getCommand());
+                string segment;
+                vector<string> splitCommand;
+                while (getline(commandToSplit, segment, ' ')) {
+                    splitCommand.push_back(segment);
+                }
+
+                cout << "File Directory Creation\n";
+                fileDirectory = directory + splitCommand[1];
+                cout << fileDirectory << endl;
+                cout << "Starting Map Loading\n";
+                Map* map = mapLoader.readMapFile(fileDirectory);
+                cout << "Map Loaded\n";
+
+                if (stateName == "start"){
+                    this->currentState = mapLoaded;
+                }
+            }
+        }
+        if(currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {
+            done = true;
+        }
+    }
+
+    delete commandProcessor;
+    delete currentCommand;
+
+    cout << "****************************************" << endl;
+    cout << "*        Startup Phase Complete        *" << endl;
+    cout << "****************************************" << endl;
 }
