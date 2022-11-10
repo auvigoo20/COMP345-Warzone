@@ -65,6 +65,9 @@ public:
     void setCurrentState(State* currentState);
     void setLatestCommand(string latestCommand);
 
+    // Startup Phase method
+    void startupPhase();
+
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.
     static State* start;

@@ -1,8 +1,11 @@
 #include "GameEngine.h"
+#include "CommandProcessing.h"
 #include <string>
 using std::string;
 
 #include <iostream>
+using std::cin;
+using std::cout;
 using std::ostream;
 using std::endl;
 
@@ -323,4 +326,8 @@ void GameEngine::initializeEngineStates() {
     issueOrders->setTransitions({issueorderTransition, endissueordersTransition});
     executeOrders->setTransitions({execorderTransition, endexecordersTransition, winTransition});
     win->setTransitions({replayTransition, quitTransition});
+}
+
+void GameEngine::startupPhase() {
+
 }
