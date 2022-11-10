@@ -32,6 +32,7 @@ public:
     void issueOrder(int orderID);
     string getName();
     bool isAdjacentTerritory(Territory* targetTerritory);
+    vector<Player*> getAllyPlayerList ();
 
 private:
     friend ostream& operator<<(ostream&, const Player&);
@@ -40,4 +41,5 @@ private:
     Hand* hand;
     OrdersList* orderList;
     int reinforcementPool;
+    vector<Player*> allyPlayerList;
 };

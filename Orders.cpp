@@ -763,7 +763,7 @@ void Negotiate::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        this->currentPlayer->getAllyPlayerList().push_back(targetPlayer);
         printOrder(cout);
     }
 }
@@ -775,7 +775,10 @@ void Negotiate::execute() const
  */
 bool Negotiate::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if(targetPlayer == currentPlayer){
+        cout << "The target player must be different than the player issuing the order" <<endl;
+        return false;
+    }
     return true;
 }
 

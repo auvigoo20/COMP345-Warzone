@@ -30,6 +30,9 @@ Player::~Player() {
     delete orderList;
     hand = nullptr;
     orderList = nullptr;
+    vector<Territory*>().swap(this->ownedTerritories);
+    vector<Player*>().swap(this->allyPlayerList);
+
 }
 
 Player::Player(string name, Hand* hand, OrdersList* ordersList, int reinforcementPool) {
@@ -51,6 +54,9 @@ Player::Player(const Player &p){
     for(auto territory:p.ownedTerritories){
         ownedTerritories.push_back(territory);
     }
+    for(auto player: p.allyPlayerList){
+        allyPlayerList.push_back(player);
+    }
 }
 
 /**
@@ -65,6 +71,9 @@ Player& Player::operator=(const Player &p) {
     this->reinforcementPool = p.reinforcementPool;
     for(auto territory:p.ownedTerritories){
         ownedTerritories.push_back(territory);
+    }
+    for(auto player : p.allyPlayerList){
+        allyPlayerList.push_back(player);
     }
     return *this;
 }
@@ -192,4 +201,8 @@ bool Player::isAdjacentTerritory(Territory* targetTerritory) {
         }
     }
     return false;
+}
+
+vector<Player*> Player::getAllyPlayerList() {
+    return this->allyPlayerList;
 }
