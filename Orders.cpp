@@ -1,12 +1,18 @@
 #include "Orders.h"
 #include <iostream>
 #include <utility>
+#include "Player.h"
 
 using std::cout;
 using std::endl;
 using std::ostream;
 
 // -------------- ORDERS LIST --------------
+/**
+ * Added neutral player for blockade order execute method
+ */
+static auto* neutralPlayer = new Player();
+
 /**
  * Default Constructor
  */
@@ -159,6 +165,7 @@ OrdersList::~OrdersList()
     for(auto order: ordersList)
     {
         delete order;
+        order = nullptr;
     }
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Order*>().swap(this->ordersList);
@@ -187,10 +194,12 @@ Deploy::Deploy()
 {
     this -> numOfArmies = 0;
     this -> targetTerritory = nullptr;
+    this -> currentPlayer = nullptr;
 }
 
-Deploy::Deploy(int numOfArmies, Territory* targetTerritory)
+Deploy::Deploy(Player* currentPlayer, int numOfArmies, Territory* targetTerritory)
 {
+    this->currentPlayer = currentPlayer;
     this->numOfArmies = numOfArmies;
     this->targetTerritory = targetTerritory;
 }
@@ -204,12 +213,13 @@ Deploy::Deploy(const Deploy& d)
 {
     this->numOfArmies = d.numOfArmies;
     this->targetTerritory = d.targetTerritory;
+    this->currentPlayer = d.currentPlayer;
 }
 
 ostream& Deploy::printOrder(ostream &output) const
 {
     output << "Deploying " << this->numOfArmies << " units to ";
-    output << *this->targetTerritory << " territory." << endl;
+    output << this->targetTerritory << " territory." << endl;
     return output;
 }
 
@@ -222,19 +232,22 @@ void Deploy::execute() const
     if(!validate()) {
        cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        this->targetTerritory->setNumOfArmies(this->targetTerritory->getNumOfArmies() + this->numOfArmies);
         printOrder(cout);
     }
 }
 
 /**
  * Verifies if given order is valid.
- * (Validation yet to be implemented).
- * @return
+ * @return bool true if targetTerritory belongs to player
  */
 bool Deploy::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if (this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+        cout << "Specified territory is not owned" << endl;
+        return false;
+    }
+    cout << "Order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
@@ -257,6 +270,7 @@ Deploy& Deploy::operator=(const Deploy &d)
     if (this != &d) { //Checking for self assignment
         this->numOfArmies = d.numOfArmies;
         this->targetTerritory = d.targetTerritory;
+        this->currentPlayer = d.currentPlayer;
     }
     return *this;
 }
@@ -276,13 +290,15 @@ Advance::Advance()
     this -> numOfArmies = 0;
     this -> sourceTerritory = nullptr;
     this -> targetTerritory = nullptr;
+    this->currentPlayer = nullptr;
 }
 
-Advance::Advance(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
+Advance::Advance(Player* currentPlayer, int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
 {
     this->numOfArmies = numOfArmies;
     this->sourceTerritory = sourceTerritory;
     this->targetTerritory = targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -295,39 +311,101 @@ Advance::Advance(const Advance& a)
     this->numOfArmies = a.numOfArmies;
     this->sourceTerritory = a.sourceTerritory;
     this->targetTerritory = a.targetTerritory;
+    this->currentPlayer = a.currentPlayer;
 }
 
 ostream& Advance::printOrder(ostream &output) const
 {
     output << "Advancing " << this->numOfArmies << " units from ";
-    output << *this->sourceTerritory << " territory " << " to ";
-    output << *this->targetTerritory << " territory." << endl;
+    output << this->sourceTerritory << " territory " << " to ";
+    output << this->targetTerritory << " territory." << endl;
     return output;
 }
 
 /**
- * Verifies if order is valid then executes it.
- * (Execution yet to be implemented).
+ * Simulates an attack by a certain number of army units
+ * from a source territory to a target territory.
  */
-void Advance::execute() const
-{
-    if(!validate()) {
-        cout << "Invalid Order !" << endl;
+void Advance::attackSimulation() const {
+    sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
+    srand((unsigned) time(0));
+    int randomNumber;
+    int attackersKilled = 0;
+    int defendersKilled = 0;
+
+    for(int i = 0; i < numOfArmies; i++) {
+        if(defendersKilled < targetTerritory->getNumOfArmies()) {
+            randomNumber = (rand() % 100) + 1;
+            if(randomNumber <= 60) {
+                defendersKilled++;
+            }
+        } else {
+            break;
+        }
+    }
+
+    for(int i = 0; i < targetTerritory->getNumOfArmies(); i++) {
+       if(attackersKilled < numOfArmies) {
+           randomNumber = (rand() % 100) + 1;
+           if(randomNumber <= 70) {
+               attackersKilled++;
+           }
+       } else {
+           break;
+       }
+    }
+    int remainingAttackers = numOfArmies - attackersKilled;
+    int remainingDefenders = targetTerritory->getNumOfArmies() - defendersKilled;
+
+    if(remainingDefenders == 0 && remainingAttackers > 0) {
+        cout << "Territory conquered !" << endl;
+        currentPlayer->addTerritory(targetTerritory);
+        targetTerritory->setOwner(currentPlayer);
+        targetTerritory->setNumOfArmies(remainingAttackers);
+        cout << "Player is eligible to get a card (MAX 1 PER TURN)" << endl;
+        // ****** Must notify the game engine to give card to attacking player for this win
+        // (MAX 1 SUCH CARD PER TURN)
     } else {
-        cout << "Order being executed !" << endl;
-        printOrder(cout);
+        cout << "Territory successfully defended !" << endl;
+        targetTerritory->setNumOfArmies(remainingDefenders);
+        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() + remainingAttackers);
     }
 }
 
 /**
- * Verifies if given order is valid.
- * (Validation yet to be implemented).
- * @return
+ * Verifies if order is valid then executes it.
+ */
+void Advance::execute() const
+{
+   if(!validate()) {
+       cout << "Invalid Order !" << endl;
+   } else if(targetTerritory->getOwner()->getName() == sourceTerritory->getOwner()->getName()) {
+       sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
+       targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
+       printOrder(cout);
+   } else {
+       attackSimulation();
+   }
+}
+
+/**
+ * Verifies if source territory is owned by current player and if
+ * targetTerritory is adjacent to sourceTerritory
+ * @return true if conditions are met.
  */
 bool Advance::validate() const
 {
-    cout << "Validation in progress ... " << endl;
-    return true;
+   if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+       cout << "Source territory is not owned" << endl;
+       return false;
+   } else if (!this->sourceTerritory->isAdjacentTerritory(targetTerritory)) {
+       cout << "Source and target territory are not adjacent. Move is impossible !" << endl;
+       return false;
+   }else if(currentPlayer->isAlly(targetTerritory->getOwner())){
+       cout << "Target territory owner is an ally; cant attack!" << endl;
+       return false;
+   }
+   return true;
 }
 
 /**
@@ -350,6 +428,7 @@ Advance& Advance::operator=(const Advance &a)
         this->numOfArmies = a.numOfArmies;
         this->sourceTerritory = a.sourceTerritory;
         this->targetTerritory = a.targetTerritory;
+        this->currentPlayer = a.currentPlayer;
     }
     return *this;
 }
@@ -366,11 +445,13 @@ Advance::~Advance()
 Bomb::Bomb()
 {
     this -> targetTerritory = nullptr;
+    this -> currentPlayer = nullptr;
 }
 
-Bomb::Bomb(Territory* targetTerritory)
+Bomb::Bomb(Player* currentPlayer, Territory* targetTerritory)
 {
     this->targetTerritory = targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -381,11 +462,12 @@ Bomb::Bomb(Territory* targetTerritory)
 Bomb::Bomb(const Bomb& b)
 {
     this->targetTerritory = b.targetTerritory;
+    this->currentPlayer = b.currentPlayer;
 }
 
 ostream& Bomb::printOrder(ostream &output) const
 {
-    output << "Bombing " << *this->targetTerritory << " territory.";
+    output << "Bombing " << this->targetTerritory << " territory.";
     output << endl;
     return output;
 }
@@ -399,7 +481,7 @@ void Bomb::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() / 2);
         printOrder(cout);
     }
 }
@@ -411,7 +493,17 @@ void Bomb::execute() const
  */
 bool Bomb::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if( this->targetTerritory->getOwner()->getName() == this->currentPlayer->getName()){
+        cout << "Target territory is owned by the player issuing the order" << endl;
+        return false;
+    }else if (!(this->currentPlayer->isAdjacentTerritory(targetTerritory))){
+        cout << "Target territory is not adjacent to a territory owned by player issuing the order" <<endl;
+        return false;
+    }else if(currentPlayer->isAlly(targetTerritory->getOwner())){
+        cout << "Target territory owner is an ally; cant attack!" << endl;
+        return false;
+    }
+    cout << "Order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
@@ -449,11 +541,13 @@ Bomb::~Bomb()
 Blockade::Blockade()
 {
     this -> targetTerritory = nullptr;
+    this -> currentPlayer = nullptr;
 }
 
-Blockade::Blockade(Territory* targetTerritory)
+Blockade::Blockade(Player* currentPlayer, Territory* targetTerritory)
 {
     this->targetTerritory = targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -464,11 +558,12 @@ Blockade::Blockade(Territory* targetTerritory)
 Blockade::Blockade(const Blockade& b)
 {
     this->targetTerritory = b.targetTerritory;
+    this->currentPlayer = b.currentPlayer;
 }
 
 ostream& Blockade::printOrder(ostream &output) const
 {
-    output << "Blockade on " << *this->targetTerritory << " territory.";
+    output << "Blockade on " << this->targetTerritory << " territory.";
     output << endl;
     return output;
 }
@@ -482,7 +577,8 @@ void Blockade::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() * 2);
+        targetTerritory->setOwner(neutralPlayer);
         printOrder(cout);
     }
 }
@@ -494,7 +590,10 @@ void Blockade::execute() const
  */
 bool Blockade::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if(this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()){
+        cout << "Target territory is not owned by the player issuing the order" << endl;
+        return false;
+    }
     return true;
 }
 
@@ -516,6 +615,7 @@ Blockade& Blockade::operator=(const Blockade &b)
 {
     if (this != &b) { //Checking for self assignment
         this->targetTerritory = b.targetTerritory;
+        this->currentPlayer = b.currentPlayer;
     }
     return *this;
 }
@@ -534,13 +634,15 @@ Airlift::Airlift()
     this -> numOfArmies = 0;
     this -> sourceTerritory = nullptr;
     this -> targetTerritory = nullptr;
+    this -> currentPlayer = nullptr;
 }
 
-Airlift::Airlift(int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
+Airlift::Airlift(Player* currentPlayer, int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory)
 {
     this->numOfArmies = numOfArmies;
     this->sourceTerritory = sourceTerritory;
     this->targetTerritory = targetTerritory;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -553,13 +655,14 @@ Airlift::Airlift(const Airlift& a)
     this->numOfArmies = a.numOfArmies;
     this->sourceTerritory = a.sourceTerritory;
     this->targetTerritory = a.targetTerritory;
+    this->currentPlayer = a.currentPlayer;
 }
 
 ostream& Airlift::printOrder(ostream &output) const
 {
     output << "Airlift " << this->numOfArmies << " units from ";
-    output << *this->sourceTerritory << " territory " << " to ";
-    output << *this->targetTerritory << " territory." << endl;
+    output << this->sourceTerritory << " territory " << " to ";
+    output << this->targetTerritory << " territory." << endl;
     return output;
 }
 
@@ -572,19 +675,27 @@ void Airlift::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
+        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
         printOrder(cout);
+
     }
 }
 
 /**
- * Verifies if given order is valid.
- * (Validation yet to be implemented).
- * @return
+ * Verifies if both target and source territories are
+ * owned by the issuing player.
+ * @return True if both target and source territory are owned by
+ * the issuing player.
  */
 bool Airlift::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName() ||
+    this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+        cout << "Source and/or target territory are not owned" << endl;
+        return false;
+    }
+    cout << "Order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
@@ -608,6 +719,7 @@ Airlift& Airlift::operator=(const Airlift &a)
         this->numOfArmies = a.numOfArmies;
         this->sourceTerritory = a.sourceTerritory;
         this->targetTerritory = a.targetTerritory;
+        this->currentPlayer = a.currentPlayer;
     }
     return *this;
 }
@@ -626,9 +738,10 @@ Negotiate::Negotiate()
     this -> targetPlayer = nullptr;
 }
 
-Negotiate::Negotiate(Player* targetPlayer)
+Negotiate::Negotiate(Player* currentPlayer, Player* targetPlayer)
 {
     this->targetPlayer = targetPlayer;
+    this->currentPlayer = currentPlayer;
 }
 
 
@@ -639,6 +752,7 @@ Negotiate::Negotiate(Player* targetPlayer)
 Negotiate::Negotiate(const Negotiate& n)
 {
     this->targetPlayer = n.targetPlayer;
+    this->currentPlayer = n.currentPlayer;
 }
 
 ostream& Negotiate::printOrder(ostream &output) const
@@ -657,7 +771,8 @@ void Negotiate::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        this->currentPlayer->addAlly(targetPlayer);
+        this->targetPlayer->addAlly(currentPlayer);
         printOrder(cout);
     }
 }
@@ -669,7 +784,10 @@ void Negotiate::execute() const
  */
 bool Negotiate::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if(targetPlayer->getName() == currentPlayer->getName()){
+        cout << "The target player must be different than the player issuing the order" <<endl;
+        return false;
+    }
     return true;
 }
 
@@ -691,6 +809,7 @@ Negotiate& Negotiate::operator=(const Negotiate& n)
 {
     if (this != &n) {  //Checking for self assignment
         this->targetPlayer = n.targetPlayer;
+        this->currentPlayer = n.currentPlayer;
     }
 
     return *this;

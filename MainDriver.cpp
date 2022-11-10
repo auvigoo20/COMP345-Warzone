@@ -9,7 +9,13 @@ int main(){
 //    testPlayer();
 //    testOrdersLists();
 //    testCards();
-    testGameStates();
+//    testGameStates();
+
+//    testOrdersLists();
+//    testOrderExecution();
+
+//    testCards();
+//    testGameStates();
 
     return 0;
 }
