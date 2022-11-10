@@ -497,6 +497,9 @@ bool Bomb::validate() const
     }else if (!(this->currentPlayer->isAdjacentTerritory(targetTerritory))){
         cout << "Target territory is not adjacent to a territory owned by player issuing the order" <<endl;
         return false;
+    }else if(currentPlayer->isAlly(targetTerritory->getOwner())){
+        cout << "Target territory owner is an ally; cant attack!" << endl;
+        return false;
     }
     return true;
 }
@@ -586,9 +589,6 @@ bool Blockade::validate() const
 {
     if(this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()){
         cout << "Target territory is not owned by the player issuing the order" << endl;
-        return false;
-    }else if(currentPlayer->isAlly(targetTerritory->getOwner())){
-        cout << "Target territory owner is an ally; cant attack!" << endl;
         return false;
     }
     return true;
