@@ -31,6 +31,7 @@ public:
     vector<Territory*> toDefend();
     void issueOrder(int orderID);
     string getName();
+    bool isAdjacentTerritory(Territory* targetTerritory);
 
 private:
     friend ostream& operator<<(ostream&, const Player&);

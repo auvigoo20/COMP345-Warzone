@@ -178,6 +178,18 @@ void Player::issueOrder(int orderID){
     else{
         cout << "Invalid order" << endl;
     }
+}
 
-
+/**
+ * Validate if the targetTerritory is adjacent to one territory owned by the currentPlayer
+ * @param targetTerritory
+ * @return
+ */
+bool Player::isAdjacentTerritory(Territory* targetTerritory) {
+    for(auto territory : ownedTerritories){
+        if(territory->isAdjacentTerritory(targetTerritory)){
+            return true;
+        }
+    }
+    return false;
 }

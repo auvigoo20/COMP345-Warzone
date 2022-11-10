@@ -9,6 +9,11 @@ using std::ostream;
 
 // -------------- ORDERS LIST --------------
 /**
+ * Added neutral player for blockade order execute method
+ */
+static auto* neutralPlayer = new Player();
+
+/**
  * Default Constructor
  */
 OrdersList::OrdersList()
@@ -472,7 +477,7 @@ void Bomb::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() / 2);
         printOrder(cout);
     }
 }
@@ -484,7 +489,13 @@ void Bomb::execute() const
  */
 bool Bomb::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if( this->targetTerritory->getOwner()->getName() == this->currentPlayer->getName()){
+        cout << "Target territory is owned by the player issuing the order" << endl;
+        return false;
+    }else if (!(this->currentPlayer->isAdjacentTerritory(targetTerritory))){
+        cout << "Target territory is not adjacent to a territory owned by player issuing the order" <<endl;
+        return false;
+    }
     return true;
 }
 
@@ -558,7 +569,8 @@ void Blockade::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        cout << "Order being executed !" << endl;
+        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() * 2);
+        targetTerritory->setOwner(neutralPlayer);
         printOrder(cout);
     }
 }
@@ -570,7 +582,10 @@ void Blockade::execute() const
  */
 bool Blockade::validate() const
 {
-    cout << "Validation in progress ... " << endl;
+    if(this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()){
+        cout << "Target territory is not owned by the player issuing the order" << endl;
+        return false;
+    }
     return true;
 }
 
