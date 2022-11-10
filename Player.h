@@ -26,11 +26,13 @@ public:
     void setOrdersList(OrdersList* ordersList);
 
     void addTerritory(Territory* t);
+    void addAlly(Player* p);
 
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
     void issueOrder(int orderID);
     string getName();
+    void addOwnedTerritory(Territory* territory);
     bool isAdjacentTerritory(Territory* targetTerritory);
     vector<Player*> getAllyPlayerList ();
     bool isAlly(Player* targetPlayer);

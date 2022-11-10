@@ -156,11 +156,11 @@ int testOrderExecution(){
     Territory* alliedNonAdjacentTer = new Territory("alliedNonAdjacentTer", 12, 12, continent);
     Territory* alliedAdjacentTer = new Territory("alliedAdjacentTer", 2, 1, continent);
 
-    ownedTerritory1->setOwner(player1);
-    alliedNonAdjacentTer->setOwner(player1);
-    alliedAdjacentTer->setOwner(player1);
-    enemyTerritory1->setOwner(player2);
-    enemyNonAdjacentTer->setOwner(player2);
+    player1->addTerritory(ownedTerritory1);
+    player1->addTerritory(alliedAdjacentTer);
+    player1->addTerritory(alliedNonAdjacentTer);
+    player2->addTerritory(enemyTerritory1);
+    player2->addTerritory(enemyNonAdjacentTer);
 
     ownedTerritory1->addAdjacentTerritory(enemyTerritory1);
     ownedTerritory1->addAdjacentTerritory(alliedAdjacentTer);
@@ -177,6 +177,7 @@ int testOrderExecution(){
     Order* invalidDeploy = new Deploy(player1, 3, enemyTerritory1);
     invalidDeploy->execute();
     cout << "\n" << endl;
+
 
     // *********** TESTING ADVANCE ORDER VALIDATION
     cout << "Testing Advance order\n" << endl;
@@ -215,8 +216,72 @@ int testOrderExecution(){
     invalidAirliftOrder2->execute();
     cout << "\n" << endl;
 
+    // TESTING BOMB ORDER VALIDATION
+
+    cout << "Testing Bomb Order\n" << endl;
+    cout << "Valid Bomb Order" << endl;
+    enemyTerritory1->setNumOfArmies(5);
+    cout << "Number of armies in enemyTerritory1 before bombing:  ";
+    cout << enemyTerritory1->getNumOfArmies() << endl;
+    Order* validBombOrder = new Bomb(player1, enemyTerritory1);
+    validBombOrder->execute();
+    cout << "Number of armies in enemyTerritory1 after bombing:   " ;
+    cout << enemyTerritory1->getNumOfArmies() << endl;
+    cout << '\n' << endl;
+
+    cout << "Invalid Bomb Order (Non adjacent target territory)" << endl;
+    Order* invalidBombOrder1= new Bomb(player1, enemyNonAdjacentTer);
+    invalidBombOrder1->execute();
+    cout << '\n' << endl;
+
+    cout << "Invalid Bomb Order (Owned target territory)" << endl;
+    Order* invalidBombOrder2= new Bomb(player1, ownedTerritory1);
+    invalidBombOrder2->execute();
+    cout << '\n' << endl;
+
+    // TESTING BLOCKADE ORDER VALIDATION
+
+    cout << "Testing Blockade Order" << endl;
+    cout << "Valid Blockade Order" << endl;
+    alliedNonAdjacentTer->setNumOfArmies(5);
+    cout << "Number of armies before blockade order:  ";
+    cout << alliedNonAdjacentTer->getNumOfArmies() << endl;
+    cout << "Owner of territory before blockade order:  ";
+    cout << alliedNonAdjacentTer->getOwner()->getName() << endl;
+    Order* validBlockade = new Blockade(player1, alliedNonAdjacentTer);
+    validBlockade->execute();
+    cout << "Number of armies after blockade order:  ";
+    cout << alliedNonAdjacentTer->getNumOfArmies() << endl;
+    cout << "Owner of territory after blockade order (Neutral player has no name, expect empty field):  ";
+    cout << alliedNonAdjacentTer->getOwner()->getName() << endl;
+    cout << '\n' << endl;
+
+    cout << "Invalid Blockade Order" << endl;
+    Order* invalidBlockade = new Blockade(player1, enemyTerritory1);
+    invalidBlockade->execute();
+    cout << '\n' << endl;
 
 
+    //TESTING NEGOTIATE ORDER VALIDATION
+
+    cout << "Valid Negotiate Order" << endl;
+    Order* validNegotiate = new Negotiate(player1, player2);
+    validNegotiate->execute();
+    cout << "Testing attack behavior after negotiate order" << endl;
+    cout << "Offensive advance order from player1 on player2 expected to be invalid" << endl;
+    Order* negotiateAdvance = new Advance(player1, 3, ownedTerritory1, enemyTerritory1);
+    negotiateAdvance->execute();
+    cout << "Bomb order from player 1 on player2 territory expected to be invalid" << endl;
+    Order* negotiateBomb = new Bomb(player1, enemyTerritory1);
+    negotiateBomb->execute();
+    cout << '\n' << endl;
+
+    cout << "Invalid Negotiate Order" << endl;
+    Order* invalidNegotiate = new Negotiate(player1, player1);
+    invalidNegotiate->execute();
+    cout << '\n' << endl;
+
+    // Testing correct behavior for Advance order
     cout << " -- Testing that territory ownership is transferred given successful attack" << endl;
     Order* successfulAttack = new Advance(player1, 5, ownedTerritory1, enemyTerritory1);
     cout << "Print 'enemyTerritory1 owner before successful attack" << endl;

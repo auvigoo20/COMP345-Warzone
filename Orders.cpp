@@ -311,7 +311,7 @@ Advance::Advance(const Advance& a)
     this->numOfArmies = a.numOfArmies;
     this->sourceTerritory = a.sourceTerritory;
     this->targetTerritory = a.targetTerritory;
-    this->currentPlayer = currentPlayer;
+    this->currentPlayer = a.currentPlayer;
 }
 
 ostream& Advance::printOrder(ostream &output) const
@@ -362,6 +362,7 @@ void Advance::attackSimulation() const {
         currentPlayer->addTerritory(targetTerritory);
         targetTerritory->setOwner(currentPlayer);
         targetTerritory->setNumOfArmies(remainingAttackers);
+        cout << "Player is eligible to get a card (MAX 1 PER TURN)" << endl;
         // ****** Must notify the game engine to give card to attacking player for this win
         // (MAX 1 SUCH CARD PER TURN)
     } else {
@@ -381,6 +382,7 @@ void Advance::execute() const
    } else if(targetTerritory->getOwner()->getName() == sourceTerritory->getOwner()->getName()) {
        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
+       printOrder(cout);
    } else {
        attackSimulation();
    }
@@ -501,6 +503,7 @@ bool Bomb::validate() const
         cout << "Target territory owner is an ally; cant attack!" << endl;
         return false;
     }
+    cout << "Order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
@@ -768,7 +771,8 @@ void Negotiate::execute() const
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
-        this->currentPlayer->getAllyPlayerList().push_back(targetPlayer);
+        this->currentPlayer->addAlly(targetPlayer);
+        this->targetPlayer->addAlly(currentPlayer);
         printOrder(cout);
     }
 }
@@ -780,7 +784,7 @@ void Negotiate::execute() const
  */
 bool Negotiate::validate() const
 {
-    if(targetPlayer == currentPlayer){
+    if(targetPlayer->getName() == currentPlayer->getName()){
         cout << "The target player must be different than the player issuing the order" <<endl;
         return false;
     }

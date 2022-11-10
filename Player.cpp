@@ -116,6 +116,14 @@ void Player::addTerritory(Territory* t){
 }
 
 /**
+ * Adds a player to the list of ally
+ * @param p  Player to be added as an ally for this turn
+ */
+void Player::addAlly(Player* p) {
+   allyPlayerList.push_back(p);
+}
+
+/**
  * Returns a random list of territories (for now)
  * @return
  */
@@ -195,7 +203,7 @@ void Player::issueOrder(int orderID){
  * @return
  */
 bool Player::isAdjacentTerritory(Territory* targetTerritory) {
-    for(auto territory : ownedTerritories){
+    for(auto& territory : ownedTerritories){
         if(territory->isAdjacentTerritory(targetTerritory)){
             return true;
         }
