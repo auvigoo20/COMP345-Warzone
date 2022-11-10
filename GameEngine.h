@@ -7,6 +7,9 @@ using std::string;
 using std::ostream;
 
 #include <vector>
+#include "Player.h"
+#include "Map.h"
+
 using std::vector;
 
 // Declared here (forward declaration) because Transition needs to know State exists.
@@ -51,9 +54,15 @@ class GameEngine {
 private:
     State* currentState;
     string latestCommand;
+    vector<Player*> players;
+    Map* map;
 
     friend ostream& operator << (ostream&, const GameEngine&);
     static void initializeEngineStates();
+
+    void reinforcementPhase();
+    void issueOrdersPhase();
+    void executeOrdersPhase();
 public:
     GameEngine();
     GameEngine(const GameEngine &g);

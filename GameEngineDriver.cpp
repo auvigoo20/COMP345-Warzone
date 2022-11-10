@@ -30,12 +30,15 @@ int testGameStates(){
         testGameEngine.setLatestCommand(latestCommand);
 
         for (int i=0; i < testGameEngine.getCurrentState()->getTransitions().size(); i++) {
+
             if (testGameEngine.getCurrentState()->getTransitions().at(i)->getName() == testGameEngine.getLatestCommand()) {
+
                 if (testGameEngine.getCurrentState()->getTransitions().at(i)->getTo() == nullptr) {
                     invalidCommand = false;
                     done = true;
                     break;
                 }
+
                 testGameEngine.setCurrentState(testGameEngine.getCurrentState()->getTransitions().at(i)->getTo());
                 cout << testGameEngine << endl;
                 invalidCommand = false;

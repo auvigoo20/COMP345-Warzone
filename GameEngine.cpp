@@ -1,4 +1,5 @@
 #include "GameEngine.h"
+#include "Player.h"
 #include <string>
 using std::string;
 
@@ -8,6 +9,9 @@ using std::endl;
 
 #include <vector>
 using std::vector;
+
+#include <algorithm>
+using std::find;
 
 /**
  * Transition default constructor
@@ -323,4 +327,36 @@ void GameEngine::initializeEngineStates() {
     issueOrders->setTransitions({issueorderTransition, endissueordersTransition});
     executeOrders->setTransitions({execorderTransition, endexecordersTransition, winTransition});
     win->setTransitions({playTransition, endTransition});
+}
+
+void GameEngine::reinforcementPhase() {
+    for (Player* player : GameEngine::players) {
+        // Player receives at least three troops, or up to as many troops as 1/3 of the amount of territories owned
+        int numTerritoriesOwned = player->getTerritories().size();
+        int numReinforcementTroops = 3;
+
+        if (numTerritoriesOwned/3 >= 3) {
+            numReinforcementTroops = numTerritoriesOwned / 3;
+        }
+
+        // Player also receives bonus troops for owning all territories in a continent.
+        // Loop through each continent, check if player owns all territories in it, and give bonus if so.
+        for (Continent* continent : GameEngine::map->getAllContinents()) {
+            bool ownsAllTerritories = true;
+            for (Territory* territory : GameEngine::map->getAllTerritoriesByContinent(continent)) {
+                // if any territory in continent is not in player's owned territories
+                if (std::find(player->getTerritories().begin(), player->getTerritories().end(), territory) == player->getTerritories().end()) {
+                    ownsAllTerritories = false;
+                }
+            }
+            // Give bonus troops
+            if (ownsAllTerritories) {
+                numReinforcementTroops += continent->getBonus();
+            }
+        }
+
+        // Player now has to deploy earned troops
+        
+
+    }
 }

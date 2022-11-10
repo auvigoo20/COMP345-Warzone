@@ -5,10 +5,10 @@
 #include "CardsDriver.h"
 
 int main(){
-    testLoadMaps();
-    testPlayer();
-    testOrdersLists();
-    testCards();
+//    testLoadMaps();
+//    testPlayer();
+//    testOrdersLists();
+//    testCards();
     testGameStates();
 
     return 0;
