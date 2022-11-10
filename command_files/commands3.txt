@@ -1,0 +1,13 @@
+loadmap somefile.txt
+load anothermap.map
+validatemap
+addplayer player1
+addplayer player2
+gamestart
+replay
+loadmap bettermap.map
+validatemap
+addplayer player1
+addplayer player2
+gamestart
+quit

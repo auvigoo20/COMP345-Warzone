@@ -1,0 +1,14 @@
+loadmap
+some random invalid command
+loadmap somefile.txt extraparameter
+loadmap somefile.txt
+loadmap anotherfile.txt
+validatemap
+loadmap anotheranotherfile.txt
+addplayer player1
+validatemap
+addplayer player2
+addplayer player3
+gamestart
+gamestart
+quit

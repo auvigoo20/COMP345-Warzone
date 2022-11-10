@@ -119,4 +119,39 @@ ostream& operator<<(ostream &strm, const CommandProcessor &c){
     return strm;
 }
 
+FileLineReader::FileLineReader(string fileName) {
+    input.open(fileName);
+}
+
+FileLineReader::FileLineReader() {}
+
+FileLineReader::~FileLineReader() {
+    input.close();
+}
+
+string FileLineReader::readLineFromFile() {
+    if(!input){
+        cout << "ERROR: FILE COULD NOT BE READ" << endl;
+        exit(0);
+    }
+    string line;
+    getline(input, line);
+    return line;
+}
+
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(GameEngine *gameEngine, std::string fileName) : CommandProcessor(gameEngine){
+    flr = new FileLineReader(fileName);
+}
+
+FileCommandProcessorAdapter::~FileCommandProcessorAdapter() {
+    delete flr;
+    flr = nullptr;
+}
+
+string FileCommandProcessorAdapter::readCommand() {
+    return flr->readLineFromFile();
+}
+
+
+
 

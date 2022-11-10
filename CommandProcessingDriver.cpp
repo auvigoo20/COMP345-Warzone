@@ -7,7 +7,11 @@ using std::endl;
 
 void testCommandProcessor(){
     GameEngine* gameEngine = new GameEngine(GameEngine::start);
-    CommandProcessor* commandProcessor = new CommandProcessor(gameEngine);
+//    CommandProcessor* commandProcessor = new CommandProcessor(gameEngine);
+//    FileCommandProcessorAdapter* commandProcessor = new FileCommandProcessorAdapter(gameEngine, "../command_files/commands1.txt");
+//    FileCommandProcessorAdapter* commandProcessor = new FileCommandProcessorAdapter(gameEngine, "../command_files/commands2.txt");
+    FileCommandProcessorAdapter* commandProcessor = new FileCommandProcessorAdapter(gameEngine, "../command_files/commands3.txt");
+
     bool replay = true;
 
     while(replay){

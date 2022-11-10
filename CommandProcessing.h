@@ -1,5 +1,9 @@
 #pragma once
 #include "GameEngine.h"
+#include <iostream>
+#include <fstream>
+using std::ifstream;
+
 
 class Command{
     private:
@@ -21,7 +25,7 @@ class CommandProcessor{
     private:
         vector<Command*> commands;
         GameEngine* gameEngine;
-        string readCommand();
+        virtual string readCommand();
         void saveCommand(Command* command);
         friend ostream& operator<<(ostream&, const CommandProcessor&);
 public:
@@ -30,4 +34,25 @@ public:
         ~CommandProcessor();
         Command* getCommand();
         bool validate(Command*);
+};
+
+class FileLineReader{
+    private:
+        ifstream input;
+    public:
+        FileLineReader(string fileName);
+        FileLineReader();
+        ~FileLineReader();
+        string readLineFromFile();
+};
+
+
+class FileCommandProcessorAdapter: public CommandProcessor{
+    private:
+        FileLineReader* flr;
+        string readCommand();
+    public:
+        FileCommandProcessorAdapter(GameEngine* gameEngine, string fileName);
+        FileCommandProcessorAdapter();
+        ~FileCommandProcessorAdapter();
 };
