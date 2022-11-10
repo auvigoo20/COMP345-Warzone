@@ -9,6 +9,9 @@ using std::ostream;
 #include <vector>
 using std::vector;
 
+#include "CommandProcessing.h"
+
+
 // Declared here (forward declaration) because Transition needs to know State exists.
 class State;
 
@@ -50,7 +53,7 @@ public:
 class GameEngine {
 private:
     State* currentState;
-    string latestCommand;
+    Command* latestCommand;
 
     friend ostream& operator << (ostream&, const GameEngine&);
     static void initializeEngineStates();
@@ -61,9 +64,9 @@ public:
     GameEngine& operator = (const GameEngine& g);
 
     State* getCurrentState();
-    string getLatestCommand();
+    Command* getLatestCommand();
     void setCurrentState(State* currentState);
-    void setLatestCommand(string latestCommand);
+    void setLatestCommand(Command* latestCommand);
 
     // Startup Phase method
     void startupPhase();

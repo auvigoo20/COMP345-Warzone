@@ -200,6 +200,7 @@ ostream& operator << (ostream &strm, const State &s){
  */
 GameEngine::GameEngine() {
     currentState = nullptr;
+    latestCommand = nullptr;
     initializeEngineStates();
 }
 
@@ -221,6 +222,7 @@ GameEngine::GameEngine(const GameEngine &g) {
  */
 GameEngine::GameEngine(State *startingState) {
     currentState = startingState;
+    latestCommand = nullptr;
     initializeEngineStates();
 }
 
@@ -236,7 +238,7 @@ State *GameEngine::getCurrentState() {
  * Getter for the "latestCommand" variable
  * @return latestCommand
  */
-string GameEngine::getLatestCommand() {
+Command* GameEngine::getLatestCommand() {
     return latestCommand;
 }
 
@@ -252,7 +254,7 @@ void GameEngine::setCurrentState(State *currentState) {
  * Setter for the "latestCommand" variable
  * @param latestCommand
  */
-void GameEngine::setLatestCommand(std::string latestCommand) {
+void GameEngine::setLatestCommand(Command* latestCommand) {
     this->latestCommand = latestCommand;
 }
 
@@ -329,5 +331,6 @@ void GameEngine::initializeEngineStates() {
 }
 
 void GameEngine::startupPhase() {
+
 
 }
