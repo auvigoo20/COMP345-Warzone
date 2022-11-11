@@ -201,6 +201,8 @@ ostream& operator << (ostream &strm, const State &s){
  */
 GameEngine::GameEngine() {
     currentState = nullptr;
+    players = {};
+    map = nullptr;
     initializeEngineStates();
 }
 
@@ -213,6 +215,10 @@ GameEngine::GameEngine(const GameEngine &g) {
     // Thus, a shallow copy is used here.
     currentState = g.currentState;
     latestCommand = g.latestCommand;
+    for(auto player : g.players){
+        players.push_back(player);
+    }
+    map = g.map;
     initializeEngineStates();
 }
 
@@ -223,6 +229,12 @@ GameEngine::GameEngine(const GameEngine &g) {
 GameEngine::GameEngine(State *startingState) {
     currentState = startingState;
     initializeEngineStates();
+}
+
+GameEngine::GameEngine(State *startingState, vector<Player *> players, Map *map) {
+    this->currentState = startingState;
+    this->players = players;
+    this->map = map;
 }
 
 /**
@@ -242,6 +254,22 @@ string GameEngine::getLatestCommand() {
 }
 
 /**
+ * Getter for the "players" vector
+ * @return players
+ */
+vector<Player*> GameEngine::getPlayers() {
+    return players;
+}
+
+/**
+ * Getter for the map variable
+ * @return map
+ */
+Map* GameEngine::getMap() {
+    return map;
+}
+
+/**
  * Setter for the "currentState" variable
  * @param currentState
  */
@@ -255,6 +283,22 @@ void GameEngine::setCurrentState(State *currentState) {
  */
 void GameEngine::setLatestCommand(std::string latestCommand) {
     this->latestCommand = latestCommand;
+}
+
+/**
+ * Setter for the players vector
+ * @param players
+ */
+void GameEngine::setPlayers(vector<Player *> players) {
+    this->players = players;
+}
+
+/**
+ * Setter for the map variable
+ * @param map
+ */
+void GameEngine::setMap(Map *map) {
+    this->map = map;
 }
 
 /**
@@ -334,7 +378,7 @@ void GameEngine::initializeEngineStates() {
  * Loops through every player and adds the deserved number of reinforcement troops to their pool.
  */
 void GameEngine::reinforcementPhase() {
-    for (Player* player : GameEngine::players) {
+    for (Player* player : this->players) {
         // Player receives at least three troops, or up to as many troops as 1/3 of the amount of territories owned
         int numTerritoriesOwned = player->getTerritories().size();
         int numReinforcementTroops = 3;
@@ -345,9 +389,9 @@ void GameEngine::reinforcementPhase() {
 
         // Player also receives bonus troops for owning all territories in a continent.
         // Loop through each continent, check if player owns all territories in it, and give bonus if so.
-        for (Continent* continent : GameEngine::map->getAllContinents()) {
+        for (Continent* continent : this->map->getAllContinents()) {
             bool ownsAllTerritories = true;
-            for (Territory* territory : GameEngine::map->getAllTerritoriesByContinent(continent)) {
+            for (Territory* territory : this->map->getAllTerritoriesByContinent(continent)) {
                 // if any territory in continent is not in player's owned territories
                 if (std::find(player->getTerritories().begin(), player->getTerritories().end(), territory) == player->getTerritories().end()) {
                     ownsAllTerritories = false;
@@ -360,5 +404,17 @@ void GameEngine::reinforcementPhase() {
         }
 
         player->addReinforcements(numReinforcementTroops);
+    }
+    this->setCurrentState(issueOrders);
+}
+
+void GameEngine::issueOrdersPhase() {
+    bool done = false;
+    while(!done) {
+
+        // Check that all players have signified that they don’t have any more orders to issue for this turn
+        for (Player* player : this->players) {
+
+        }
     }
 }

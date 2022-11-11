@@ -67,12 +67,17 @@ public:
     GameEngine();
     GameEngine(const GameEngine &g);
     explicit GameEngine(State* startingState);
+    explicit GameEngine(State* startingState, vector<Player*> players, Map* map);
     GameEngine& operator = (const GameEngine& g);
 
     State* getCurrentState();
     string getLatestCommand();
+    vector<Player*> getPlayers();
+    Map* getMap();
     void setCurrentState(State* currentState);
     void setLatestCommand(string latestCommand);
+    void setPlayers(vector<Player*> players);
+    void setMap(Map* map);
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.
