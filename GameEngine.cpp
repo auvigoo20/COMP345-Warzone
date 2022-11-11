@@ -1,6 +1,7 @@
 #include "GameEngine.h"
 #include "CommandProcessing.h"
 #include "Map.h"
+#include "Player.h"
 
 #include <string>
 using std::string;
@@ -385,6 +386,18 @@ void GameEngine::startupPhase() {
             else if(currentCommand->getCommand() == "validatemap" && stateName == "map loaded"){
                 map->validate();
                 this->setCurrentState(mapValidated);
+            }
+            else if(currentCommand->getCommand().find("addplayer") != string::npos && (stateName == "map validated" || stateName == "players added")){
+
+                std::stringstream commandToSplit(currentCommand->getCommand());
+                string segment;
+                vector<string> splitCommand;
+                while (getline(commandToSplit, segment, ' ')) {
+                    splitCommand.push_back(segment);
+                }
+
+
+
             }
         }
         if(currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {

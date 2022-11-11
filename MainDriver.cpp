@@ -13,9 +13,9 @@ int main(int argc, char** argv){
 //        testPlayer();
 //        testOrdersLists();
 //        testCards();
-//        testGameStates();
+        testGameStates();
 
-        testCommandProcessor();
+//        testCommandProcessor();
         }
         else{
             if(string(argv[1]) == "-console"){
