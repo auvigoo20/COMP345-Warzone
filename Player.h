@@ -27,6 +27,7 @@ public:
     void setHand(Hand* hand);
     void setOrdersList(OrdersList* ordersList);
     void setName(string name);
+    void setReinforcementPool(int reinforcementPool);
 
     void addTerritory(Territory* t);
     void addAlly(Player* p);

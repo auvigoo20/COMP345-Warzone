@@ -344,7 +344,7 @@ void GameEngine::startupPhase() {
     cout << "*       Initiating Startup Phase       *" << endl;
     cout << "****************************************" << endl;
 
-    this->currentState = start;     //!TODO: Change  it back to start
+    this->currentState = start;
     Command* currentCommand;
     CommandProcessor* commandProcessor= new CommandProcessor(this);
     string stateName, fileDirectory;
@@ -411,27 +411,11 @@ void GameEngine::startupPhase() {
                 }
             }
             else if (currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added"){
-                if (players.size() < 2) {   //!TODO: Change it back to <2
+                if (players.size() < 2) {
                     cout << "Cannot start game. At least 2 players are required." << endl;
                 }
                 else {
                     done = true;
-
-                    //! TODO: Error with Distributing territories
-                    cout << "Distributing territories..." << endl;
-
-                    int territoryCount;
-                    territoryCount = this->map->getAllTerritories().size();
-
-                    for (int i = 0; i < players.size(); i++){
-                        while (true){
-                            srand(time(NULL));
-
-                        }
-                        for (int j = 0; i < (territoryCount/players.size()); j++){
-
-                        }
-                    }
 
 
 
@@ -448,7 +432,9 @@ void GameEngine::startupPhase() {
 
                     cout << "Dispatching army units..." << endl;
 
-
+                    for (int i = 0; i < players.size(); i++){
+                        players[i]->setReinforcementPool(50);
+                    }
 
                     cout << "Drawing Cards..." << endl;
 

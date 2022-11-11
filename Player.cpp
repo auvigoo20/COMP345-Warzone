@@ -108,6 +108,10 @@ OrdersList *Player::getOrdersList() {
     return this->orderList;
 }
 
+void Player::setReinforcementPool(int reinforcementPool) {
+    this->reinforcementPool = reinforcementPool;
+}
+
 void Player::setOrdersList(OrdersList *ordersList) {
     this->orderList = ordersList;
 }
