@@ -57,15 +57,17 @@ int testCards(){
     /**
      * Creating first player Hand
      */
-    Hand* hand1  = new Hand(deck);
+    Hand* hand1  = new Hand();
 
     /**
      * Create dummy player
      */
 
     OrdersList* ordersList = new OrdersList();
-    Player* player = new Player("Bobby", hand1, ordersList);
+    Player* player = new Player("Bobby", hand1, ordersList, 5);
     hand1->setOwner(player);
+    hand1->setDeckList(deck);
+
 
     /**
      * Testing draw() method on first player Hand ; player draw a Card and places it in his Hands
@@ -88,9 +90,9 @@ int testCards(){
     Continent* continent = new Continent("RandomCont", 5);
     Territory* territory = new Territory("randomTer", 1, 2, continent);
 
-    hand1->playCard(1, territory);
-    hand1->playCard(1, territory);
-    hand1->playCard(1, territory);
+    hand1->playCard(1);
+    hand1->playCard(1);
+    hand1->playCard(1);
 
     cout << *deck << endl;
     cout << *hand1 << endl;
