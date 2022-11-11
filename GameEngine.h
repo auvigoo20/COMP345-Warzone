@@ -79,12 +79,12 @@ public:
     static Transition* loadmapTransition;
     static Transition* validatemapTransition;
     static Transition* addplayerTransition;
-    static Transition* assigncountriesTransition;
+    static Transition* gamestartTransition;
     static Transition* issueorderTransition;
     static Transition* endissueordersTransition;
     static Transition* execorderTransition;
     static Transition* endexecordersTransition;
     static Transition* winTransition;
-    static Transition* endTransition;
-    static Transition* playTransition;
+    static Transition* quitTransition;
+    static Transition* replayTransition;
 };
