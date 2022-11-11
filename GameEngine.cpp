@@ -344,7 +344,7 @@ void GameEngine::startupPhase() {
     cout << "*       Initiating Startup Phase       *" << endl;
     cout << "****************************************" << endl;
 
-    this->currentState = start;
+    this->currentState = start;     //!TODO: Change  it back to start
     Command* currentCommand;
     CommandProcessor* commandProcessor= new CommandProcessor(this);
     string stateName, fileDirectory;
@@ -411,7 +411,7 @@ void GameEngine::startupPhase() {
                 }
             }
             else if (currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added"){
-                if (players.size() < 2) {
+                if (players.size() < 2) {   //!TODO: Change it back to <2
                     cout << "Cannot start game. At least 2 players are required." << endl;
                 }
                 else {
@@ -420,18 +420,31 @@ void GameEngine::startupPhase() {
                     //! TODO: Error with Distributing territories
                     cout << "Distributing territories..." << endl;
 
-                    
+                    int territoryCount;
+                    territoryCount = this->map->getAllTerritories().size();
+
+                    for (int i = 0; i < players.size(); i++){
+                        while (true){
+                            srand(time(NULL));
+
+                        }
+                        for (int j = 0; i < (territoryCount/players.size()); j++){
+
+                        }
+                    }
+
+
 
                     cout << "Determining play order..." << endl;
 
                     srand(time(NULL));
 
-
-                    for (int i=0; i<(players.size()*2); i++) {
+                    for (int i=0; i < (players.size()*2); i++) {
                         int shuffle = (rand() % players.size());
                         players.emplace_back(players.at(shuffle));
                         players.erase(players.begin()+shuffle,players.begin()+shuffle+1);
                     }
+
 
                     cout << "Dispatching army units..." << endl;
 
@@ -441,11 +454,11 @@ void GameEngine::startupPhase() {
 
                     // Creating Deck
                     for (int i = 0; i < players.size(); i++){
-                        deck->addCard(new BombCard);
-                        deck->addCard(new ReinforcementCard);
-                        deck->addCard(new BlockadeCard);
-                        deck->addCard(new AirliftCard);
-                        deck->addCard(new DiplomacyCard);
+                        this->deck->addCard(new BombCard);
+                        this->deck->addCard(new ReinforcementCard);
+                        this->deck->addCard(new BlockadeCard);
+                        this->deck->addCard(new AirliftCard);
+                        this->deck->addCard(new DiplomacyCard);
                     }
 
                     for (int i=0; i<players.size(); i++) {

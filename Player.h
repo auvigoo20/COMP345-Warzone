@@ -40,4 +40,5 @@ private:
     vector<Territory*> ownedTerritories;
     Hand* hand;
     OrdersList* orderList;
+    int reinforcementPool;
 };
