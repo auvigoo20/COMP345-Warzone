@@ -47,6 +47,7 @@ class Territory{
         int getNumOfArmies();
         string getName();
         vector<Territory*> getAdjacentTerritories();
+        bool isAdjacentTerritory(Territory* territory);
         int getX();
         int getY();
 
