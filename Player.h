@@ -13,7 +13,7 @@ class Player {
 public:
     Player();
     ~Player();
-    Player(string name, Hand* hand, OrdersList* ordersList);
+    Player(string name, Hand* hand, OrdersList* ordersList, int reinforcementPool);
     Player(string name);
     Player(const Player&);
     Player& operator=(const Player &p);
@@ -29,10 +29,15 @@ public:
     void setName(string name);
 
     void addTerritory(Territory* t);
+    void addAlly(Player* p);
 
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
     void issueOrder(int orderID);
+    void addOwnedTerritory(Territory* territory);
+    bool isAdjacentTerritory(Territory* targetTerritory);
+    vector<Player*> getAllyPlayerList ();
+    bool isAlly(Player* targetPlayer);
 
 private:
     friend ostream& operator<<(ostream&, const Player&);
@@ -41,4 +46,5 @@ private:
     Hand* hand;
     OrdersList* orderList;
     int reinforcementPool;
+    vector<Player*> allyPlayerList;
 };

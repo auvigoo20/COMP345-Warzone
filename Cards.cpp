@@ -81,6 +81,7 @@ Deck::~Deck()
 {
      for(auto card: deckList){
          delete card;
+         card = nullptr;
      }
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Card*>().swap(this->deckList);
@@ -91,13 +92,15 @@ Hand::Hand(){
 
 Hand::Hand(const Hand& h){
     this -> owner = h.owner;
+    this -> deckList = new Deck(*(h.deckList));
     for (auto card: h.handList) {
         this->handList.push_back(card->copy());
     }
 }
 
-Hand::Hand(Deck* deckList) {
+Hand::Hand(Player* owner, Deck* deckList) {
     this->deckList = deckList;
+    this->owner = owner;
 }
 
 /**
@@ -126,9 +129,9 @@ void Hand::removeCard(int index) {
  * @param index
  */
 
-void Hand::playCard(int index, Territory* territory){
+void Hand::playCard(int index){
     Card* card = handList[index-1];
-    card->play(this->owner->getOrdersList(), territory);                     //create order
+    card->play(this-> owner);                     //create order
     removeCard(index);               //remove card from hand player
     deckList->addCard(card);        // add card to deck
 }
@@ -151,6 +154,10 @@ void Hand::setOwner(Player* p) {
     this->owner = p;
 }
 
+void Hand::setDeckList(Deck *deckList) {
+    this->deckList = deckList;
+}
+
 /**
  * Assignment operator for hand class
  * @param h
@@ -171,6 +178,7 @@ Hand::~Hand()
 {
     for(auto card: handList){
         delete card;
+        card = nullptr;
     }
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Card*>().swap(this->handList);
@@ -248,9 +256,10 @@ DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
  * Creating Order and adding the order in the Order List
  */
 
-void BombCard::play(OrdersList* ordersList, Territory* territory) const{
-    Bomb* bomb = new Bomb(territory);
-    ordersList->addOrder(bomb);
+void BombCard::play(Player* owner) const{
+    //Engine should choose numOfUnits and targetTerritory for constructor bellow.
+    Bomb* bomb = new Bomb();
+    owner->getOrdersList()->addOrder(bomb);
     cout << "output bomb card" << endl;
 }
 
@@ -273,7 +282,7 @@ ostream& BombCard::printCard(std::ostream &output) const {
  {
  }
 
-void ReinforcementCard::play(OrdersList* ordersList, Territory* territory) const {  // Reinforcement Card does not create an order
+void ReinforcementCard::play(Player* owner) const {  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
 
@@ -296,9 +305,10 @@ ReinforcementCard::~ReinforcementCard()
 {
 }
 
-void BlockadeCard::play(OrdersList* ordersList, Territory* territory) const{
-    Blockade* blockade = new Blockade(territory);
-    ordersList->addOrder(blockade);
+void BlockadeCard::play(Player* owner) const{
+    //Engine should choose targetTerritory for constructor bellow.
+    Blockade* blockade = new Blockade();
+    owner->getOrdersList()->addOrder(blockade);
     cout << "output blockade card" << endl;
 }
 
@@ -321,9 +331,10 @@ BlockadeCard::~BlockadeCard()
 {
 }
 
-void AirliftCard::play(OrdersList* ordersList, Territory* territory) const{
-    Airlift* airlift = new Airlift(12, territory, territory);
-    ordersList->addOrder(airlift);
+void AirliftCard::play(Player* owner) const{
+    //Engine should choose numOfUnits, sourceTerritory, and targetTerritory for constructor bellow.
+    Airlift* airlift = new Airlift();
+    owner->getOrdersList()->addOrder(airlift);
     cout << "output airlift card" << endl;
 }
 
@@ -346,9 +357,10 @@ AirliftCard::~AirliftCard()
 {
 }
 
-void DiplomacyCard::play(OrdersList* ordersList, Territory* territory) const{
+void DiplomacyCard::play(Player* owner) const{
+    //Engine should choose targetPlayer for constructor bellow.
     Negotiate* negotiate = new Negotiate();
-    ordersList->addOrder(negotiate);
+    owner->getOrdersList()->addOrder(negotiate);
     cout << "output diplomacy card" << endl;
 }
 

@@ -19,7 +19,7 @@ void testPlayer() {
     Hand* hand = new Hand();
     OrdersList* ordersList = new OrdersList();
 
-    Player *p1 = new Player("Player1", hand, ordersList);
+    Player *p1 = new Player("Player1", hand, ordersList, 5);
     p1->addTerritory(t1);
     p1->addTerritory(t2);
     p1->addTerritory(t3);
