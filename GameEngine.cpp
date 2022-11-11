@@ -329,6 +329,10 @@ void GameEngine::initializeEngineStates() {
     win->setTransitions({playTransition, endTransition});
 }
 
+/**
+ * Performs the reinforcement phase.
+ * Loops through every player and adds the deserved number of reinforcement troops to their pool.
+ */
 void GameEngine::reinforcementPhase() {
     for (Player* player : GameEngine::players) {
         // Player receives at least three troops, or up to as many troops as 1/3 of the amount of territories owned
@@ -355,8 +359,6 @@ void GameEngine::reinforcementPhase() {
             }
         }
 
-        // Player now has to deploy earned troops
-        
-
+        player->addReinforcements(numReinforcementTroops);
     }
 }

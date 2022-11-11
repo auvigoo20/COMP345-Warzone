@@ -20,10 +20,12 @@ public:
     vector<Territory*> getTerritories();
     Hand* getHand();
     OrdersList* getOrdersList();
+    int getReinforcementPool();
 
     void setTerritories(vector<Territory*> territories);
     void setHand(Hand* hand);
     void setOrdersList(OrdersList* ordersList);
+    void setReinforcementPool(int reinforcementPool);
 
     void addTerritory(Territory* t);
     void addAlly(Player* p);
@@ -31,6 +33,7 @@ public:
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
     void issueOrder(int orderID);
+    void addReinforcements(int reinforcements);
     string getName();
     void addOwnedTerritory(Territory* territory);
     bool isAdjacentTerritory(Territory* targetTerritory);

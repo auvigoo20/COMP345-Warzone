@@ -106,6 +106,22 @@ void Player::setOrdersList(OrdersList *ordersList) {
     this->orderList = ordersList;
 }
 
+int Player::getReinforcementPool() {
+    return this->reinforcementPool;
+}
+
+void Player::setReinforcementPool(int reinforcementPool) {
+    this->reinforcementPool = reinforcementPool;
+}
+
+/**
+ * Add reinforcements to Player's current reinforcement pool
+ * @param reinforcements Number of reinforcements to add
+ */
+void Player::addReinforcements(int reinforcements) {
+    this->reinforcementPool += reinforcements;
+}
+
 /**
  * Add territory to Player's owned territories list, and make the Player the owner of that territory
  * @param t
