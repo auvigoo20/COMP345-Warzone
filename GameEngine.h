@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "Map.h"
+#include "Cards.h"
 #include <string>
 using std::string;
 
@@ -59,6 +60,7 @@ private:
     Command* latestCommand;
     vector<Player*> players;
     Map* map;
+    Deck* deck;
     friend ostream& operator << (ostream&, const GameEngine&);
     static void initializeEngineStates();
 public:

@@ -2,6 +2,7 @@
 #include "CommandProcessing.h"
 #include "Map.h"
 #include "Player.h"
+#include "Cards.h"
 
 #include <string>
 using std::string;
@@ -207,6 +208,7 @@ GameEngine::GameEngine() {
     currentState = nullptr;
     latestCommand = nullptr;
     initializeEngineStates();
+    deck = new Deck();
 }
 
 /**
@@ -219,6 +221,7 @@ GameEngine::GameEngine(const GameEngine &g) {
     currentState = g.currentState;
     latestCommand = g.latestCommand;
     initializeEngineStates();
+    deck = g.deck;
 }
 
 /**
@@ -229,6 +232,7 @@ GameEngine::GameEngine(State *startingState) {
     currentState = startingState;
     latestCommand = nullptr;
     initializeEngineStates();
+    deck = new Deck();
 }
 
 /**
@@ -413,14 +417,15 @@ void GameEngine::startupPhase() {
                 else {
                     done = true;
 
+                    //! TODO: Error with Distributing territories
                     cout << "Distributing territories..." << endl;
 
-
+                    
 
                     cout << "Determining play order..." << endl;
 
                     srand(time(NULL));
-                    Player* tempPlayer;
+
 
                     for (int i=0; i<(players.size()*2); i++) {
                         int shuffle = (rand() % players.size());
@@ -434,9 +439,23 @@ void GameEngine::startupPhase() {
 
                     cout << "Drawing Cards..." << endl;
 
+                    // Creating Deck
+                    for (int i = 0; i < players.size(); i++){
+                        deck->addCard(new BombCard);
+                        deck->addCard(new ReinforcementCard);
+                        deck->addCard(new BlockadeCard);
+                        deck->addCard(new AirliftCard);
+                        deck->addCard(new DiplomacyCard);
+                    }
 
-
-
+                    for (int i=0; i<players.size(); i++) {
+                        Player* tempPlayer = players.at(i);
+                        Hand* hand = new Hand(deck);
+                        deck->draw(hand);
+                        deck->draw(hand);
+                        tempPlayer->setHand(hand);
+                        tempPlayer= nullptr;
+                    }
                 }
             }
         }
