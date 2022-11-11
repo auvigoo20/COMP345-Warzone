@@ -38,6 +38,12 @@ Player::Player(string name, Hand* hand, OrdersList* ordersList) {
     this->orderList = ordersList;
 }
 
+Player::Player(std::string name) {
+    this->name = name;
+    this->hand = new Hand();
+    this->orderList = new OrdersList();
+}
+
 /**
  * Copy constructor (deep copy for hand and orderlist, but not territories)
  * @param p
@@ -88,6 +94,14 @@ OrdersList *Player::getOrdersList() {
 
 void Player::setOrdersList(OrdersList *ordersList) {
     this->orderList = ordersList;
+}
+
+string Player::getName() {
+    return this->name;
+}
+
+void Player::setName(std::string name) {
+    this->name = name;
 }
 
 /**

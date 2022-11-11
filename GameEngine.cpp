@@ -346,7 +346,6 @@ void GameEngine::startupPhase() {
     string stateName, fileDirectory;
 //    string const directory = "../map_files/";
     bool done = false;
-    Map* map;
 
     while(!done) {
         // Receive the command from Console input using the getCommand()
@@ -372,9 +371,9 @@ void GameEngine::startupPhase() {
                 fileDirectory = splitCommand[1];
 
                 cout << "Loading Map..." << endl;
-                map = mapLoader.readMapFile(fileDirectory);
-                if (map != nullptr){
-                    cout << *map << endl;
+                this->map = mapLoader.readMapFile(fileDirectory);
+                if (this->map != nullptr){
+                    cout << *this->map << endl;
                     if (stateName == "start"){
                         this->setCurrentState(mapLoaded);
                     }
@@ -384,20 +383,29 @@ void GameEngine::startupPhase() {
                 }
             }
             else if(currentCommand->getCommand() == "validatemap" && stateName == "map loaded"){
-                map->validate();
+                this->map->validate();
                 this->setCurrentState(mapValidated);
             }
             else if(currentCommand->getCommand().find("addplayer") != string::npos && (stateName == "map validated" || stateName == "players added")){
+                if (players.size() < 6) {
+                    std::stringstream commandToSplit(currentCommand->getCommand());
+                    string segment;
+                    vector<string> splitCommand;
+                    while (getline(commandToSplit, segment, ' ')) {
+                        splitCommand.push_back(segment);
+                    }
 
-                std::stringstream commandToSplit(currentCommand->getCommand());
-                string segment;
-                vector<string> splitCommand;
-                while (getline(commandToSplit, segment, ' ')) {
-                    splitCommand.push_back(segment);
+                    Player *player = new Player(splitCommand[1]);
+
+                    players.push_back(player);
+
+                    if (stateName == "map loaded") {
+                        this->setCurrentState(playersAdded);
+                    }
                 }
-
-
-
+                else{
+                    cout << "Maximum number of Players added. Please start the game." << endl;
+                }
             }
         }
         if(currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {

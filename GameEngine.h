@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Player.h"
+#include "Map.h"
 #include <string>
 using std::string;
 
@@ -55,7 +57,8 @@ class GameEngine {
 private:
     State* currentState;
     Command* latestCommand;
-
+    vector<Player*> players;
+    Map* map;
     friend ostream& operator << (ostream&, const GameEngine&);
     static void initializeEngineStates();
 public:
