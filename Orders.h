@@ -2,18 +2,19 @@
 #include <iostream>
 #include <vector>
 #include "Map.h"
+#include "LoggingObserver.h"
 
 using namespace std;
 
 // Forward declaration
 class OrdersList;
 
-class Order
+class Order: public Subject, public ILoggable
 {
 public:
     virtual ostream& printOrder(ostream& output) const = 0;
     virtual bool validate() const = 0;
-    virtual void execute() const = 0;
+    virtual void execute()  = 0;
     virtual Order* copy() const = 0;
     virtual ~Order() = default;
 
@@ -21,7 +22,7 @@ private:
     friend ostream& operator << (ostream& output, Order& o);
 };
 
-class OrdersList
+class OrdersList: public Subject, public ILoggable
 {
 public:
     OrdersList( );
@@ -31,6 +32,7 @@ public:
     void moveOrderUp(int index);
     void moveOrderDown(int index);
     int getSize();
+    string stringToLog() override;
     ostream& printList(ostream& output);
     Order* getOrder(int index);
     OrdersList& operator = (const OrdersList& o);
@@ -49,8 +51,9 @@ public:
     Deploy(const Deploy& d);
     Deploy(Player* currentPlayer, int numOfArmies, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
-    void execute() const override;
+    void execute() override;
     bool validate() const override;
+    string stringToLog() override;
     Deploy* copy() const  override;
     Deploy& operator = (const Deploy& d);
     ~Deploy() override;
@@ -68,9 +71,10 @@ public:
     Advance(const Advance& a);
     Advance(Player* currentPlayer, int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
-    void execute() const override;
+    void execute() override;
     bool validate() const override;
     void attackSimulation() const;
+    string stringToLog() override;
     Advance* copy() const  override;
     Advance& operator = (const Advance& a);
     ~Advance() override;
@@ -89,8 +93,9 @@ public:
     Bomb(const Bomb& b);
     explicit Bomb(Player* currentPlayer, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
-    void execute() const override;
+    void execute() override;
     bool validate() const override;
+    string stringToLog() override;
     Bomb* copy() const  override;
     Bomb& operator = (const Bomb& b);
     ~Bomb() override;
@@ -108,8 +113,9 @@ public:
     Blockade(const Blockade& b);
     explicit Blockade(Player* currentPlayer, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
-    void execute() const override;
+    void execute() override;
     bool validate() const override;
+    string stringToLog() override;
     Blockade* copy() const  override;
     Blockade& operator = (const Blockade& b);
     ~Blockade() override;
@@ -119,14 +125,15 @@ private:
     Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
 };
 
-class Airlift: public Order {
+class Airlift: public Order{
 public:
     Airlift( );
     Airlift(const Airlift& b);
     Airlift(Player* currentPlayer, int numOfArmies, Territory* sourceTerritory, Territory* targetTerritory);
     ostream& printOrder(ostream& output) const override;
-    void execute() const override;
+    void execute() override;
     bool validate() const override;
+    string stringToLog() override;
     Airlift* copy() const  override;
     Airlift& operator = (const Airlift& a);
     ~Airlift() override;
@@ -134,8 +141,8 @@ public:
 private:
     Player* currentPlayer;
     int numOfArmies;
-    Territory* sourceTerritory; //***** Has to be changed to Territory object ptr *****
-    Territory* targetTerritory; //***** Has to be changed to Territory object ptr *****
+    Territory* sourceTerritory;
+    Territory* targetTerritory;
 };
 
 class Negotiate: public Order {
@@ -144,8 +151,9 @@ public:
     Negotiate(const Negotiate& b);
     explicit Negotiate(Player* currentPlayer, Player* targetPlayer);
     ostream& printOrder(ostream& output) const override;
-    void execute() const override;
+    void execute() override;
     bool validate() const override;
+    string stringToLog() override;
     Negotiate* copy() const  override;
     Negotiate& operator = (const Negotiate& n);
     ~Negotiate() override;

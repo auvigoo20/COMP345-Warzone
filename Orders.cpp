@@ -1,5 +1,6 @@
 #include "Orders.h"
 #include <iostream>
+#include <sstream>
 #include <utility>
 #include "Player.h"
 
@@ -36,6 +37,7 @@ OrdersList::OrdersList()
 void OrdersList::addOrder(Order* order)
 {
     ordersList.push_back(order);
+    notify(this);
 }
 
 int OrdersList::getSize()
@@ -120,6 +122,11 @@ ostream& OrdersList::printList(ostream& output)
         output << *order << endl;
     }
     return output;
+}
+
+string OrdersList::stringToLog() {
+    Order* order = ordersList.back();
+    return order->stringToLog();
 }
 
 /**
@@ -219,21 +226,27 @@ Deploy::Deploy(const Deploy& d)
 ostream& Deploy::printOrder(ostream &output) const
 {
     output << "Deploying " << this->numOfArmies << " units to ";
-    output << this->targetTerritory << " territory." << endl;
+    output << this->targetTerritory->getName() << " territory." << endl;
     return output;
+}
+
+string Deploy::stringToLog() {
+    return "Deploying " + std::to_string(this->numOfArmies) + " units to " +
+           this->targetTerritory->getName() + " territory.\n";
 }
 
 /**
  * Verifies if order is valid then executes it.
  * (Execution yet to be implemented).
  */
-void Deploy::execute() const
+void Deploy::execute()
 {
     if(!validate()) {
        cout << "Invalid Order !" << endl;
     } else {
         this->targetTerritory->setNumOfArmies(this->targetTerritory->getNumOfArmies() + this->numOfArmies);
         printOrder(cout);
+        notify(this);
     }
 }
 
@@ -317,9 +330,15 @@ Advance::Advance(const Advance& a)
 ostream& Advance::printOrder(ostream &output) const
 {
     output << "Advancing " << this->numOfArmies << " units from ";
-    output << this->sourceTerritory << " territory " << " to ";
-    output << this->targetTerritory << " territory." << endl;
+    output << this->sourceTerritory->getName() << " territory to ";
+    output << this->targetTerritory->getName() << " territory." << endl;
     return output;
+}
+
+string Advance::stringToLog() {
+    return "Advancing " + std::to_string(this->numOfArmies) + " units from " +
+    this->sourceTerritory->getName() + " territory to " + this->targetTerritory->getName() +
+    " territory.\n";
 }
 
 /**
@@ -375,7 +394,7 @@ void Advance::attackSimulation() const {
 /**
  * Verifies if order is valid then executes it.
  */
-void Advance::execute() const
+void Advance::execute()
 {
    if(!validate()) {
        cout << "Invalid Order !" << endl;
@@ -383,8 +402,11 @@ void Advance::execute() const
        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
        printOrder(cout);
+       notify(this);
    } else {
+       printOrder(cout);
        attackSimulation();
+       notify(this);
    }
 }
 
@@ -467,22 +489,27 @@ Bomb::Bomb(const Bomb& b)
 
 ostream& Bomb::printOrder(ostream &output) const
 {
-    output << "Bombing " << this->targetTerritory << " territory.";
+    output << "Bombing " << this->targetTerritory->getName() << " territory.";
     output << endl;
     return output;
+}
+
+string Bomb::stringToLog() {
+    return "Bombing " + this->targetTerritory->getName() + " territory.\n";
 }
 
 /**
  * Verifies if order is valid then executes it.
  * (Execution yet to be implemented).
  */
-void Bomb::execute() const
+void Bomb::execute()
 {
     if(!validate()) {
         cout << "Invalid Order !" << endl;
     } else {
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() / 2);
         printOrder(cout);
+        notify(this);
     }
 }
 
@@ -563,16 +590,20 @@ Blockade::Blockade(const Blockade& b)
 
 ostream& Blockade::printOrder(ostream &output) const
 {
-    output << "Blockade on " << this->targetTerritory << " territory.";
+    output << "Blockade on " << this->targetTerritory->getName() << " territory.";
     output << endl;
     return output;
+}
+
+string Blockade::stringToLog() {
+    return "Blockade on " + this->targetTerritory->getName() + " territory.\n";
 }
 
 /**
  * Verifies if order is valid then executes it.
  * (Execution yet to be implemented).
  */
-void Blockade::execute() const
+void Blockade::execute()
 {
     if(!validate()) {
         cout << "Invalid Order !" << endl;
@@ -580,6 +611,7 @@ void Blockade::execute() const
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() * 2);
         targetTerritory->setOwner(neutralPlayer);
         printOrder(cout);
+        notify(this);
     }
 }
 
@@ -661,16 +693,22 @@ Airlift::Airlift(const Airlift& a)
 ostream& Airlift::printOrder(ostream &output) const
 {
     output << "Airlift " << this->numOfArmies << " units from ";
-    output << this->sourceTerritory << " territory " << " to ";
-    output << this->targetTerritory << " territory." << endl;
+    output << this->sourceTerritory->getName() << " territory " << " to ";
+    output << this->targetTerritory->getName() << " territory." << endl;
     return output;
+}
+
+string Airlift::stringToLog() {
+    return "Airlift " + std::to_string(this->numOfArmies) + " units from " +
+    this->sourceTerritory->getName() + " territory to " + this->targetTerritory->getName() +
+    " territory.\n";
 }
 
 /**
  * Verifies if order is valid then executes it.
  * (Execution yet to be implemented).
  */
-void Airlift::execute() const
+void Airlift::execute()
 {
     if(!validate()) {
         cout << "Invalid Order !" << endl;
@@ -678,6 +716,7 @@ void Airlift::execute() const
         sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
         printOrder(cout);
+        notify(this);
 
     }
 }
@@ -757,16 +796,20 @@ Negotiate::Negotiate(const Negotiate& n)
 
 ostream& Negotiate::printOrder(ostream &output) const
 {
-    output << "Negotiation order used on player " << this->targetPlayer;
+    output << "Negotiation order used on player " << this->targetPlayer->getName();
     output << endl;
     return output;
+}
+
+string Negotiate::stringToLog() {
+    return "Negotiation order used on player " + this->targetPlayer->getName() + ".\n";
 }
 
 /**
  * Verifies if order is valid then executes it.
  * (Execution yet to be implemented).
  */
-void Negotiate::execute() const
+void Negotiate::execute()
 {
     if(!validate()) {
         cout << "Invalid Order !" << endl;
@@ -774,6 +817,7 @@ void Negotiate::execute() const
         this->currentPlayer->addAlly(targetPlayer);
         this->targetPlayer->addAlly(currentPlayer);
         printOrder(cout);
+        notify(this);
     }
 }
 
