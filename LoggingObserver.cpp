@@ -41,6 +41,7 @@ void LogObserver::update(ILoggable* il) {
     const string logfile = "../gamelog.txt";
     string s = il->stringToLog();
     std::ofstream file;
+    // Open the gamelog file in "append" mode
     file.open(logfile, ios::app);
     if(file.is_open()){
         file << s << std::endl;

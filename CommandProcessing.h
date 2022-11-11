@@ -1,10 +1,11 @@
 #pragma once
 #include "GameEngine.h"
+#include "LoggingObserver.h"
 #include <iostream>
 #include <fstream>
 using std::ifstream;
 
-class Command{
+class Command: public Subject, ILoggable{
     private:
         string command;
         string effect;
@@ -17,21 +18,22 @@ public:
         string getCommand();
         string getEffect();
         void saveEffect(string effect);
+        string stringToLog();
 };
 
 ostream& operator<<(ostream &strm, const Command &c);
 
 
-class CommandProcessor{
+class CommandProcessor: public Subject, ILoggable{
     private:
     GameEngine* gameEngine;
         virtual string readCommand();
         void saveCommand(Command* command);
         friend ostream& operator<<(ostream&, const CommandProcessor&);
 
-protected:
-    vector<Command*> commands;
-public:
+    protected:
+        vector<Command*> commands;
+    public:
         CommandProcessor();
         CommandProcessor(GameEngine*);
         CommandProcessor(const CommandProcessor& c);
@@ -39,6 +41,8 @@ public:
         CommandProcessor& operator=(const CommandProcessor& c);
         Command* getCommand();
         bool validate(Command*);
+        string stringToLog();
+
 };
 ostream& operator<<(ostream &strm, const CommandProcessor &c);
 
