@@ -344,7 +344,6 @@ void GameEngine::startupPhase() {
     Command* currentCommand;
     CommandProcessor* commandProcessor= new CommandProcessor(this);
     string stateName, fileDirectory;
-//    string const directory = "../map_files/";
     bool done = false;
 
     while(!done) {
@@ -360,7 +359,7 @@ void GameEngine::startupPhase() {
         }
         else {
             if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start" || stateName == "map loaded")){
-
+                // To obtain file directory from the command
                 std::stringstream commandToSplit(currentCommand->getCommand());
                 string segment;
                 vector<string> splitCommand;
@@ -399,7 +398,7 @@ void GameEngine::startupPhase() {
 
                     players.push_back(player);
 
-                    if (stateName == "map loaded") {
+                    if (stateName == "map validated") {
                         this->setCurrentState(playersAdded);
                     }
                 }
@@ -407,14 +406,43 @@ void GameEngine::startupPhase() {
                     cout << "Maximum number of Players added. Please start the game." << endl;
                 }
             }
-        }
-        if(currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {
-            done = true;
+            else if (currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added"){
+                if (players.size() < 2) {
+                    cout << "Cannot start game. At least 2 players are required." << endl;
+                }
+                else {
+                    done = true;
+
+                    cout << "Distributing territories..." << endl;
+
+
+
+                    cout << "Determining play order..." << endl;
+
+                    srand(time(NULL));
+                    Player* tempPlayer;
+
+                    for (int i=0; i<(players.size()*2); i++) {
+                        int shuffle = (rand() % players.size());
+                        players.emplace_back(players.at(shuffle));
+                        players.erase(players.begin()+shuffle,players.begin()+shuffle+1);
+                    }
+
+                    cout << "Dispatching army units..." << endl;
+
+
+
+                    cout << "Drawing Cards..." << endl;
+
+
+
+
+                }
+            }
         }
     }
 
-    delete commandProcessor;
-    delete currentCommand;
+
 
     cout << "****************************************" << endl;
     cout << "*        Startup Phase Complete        *" << endl;
