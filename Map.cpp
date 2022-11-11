@@ -188,6 +188,21 @@ string Territory::getName() {
     return name;
 }
 
+/**
+ * Checks if the provided territory is in the adjacentTerritory vector.
+ * @param territory
+ * @return Returns bool true if provided territory in adjacentTerritory vector.
+ */
+bool Territory::isAdjacentTerritory(Territory *territory) {
+    if (adjacentTerritories.empty()) {
+        return false;
+    } else if (std::find(adjacentTerritories.begin(), adjacentTerritories.end(), territory)
+    == adjacentTerritories.end()) {
+        return false;
+    }
+    return true;
+}
+
 void Territory::setName(string name){
     this->name = name;
 }

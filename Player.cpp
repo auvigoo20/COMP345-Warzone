@@ -112,10 +112,6 @@ void Player::setOrdersList(OrdersList *ordersList) {
     this->orderList = ordersList;
 }
 
-string Player::getName() {
-    return this->name;
-}
-
 void Player::setName(std::string name) {
     this->name = name;
 }
