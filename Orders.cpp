@@ -131,7 +131,7 @@ ostream& OrdersList::printList(ostream& output)
 
 string OrdersList::stringToLog() {
     Order* order = ordersList.back();
-    return order->stringToLog();
+    return "Order added: " + order->stringToLog();
 }
 
 /**
@@ -236,7 +236,7 @@ ostream& Deploy::printOrder(ostream &output) const
 }
 
 string Deploy::stringToLog() {
-    return "Deploying " + std::to_string(this->numOfArmies) + " units to " +
+    return "Order Executed: Deploying " + std::to_string(this->numOfArmies) + " units to " +
            this->targetTerritory->getName() + " territory.\n";
 }
 
@@ -341,7 +341,7 @@ ostream& Advance::printOrder(ostream &output) const
 }
 
 string Advance::stringToLog() {
-    return "Advancing " + std::to_string(this->numOfArmies) + " units from " +
+    return "Order Executed: Advancing " + std::to_string(this->numOfArmies) + " units from " +
     this->sourceTerritory->getName() + " territory to " + this->targetTerritory->getName() +
     " territory.\n";
 }
@@ -500,7 +500,7 @@ ostream& Bomb::printOrder(ostream &output) const
 }
 
 string Bomb::stringToLog() {
-    return "Bombing " + this->targetTerritory->getName() + " territory.\n";
+    return "Order Executed: Bombing " + this->targetTerritory->getName() + " territory.\n";
 }
 
 /**
@@ -601,7 +601,7 @@ ostream& Blockade::printOrder(ostream &output) const
 }
 
 string Blockade::stringToLog() {
-    return "Blockade on " + this->targetTerritory->getName() + " territory.\n";
+    return "Order Executed: Blockade on " + this->targetTerritory->getName() + " territory.\n";
 }
 
 /**
@@ -704,7 +704,7 @@ ostream& Airlift::printOrder(ostream &output) const
 }
 
 string Airlift::stringToLog() {
-    return "Airlift " + std::to_string(this->numOfArmies) + " units from " +
+    return "Order Executed: Airlift " + std::to_string(this->numOfArmies) + " units from " +
     this->sourceTerritory->getName() + " territory to " + this->targetTerritory->getName() +
     " territory.\n";
 }
@@ -807,7 +807,7 @@ ostream& Negotiate::printOrder(ostream &output) const
 }
 
 string Negotiate::stringToLog() {
-    return "Negotiation order used on player " + this->targetPlayer->getName() + ".\n";
+    return "Order Executed: Negotiation order used on player " + this->targetPlayer->getName() + ".\n";
 }
 
 /**
