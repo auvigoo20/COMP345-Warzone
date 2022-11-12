@@ -3,3 +3,4 @@ tasks.json
 /cmake-build-debug/
 /.idea/
 /CMakeLists.txt
+gamelog.txt
