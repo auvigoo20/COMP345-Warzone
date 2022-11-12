@@ -345,12 +345,12 @@ void GameEngine::startupPhase() {
     cout << "****************************************" << endl;
 
     this->currentState = start;
-    Command* currentCommand;
-    CommandProcessor* commandProcessor= new CommandProcessor(this);
+    Command *currentCommand;
+    CommandProcessor *commandProcessor = new CommandProcessor(this);
     string stateName, fileDirectory;
     bool done = false;
 
-    while(!done) {
+    while (!done) {
 
         // Receive the command from Console input using the getCommand()
         currentCommand = commandProcessor->getCommand();
@@ -358,43 +358,52 @@ void GameEngine::startupPhase() {
         stateName = currentState->getName();
         MapLoader mapLoader;
 
-        // If the command is valid
-        if (!commandProcessor->validate(currentCommand)){
-            cout << "Invalid Command," << endl;
-        }
-        else {
-            if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start" || stateName == "map loaded")){
+        // Check if the command is valid. Also checks if the command is valid for a state
+        if (!commandProcessor->validate(currentCommand)) {
+            cout << "Invalid Command." << endl;
+        } else {
+            // If it is a loadmap command, we enter the if statement
+            if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start" || stateName == "map loaded")) {
 
-                // To obtain file directory from the command
+                // Obtains file directory from the command
                 std::stringstream commandToSplit(currentCommand->getCommand());
                 string segment;
                 vector<string> splitCommand;
+
                 while (getline(commandToSplit, segment, ' ')) {
                     splitCommand.push_back(segment);
                 }
 
                 fileDirectory = splitCommand[1];
 
-                cout << "Loading Map..." << endl;
+                // Loading the map using the MapLoader object and assign the map to the game engine
+                cout << "************ Loading Map... ************" << endl;
                 this->map = mapLoader.readMapFile(fileDirectory);
-                if (this->map != nullptr){
-                    cout << *this->map << endl;
-                    if (stateName == "start"){
+
+                // If map file exists, we change state to mapLoaded
+                if (this->map != nullptr) {
+                    cout << *this->map;
+                    cout << "************** Map Loaded **************" << endl;
+
+                    if (stateName == "start") {
                         this->setCurrentState(mapLoaded);
                     }
                 }
-                else{
-                    cout << "Please enter another file directory." << endl;
+                else {
+                    cout <<"Please enter another map file directory." << endl;
+                }
+            }
+            // If it is a validatemap command, we enter the if statement
+            else if (currentCommand->getCommand() == "validatemap" && stateName == "map loaded") {
+                // If the map that has been loaded is valid, we change state to mapValidated
+                if (this->map->validate()) {
+                    this->setCurrentState(mapValidated);
+                } else {
+                    cout << "Please enter another map file directory" << endl;
                 }
 
-            }
-            else if(currentCommand->getCommand() == "validatemap" && stateName == "map loaded"){
-
-                this->map->validate();
-                this->setCurrentState(mapValidated);
-
-            }
-            else if(currentCommand->getCommand().find("addplayer") != string::npos && (stateName == "map validated" || stateName == "players added")){
+            } else if (currentCommand->getCommand().find("addplayer") != string::npos &&
+                       (stateName == "map validated" || stateName == "players added")) {
                 if (players.size() < 6) {
 
                     std::stringstream commandToSplit(currentCommand->getCommand());
@@ -412,52 +421,58 @@ void GameEngine::startupPhase() {
                         this->setCurrentState(playersAdded);
                     }
 
-                }
-                else{
+                    cout << "Player " << splitCommand[1] << " has been created" << endl;
+
+                } else {
                     cout << "Maximum number of Players added. Please start the game." << endl;
                 }
-            }
-            else if (currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added"){
+
+            } else if (currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {
                 if (players.size() < 2) {
                     cout << "Cannot start game. At least 2 players are required." << endl;
-                }
-                else {
+                } else {
                     done = true;
 
-                    cout << "Distributing territories..." << endl;
+                    cout << endl << "******* Players have been created ******" << endl;
+
+                    // Distributing territories evenly among players
 
                     int territoryCount = this->map->getAllTerritories().size();
-                    vector<Territory*> tempTerritories = this->map->getAllTerritories();
+                    vector<Territory *> tempTerritories = this->map->getAllTerritories();
                     int currentPlayer;
-                    for (int i = 0; i < (territoryCount/players.size()); i++){
+
+                    for (int i = 0; i < territoryCount; i++) {
                         currentPlayer = i % players.size();
                         tempTerritories[i]->setOwner(players[currentPlayer]);
                         players[currentPlayer]->addTerritory(tempTerritories[i]);
-
-                        }
                     }
 
-                    cout << "Determining play order..." << endl;
+                    cout << endl << "******** Territories Distributed *******" << endl;
+
+                    // Randomly generating a new playing order
 
                     srand(time(NULL));
 
-                    for (int i=0; i < (players.size()*2); i++) {
+                    for (int i = 0; i < (players.size() * 2); i++) {
                         int shuffle = (rand() % players.size());
                         players.emplace_back(players.at(shuffle));
-                        players.erase(players.begin()+shuffle,players.begin()+shuffle+1);
+                        players.erase(players.begin() + shuffle, players.begin() + shuffle + 1);
                     }
 
+                    cout << endl << "******* Playing Order Determined *******" << endl;
 
-                    cout << "Dispatching army units..." << endl;
+                    // Assigning troops to each players' reinforcement pool
 
-                    for (int i = 0; i < players.size(); i++){
+                    for (int i = 0; i < players.size(); i++) {
                         players[i]->setReinforcementPool(50);
                     }
 
-                    cout << "Drawing Cards..." << endl;
+                    cout << endl << "********* Army Units Dispatched ********" << endl;
 
-                    // Creating Deck
-                    for (int i = 0; i < players.size(); i++){
+                    // Drawing Cards to each players' hands
+
+                    // Creating the Deck
+                    for (int i = 0; i < players.size(); i++) {
                         this->deck->addCard(new BombCard);
                         this->deck->addCard(new ReinforcementCard);
                         this->deck->addCard(new BlockadeCard);
@@ -465,26 +480,27 @@ void GameEngine::startupPhase() {
                         this->deck->addCard(new DiplomacyCard);
                     }
 
-                    for (int i=0; i<players.size(); i++) {
-                        Player* tempPlayer = players.at(i);
-                        Hand* hand = new Hand(tempPlayer,deck);
+                    // Creating hands and drawing cards to them
+                    for (int i = 0; i < players.size(); i++) {
+                        Player *tempPlayer = players.at(i);
+                        Hand *hand = new Hand(tempPlayer, deck);
                         deck->draw(hand);
                         deck->draw(hand);
                         tempPlayer->setHand(hand);
-                        tempPlayer= nullptr;
+                        tempPlayer = nullptr;
                     }
+
+                    cout << endl << "************** Cards Drawn *************" << endl;
                 }
             }
         }
-    for (int i = 0; i < players.size(); i++){
-        cout << endl << *players[i] <<;
+    }
+    cout << endl;
+    for (int i = 0; i < players.size(); i++) {
+        cout << *players[i] << endl;
     }
 
-    cout << endl << "****************************************" << endl;
+    cout << "****************************************" << endl;
     cout << "*        Startup Phase Complete        *" << endl;
     cout << "****************************************" << endl;
 }
-
-
-
-

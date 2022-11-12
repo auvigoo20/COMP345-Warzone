@@ -11,7 +11,6 @@ using std::string;
 
 int testGameStates(){
 
-
     cout << "****************************************" << endl;
     cout << "*          Testing Game Engine         *" << endl;
     cout << "****************************************" << endl;
@@ -19,42 +18,53 @@ int testGameStates(){
     GameEngine ge;
     ge.startupPhase();
 
-//    bool done = false;
-//    GameEngine testGameEngine {GameEngine::start};
-//    Command* latestCommand;
-//    CommandProcessor* commandProcessor;
-//
-//    cout << testGameEngine << endl;
-//
-//    while(!done) {
-//        bool invalidCommand = true;
-//
-//        latestCommand->getCommand();
-//
-//        testGameEngine.setLatestCommand(latestCommand);
-//
-//        for (int i=0; i < testGameEngine.getCurrentState()->getTransitions().size(); i++) {
-//            if (testGameEngine.getCurrentState()->getTransitions().at(i)->getName() == testGameEngine.getLatestCommand()->getCommand()) {
-//                if (testGameEngine.getCurrentState()->getTransitions().at(i)->getTo() == nullptr) {
-//                    invalidCommand = false;
-//                    done = true;
-//                    break;
-//                }
-//                testGameEngine.setCurrentState(testGameEngine.getCurrentState()->getTransitions().at(i)->getTo());
-//                cout << testGameEngine << endl;
-//                invalidCommand = false;
-//                break;
-//            }
-//        }
-//
-//        if (invalidCommand) {
-//            cout << "Invalid command." << endl;
-//        }
-//
-//        cout << endl;
-//    }
-//
-//    cout << "Game ended." << endl;
+    bool done = false;
+    GameEngine testGameEngine {GameEngine::start};
+    Command* latestCommand;
+    CommandProcessor* commandProcessor;
+
+    cout << testGameEngine << endl;
+
+    while(!done) {
+        bool invalidCommand = true;
+
+        latestCommand->getCommand();
+
+        testGameEngine.setLatestCommand(latestCommand);
+
+        for (int i=0; i < testGameEngine.getCurrentState()->getTransitions().size(); i++) {
+            if (testGameEngine.getCurrentState()->getTransitions().at(i)->getName() == testGameEngine.getLatestCommand()->getCommand()) {
+                if (testGameEngine.getCurrentState()->getTransitions().at(i)->getTo() == nullptr) {
+                    invalidCommand = false;
+                    done = true;
+                    break;
+                }
+                testGameEngine.setCurrentState(testGameEngine.getCurrentState()->getTransitions().at(i)->getTo());
+                cout << testGameEngine << endl;
+                invalidCommand = false;
+                break;
+            }
+        }
+
+        if (invalidCommand) {
+            cout << "Invalid command." << endl;
+        }
+
+        cout << endl;
+    }
+
+    cout << "Game ended." << endl;
+
+    return 0;
+}
+
+int testStartupPhase(){
+    cout << "****************************************" << endl;
+    cout << "*         Testing Startup Phase        *" << endl;
+    cout << "****************************************" << endl;
+
+    GameEngine ge;
+    ge.startupPhase();
 
     return 0;
 }

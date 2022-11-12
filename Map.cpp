@@ -357,7 +357,6 @@ bool Map::isConnectedTerritories() {
     // graph traversal is performed in the case that some edges are unidirectional
     for (auto startTerritory: allTerritories) {
 
-        cout << "STARTING DFS!!!!" << endl;
         // start DFS at starting territory
         dfs(&visitedTerritoriesNames, startTerritory);
 
@@ -366,7 +365,6 @@ bool Map::isConnectedTerritories() {
             cout << "Territories form a connected graph!" << endl;
             isConnectedTerritories = true;
             break;
-
         }
         visitedTerritoriesNames.clear();
 
@@ -385,7 +383,6 @@ vector<Territory*> Map::getAllTerritoriesByContinent(Continent* continent) {
             continentTerritories.push_back(allTerritories.at(i));
         }
     }
-    cout << endl;
     return continentTerritories;
 }
 
@@ -448,7 +445,6 @@ bool Map::isConnectedContinents() {
 
             // If number of visited territories is equal to the number of territories of a given continent, it is a connected subgraph
             if (visitedTerritories.size() == currentContinentTerritories.size()){
-                cout << "Continent: " << currentContinent->getName() << " is a connected subgraph!" << endl;
                 continentsConnectedMap.find(currentContinent->getName())->second = true;
                 break;
             }
@@ -458,11 +454,9 @@ bool Map::isConnectedContinents() {
 
     for(auto continentsKeyValue:continentsConnectedMap){
         if(!continentsKeyValue.second){
-            cout << "Continent: " << continentsKeyValue.first << " is not a connected subgraph..." << endl;
             return false;
         }
     }
-
 
     cout << "All continents are connected subgraphs!" << endl;
     return true;
@@ -477,14 +471,14 @@ bool Map::isConnectedContinents() {
  * @return
  */
 bool Map::validate() {
-    cout << "***STARTING MAP VALIDATION***" << endl;
+    cout << "*********** Validating Map... **********" << endl;
     bool connectedTerritories = isConnectedTerritories();
     bool connectedContinents = isConnectedContinents();
     if (connectedTerritories && connectedContinents){
-        cout << "MAP IS VALID!" << endl;
+        cout << "************* Map is Valid *************" << endl;
     }
     else{
-        cout << "MAP IS INVALID..." << endl;
+        cout << "************ Map is Invalid ************" << endl;
     }
     return connectedTerritories && connectedContinents;
 }

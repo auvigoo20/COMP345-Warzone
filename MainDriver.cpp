@@ -13,7 +13,8 @@ int main(int argc, char** argv){
 //        testOrdersLists();
 //        testCards();
 //        testGameStates();
-        testCommandProcessor();
+//        testCommandProcessor();
+        testStartupPhase();
     }
     else{
         if(string(argv[1]) == "-console"){
