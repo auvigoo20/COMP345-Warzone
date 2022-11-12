@@ -409,12 +409,21 @@ void GameEngine::reinforcementPhase() {
 }
 
 void GameEngine::issueOrdersPhase() {
-    bool done = false;
-    while(!done) {
 
-        // Check that all players have signified that they don’t have any more orders to issue for this turn
-        for (Player* player : this->players) {
+    // ALL THIS ACTUALLY GOES IN PLAYER ISSUEORDER, NOT HERE
 
+    // loop thru player, implement toAttack using PLayer returns list of territories available to attack
+    // loop thru player, implement toDefend using Player returns list of territories available to defend
+
+    for (Player* player : this->players) {
+        bool done = false;
+        while(!done) {
+            // loop thru toDefend, randomly? pick territories to deploy to until pool empty
+            // consider changing !done to pool not empty
         }
     }
+
+    // loop thru player, either move troops from territories to other territories in toDefend or toAttack
+
+    // loop thru player, ask to use a card in deck
 }
