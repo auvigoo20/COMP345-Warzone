@@ -32,7 +32,6 @@ public:
 
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
-//    void issueOrder(int orderID);
     void issueOrder();
     void addReinforcements(int reinforcements);
     string getName();
