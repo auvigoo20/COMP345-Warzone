@@ -1,5 +1,6 @@
 #include "GameEngine.h"
 #include "Player.h"
+#include "CommandProcessing.h"
 #include <string>
 using std::string;
 
@@ -270,6 +271,14 @@ Map* GameEngine::getMap() {
 }
 
 /**
+ * Getter for the command processor
+ * @return commandProcessor
+ */
+CommandProcessor *GameEngine::getCommandProcessor() {
+    return commandProcessor;
+}
+
+/**
  * Setter for the "currentState" variable
  * @param currentState
  */
@@ -299,6 +308,14 @@ void GameEngine::setPlayers(vector<Player *> players) {
  */
 void GameEngine::setMap(Map *map) {
     this->map = map;
+}
+
+/**
+ * Setter for the command processor
+ * @param commandProcessor
+ */
+void GameEngine::setCommandProcessor(CommandProcessor *commandProcessor) {
+    this->commandProcessor = commandProcessor;
 }
 
 /**
@@ -459,6 +476,8 @@ void GameEngine::executeOrdersPhase() {
             // If player controls no territories, remove them from the game.
             // This includes the neutral player (who for now is treated/behaves like any other player)
             if (player->getTerritories().empty()) {
+                delete *(this->players.begin()+i);
+                *(this->players.begin()+i) = nullptr;
                 this->players.erase(this->players.begin()+i);
             }
 
@@ -514,5 +533,25 @@ void GameEngine::mainGameLoop() {
         }
     }
 
-    // Need to figure out what to do on win/game end
+    // Get the command from the console on game win
+    Command* command;
+    while(true) {
+        command = this->commandProcessor->getCommand();
+        if (commandProcessor->validate(command)) {
+            Player* winningPlayer = this->players.front();
+            command->saveEffect("player" + winningPlayer->getName() + " has won");
+
+            // Clean up memory on game end
+            delete winningPlayer;
+            winningPlayer = nullptr;
+            delete this->map;
+            map = nullptr;
+            break;
+        }
+    }
+
+    // Re-start the game if command is replay
+    if (command->getCommand() == "replay") {
+        this->currentState = start;
+    }
 }

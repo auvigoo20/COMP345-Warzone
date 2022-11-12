@@ -14,6 +14,7 @@ using std::vector;
 
 // Declared here (forward declaration) because Transition needs to know State exists.
 class State;
+class CommandProcessor;
 
 class Transition {
 private:
@@ -56,6 +57,7 @@ private:
     string latestCommand;
     vector<Player*> players;
     Map* map;
+    CommandProcessor* commandProcessor;
 
     friend ostream& operator << (ostream&, const GameEngine&);
     static void initializeEngineStates();
@@ -75,10 +77,12 @@ public:
     string getLatestCommand();
     vector<Player*> getPlayers();
     Map* getMap();
+    CommandProcessor* getCommandProcessor();
     void setCurrentState(State* currentState);
     void setLatestCommand(string latestCommand);
     void setPlayers(vector<Player*> players);
     void setMap(Map* map);
+    void setCommandProcessor(CommandProcessor* commandProcessor);
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.
