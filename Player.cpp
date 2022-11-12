@@ -182,35 +182,73 @@ vector<Territory*> Player::toDefend(){    //defend method
  * Create an order, and add it to the player's OrderList
  * @param orderID
  */
-void Player::issueOrder(int orderID){
+void Player::issueOrder(){
 
-    if(orderID == 0){
-        Deploy * deploy = new Deploy();
+    // Deploy orders
+    while(true) {
+        // HARDCODED ORDER FOR THE PURPOSE OF THIS ASSIGNMENT:
+        // For now, deploy all troops to the first territory in toDefend.
+        int numOfArmies = this->reinforcementPool;
+        Territory* targetTerritory = this->toDefend().front();
+        Deploy* deploy = new Deploy(this, numOfArmies, targetTerritory);
         orderList->addOrder(deploy);
+
+        // Once the reinforcementPool is empty, we can proceed to other orders
+        if (this->reinforcementPool == 0) {
+            break;
+        }
     }
-    else if(orderID == 1){
-        Advance* advance = new Advance();
-        orderList->addOrder(advance);
+
+    // Other orders
+    bool done = false;
+    while(!done) {
+        // HARDCODED ORDERS FOR THE PURPOSE OF THIS ASSIGNMENT:
+        // For now, just try to (1) advance half the available troops from the first territory in toDefend to the first
+        // territory in toAttack, then (2) advance another half of the available troops from the first territory in
+        // getTerritories to the first territory in toDefend, finally (3) play the first card in hand (if it exists)
+
+        Advance* attackOrder = new Advance(this, this->reinforcementPool/2, this->toDefend().front(), this->toAttack().front());
+        orderList->addOrder(attackOrder);
+
+        Advance* defendOrder = new Advance(this, this->reinforcementPool/2, this->getTerritories().front(), this->toDefend().front());
+        orderList->addOrder(defendOrder);
+
+        // Play the card
+        if (!this->hand->getHandList()->empty()) {
+            this->hand->playCard(1);
+        }
+
+        // Player indicates that they are done issuing orders for this turn
+        done = true;
     }
-    else if(orderID == 2){
-        Bomb* bomb = new Bomb();
-        orderList->addOrder(bomb);
-    }
-    else if(orderID == 3){
-        Blockade* blockade = new Blockade();
-        orderList->addOrder(blockade);
-    }
-    else if(orderID == 4){
-        Airlift* airlift = new Airlift();
-        orderList->addOrder(airlift);
-    }
-    else if(orderID == 5){
-        Negotiate* negotiate = new Negotiate();
-        orderList->addOrder(negotiate);
-    }
-    else{
-        cout << "Invalid order" << endl;
-    }
+
+//    if(orderID == 0){
+//        Deploy * deploy = new Deploy();
+//        orderList->addOrder(deploy);
+//    }
+//    else if(orderID == 1){
+//        Advance* advance = new Advance();
+//        orderList->addOrder(advance);
+//    }
+//    else if(orderID == 2){
+//        Bomb* bomb = new Bomb();
+//        orderList->addOrder(bomb);
+//    }
+//    else if(orderID == 3){
+//        Blockade* blockade = new Blockade();
+//        orderList->addOrder(blockade);
+//    }
+//    else if(orderID == 4){
+//        Airlift* airlift = new Airlift();
+//        orderList->addOrder(airlift);
+//    }
+//    else if(orderID == 5){
+//        Negotiate* negotiate = new Negotiate();
+//        orderList->addOrder(negotiate);
+//    }
+//    else{
+//        cout << "Invalid order" << endl;
+//    }
 }
 
 /**

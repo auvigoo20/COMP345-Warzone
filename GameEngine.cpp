@@ -410,20 +410,16 @@ void GameEngine::reinforcementPhase() {
 
 void GameEngine::issueOrdersPhase() {
 
-    // ALL THIS ACTUALLY GOES IN PLAYER ISSUEORDER, NOT HERE
-
-    // loop thru player, implement toAttack using PLayer returns list of territories available to attack
-    // loop thru player, implement toDefend using Player returns list of territories available to defend
-
+    // issueOrder() will only complete once the player signifies that they don't have any more orders to issue
+    // Thus just a simple forloop like this will ensure that every player issues orders and that every player has
+    // signified that they are done issuing orders.
     for (Player* player : this->players) {
-        bool done = false;
-        while(!done) {
-            // loop thru toDefend, randomly? pick territories to deploy to until pool empty
-            // consider changing !done to pool not empty
-        }
+        player->issueOrder();
     }
 
-    // loop thru player, either move troops from territories to other territories in toDefend or toAttack
+    this->setCurrentState(executeOrders);
+}
 
-    // loop thru player, ask to use a card in deck
+void GameEngine::executeOrdersPhase() {
+    
 }
