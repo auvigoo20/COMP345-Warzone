@@ -235,6 +235,11 @@ GameEngine::GameEngine(State *startingState) {
     deck = new Deck();
 }
 
+GameEngine::~GameEngine(){
+    delete deck;
+    deck = nullptr;
+}
+
 /**
  * Getter for the "currentState" variable
  * @return currentState
@@ -380,7 +385,7 @@ void GameEngine::startupPhase() {
                 cout << "************ Loading Map... ************" << endl;
                 this->map = mapLoader.readMapFile(fileDirectory);
 
-                // If map file exists, we change state to mapLoaded
+                // If map file exists, we change state to map loaded
                 if (this->map != nullptr) {
                     cout << *this->map;
                     cout << "************** Map Loaded **************" << endl;
@@ -395,17 +400,17 @@ void GameEngine::startupPhase() {
             }
             // If it is a validatemap command, we enter the if statement
             else if (currentCommand->getCommand() == "validatemap" && stateName == "map loaded") {
-                // If the map that has been loaded is valid, we change state to mapValidated
+                // If the map that has been loaded is valid, we change state to map validated
                 if (this->map->validate()) {
                     this->setCurrentState(mapValidated);
                 } else {
                     cout << "Please enter another map file directory" << endl;
                 }
-
+            // If it is an addplayer command, we enter the if statement
             } else if (currentCommand->getCommand().find("addplayer") != string::npos &&
                        (stateName == "map validated" || stateName == "players added")) {
                 if (players.size() < 6) {
-
+                    // Obtaining the player name from the command to create player
                     std::stringstream commandToSplit(currentCommand->getCommand());
                     string segment;
                     vector<string> splitCommand;
@@ -415,8 +420,9 @@ void GameEngine::startupPhase() {
 
                     Player *player = new Player(splitCommand[1]);
 
+                    // Player is added to the list of players
                     players.push_back(player);
-
+                    // State is changed to players added
                     if (stateName == "map validated") {
                         this->setCurrentState(playersAdded);
                     }
@@ -426,7 +432,7 @@ void GameEngine::startupPhase() {
                 } else {
                     cout << "Maximum number of Players added. Please start the game." << endl;
                 }
-
+            // If it is a gamestart command, we only enter it once 2-6 players have been created
             } else if (currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {
                 if (players.size() < 2) {
                     cout << "Cannot start game. At least 2 players are required." << endl;

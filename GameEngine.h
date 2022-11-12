@@ -66,6 +66,7 @@ private:
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
+    ~GameEngine();
     explicit GameEngine(State* startingState);
     GameEngine& operator = (const GameEngine& g);
 
