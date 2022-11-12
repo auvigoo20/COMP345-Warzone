@@ -13,6 +13,7 @@ int main(int argc, char** argv){
 //    testPlayer();
 //    testOrdersLists();
 //    testCards();
+//testOrderExecution();
 //    testGameStates();
 //        testCommandProcessor();
     testLoggingObserver();

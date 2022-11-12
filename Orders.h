@@ -35,6 +35,7 @@ public:
     string stringToLog() override;
     ostream& printList(ostream& output);
     Order* getOrder(int index);
+    vector<Order*> getOrdersList();
     OrdersList& operator = (const OrdersList& o);
     ~OrdersList();
 

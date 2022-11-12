@@ -50,6 +50,11 @@ Order* OrdersList::getOrder(int index)
     return ordersList[index - 1];
 }
 
+
+vector<Order*> OrdersList::getOrdersList() {
+    return this->ordersList;
+}
+
 /**
  * Removes from the order list the order that
  * corresponds to the position given. Note that the
