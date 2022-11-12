@@ -378,6 +378,8 @@ void GameEngine::initializeEngineStates() {
  * Loops through every player and adds the deserved number of reinforcement troops to their pool.
  */
 void GameEngine::reinforcementPhase() {
+    // Provide the required reinforcements to all players
+    // This includes the neutral player (who for now is treated/behaves like any other player)
     for (Player* player : this->players) {
         // Player receives at least three troops, or up to as many troops as 1/3 of the amount of territories owned
         int numTerritoriesOwned = player->getTerritories().size();
@@ -413,6 +415,7 @@ void GameEngine::issueOrdersPhase() {
     // issueOrder() will only complete once the player signifies that they don't have any more orders to issue
     // Thus just a simple forloop like this will ensure that every player issues orders and that every player has
     // signified that they are done issuing orders.
+    // This includes the neutral player (who for now is treated/behaves like any other player)
     for (Player* player : this->players) {
         player->issueOrder();
     }
@@ -422,7 +425,8 @@ void GameEngine::issueOrdersPhase() {
 
 void GameEngine::executeOrdersPhase() {
 
-    // First do all deploy orders
+    // First do all deploy orders of all players
+    // This includes the neutral player (who for now is treated/behaves like any other player)
     for (Player* player : this->players) {
         while (true) {
             // If player still has orders, they may still have deploy orders.
@@ -445,9 +449,19 @@ void GameEngine::executeOrdersPhase() {
     // Now do the rest of the orders
     // Keep executing orders until all players have no more orders to execute
     int playersWithoutOrders = 0;
+    bool gameWon = false;
     while (playersWithoutOrders < this->players.size()) {
         // Loop through each player and execute the top order in their list
-        for (Player* player : this->players) {
+        // This includes the neutral player (who for now is treated/behaves like any other player)
+        for (int i=0; i<this->players.size(); i++) {
+            Player* player = players.at(i);
+
+            // If player controls no territories, remove them from the game.
+            // This includes the neutral player (who for now is treated/behaves like any other player)
+            if (player->getTerritories().empty()) {
+                this->players.erase(this->players.begin()+i);
+            }
+
             // If player does not have any orders to execute, increment the counter by 1
             // Else if the player has at lease 1 order, reset the counter to 0 and then execute the order.
             //
@@ -461,6 +475,44 @@ void GameEngine::executeOrdersPhase() {
             } else {
                 playersWithoutOrders++;
             }
+
+            // If player controls all territories then declare win.
+            // Neutral territories must therefore not exist; any neutral territories need to be conquered before a win
+            // can be declared.
+            if (player->getTerritories().size() == this->map->getAllTerritories().size()) {
+                gameWon = true;
+
+                // "Hack" to force the main while loop to exit on win
+                playersWithoutOrders = this->players.size();
+
+                // Exit forloop since the game is won, so we don't need to check further players' orders
+                break;
+            }
         }
     }
+
+    if (!gameWon) {
+        this->setCurrentState(assignReinforcement);
+    } else {
+        this->setCurrentState(win);
+    }
+}
+
+void GameEngine::mainGameLoop() {
+    while(true) {
+        if (this->currentState == assignReinforcement) {
+            reinforcementPhase();
+        }
+        else if (this->currentState == issueOrders) {
+            issueOrdersPhase();
+        }
+        else if (this->currentState == executeOrders) {
+            executeOrdersPhase();
+        }
+        else if (this->currentState == win) {
+            break;
+        }
+    }
+
+    // Need to figure out what to do on win/game end
 }

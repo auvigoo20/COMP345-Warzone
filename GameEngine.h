@@ -63,6 +63,7 @@ private:
     void reinforcementPhase();
     void issueOrdersPhase();
     void executeOrdersPhase();
+    void mainGameLoop();
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
