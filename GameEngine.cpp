@@ -1,8 +1,17 @@
 #include "GameEngine.h"
+#include "CommandProcessing.h"
+#include "Map.h"
+#include "Player.h"
+#include "Cards.h"
+
 #include <string>
 using std::string;
 
+#include <sstream>
+
 #include <iostream>
+using std::cin;
+using std::cout;
 using std::ostream;
 using std::endl;
 
@@ -197,7 +206,9 @@ ostream& operator << (ostream &strm, const State &s){
  */
 GameEngine::GameEngine() {
     currentState = nullptr;
+    latestCommand = nullptr;
     initializeEngineStates();
+    deck = new Deck();
 }
 
 /**
@@ -210,6 +221,7 @@ GameEngine::GameEngine(const GameEngine &g) {
     currentState = g.currentState;
     latestCommand = g.latestCommand;
     initializeEngineStates();
+    deck = g.deck;
 }
 
 /**
@@ -218,7 +230,20 @@ GameEngine::GameEngine(const GameEngine &g) {
  */
 GameEngine::GameEngine(State *startingState) {
     currentState = startingState;
+    latestCommand = nullptr;
     initializeEngineStates();
+    deck = new Deck();
+}
+
+GameEngine::~GameEngine(){
+    delete deck;
+    deck = nullptr;
+    delete map;
+    map = nullptr;
+    for (auto p : players){
+        delete p;
+        p = nullptr;
+    }
 }
 
 /**
@@ -233,7 +258,7 @@ State *GameEngine::getCurrentState() {
  * Getter for the "latestCommand" variable
  * @return latestCommand
  */
-string GameEngine::getLatestCommand() {
+Command* GameEngine::getLatestCommand() {
     return latestCommand;
 }
 
@@ -249,7 +274,7 @@ void GameEngine::setCurrentState(State *currentState) {
  * Setter for the "latestCommand" variable
  * @param latestCommand
  */
-void GameEngine::setLatestCommand(std::string latestCommand) {
+void GameEngine::setLatestCommand(Command* latestCommand) {
     this->latestCommand = latestCommand;
 }
 
@@ -323,4 +348,173 @@ void GameEngine::initializeEngineStates() {
     issueOrders->setTransitions({issueorderTransition, endissueordersTransition});
     executeOrders->setTransitions({execorderTransition, endexecordersTransition, winTransition});
     win->setTransitions({replayTransition, quitTransition});
+}
+
+void GameEngine::startupPhase() {
+    cout << "****************************************" << endl;
+    cout << "*       Initiating Startup Phase       *" << endl;
+    cout << "****************************************" << endl;
+
+    this->currentState = start;
+    Command *currentCommand;
+    CommandProcessor *commandProcessor = new CommandProcessor(this);
+    string stateName, fileDirectory;
+    bool done = false;
+
+    while (!done) {
+
+        // Receive the command from Console input using the getCommand()
+        currentCommand = commandProcessor->getCommand();
+        this->setLatestCommand(currentCommand);
+        stateName = currentState->getName();
+        MapLoader mapLoader;
+
+        // Check if the command is valid. Also checks if the command is valid for a state
+        if (!commandProcessor->validate(currentCommand)) {
+            cout << "Invalid Command." << endl;
+        } else {
+            // If it is a loadmap command, we enter the if statement
+            if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start" || stateName == "map loaded")) {
+
+                // Obtains file directory from the command
+                std::stringstream commandToSplit(currentCommand->getCommand());
+                string segment;
+                vector<string> splitCommand;
+
+                while (getline(commandToSplit, segment, ' ')) {
+                    splitCommand.push_back(segment);
+                }
+
+                fileDirectory = splitCommand[1];
+
+                // Loading the map using the MapLoader object and assign the map to the game engine
+                cout << "************ Loading Map... ************" << endl;
+                this->map = mapLoader.readMapFile(fileDirectory);
+
+                // If map file exists, we change state to map loaded
+                if (this->map != nullptr) {
+                    cout << *this->map;
+                    cout << "************** Map Loaded **************" << endl;
+
+                    if (stateName == "start") {
+                        this->setCurrentState(mapLoaded);
+                    }
+                }
+                else {
+                    cout <<"Please enter another map file directory." << endl;
+                }
+            }
+            // If it is a validatemap command, we enter the if statement
+            else if (currentCommand->getCommand() == "validatemap" && stateName == "map loaded") {
+                // If the map that has been loaded is valid, we change state to map validated
+                if (this->map->validate()) {
+                    this->setCurrentState(mapValidated);
+                } else {
+                    cout << "Please enter another map file directory" << endl;
+                }
+            // If it is an addplayer command, we enter the if statement
+            } else if (currentCommand->getCommand().find("addplayer") != string::npos &&
+                       (stateName == "map validated" || stateName == "players added")) {
+                if (players.size() < 6) {
+                    // Obtaining the player name from the command to create player
+                    std::stringstream commandToSplit(currentCommand->getCommand());
+                    string segment;
+                    vector<string> splitCommand;
+                    while (getline(commandToSplit, segment, ' ')) {
+                        splitCommand.push_back(segment);
+                    }
+
+                    Player *player = new Player(splitCommand[1]);
+
+                    // Player is added to the list of players
+                    players.push_back(player);
+                    // State is changed to players added
+                    if (stateName == "map validated") {
+                        this->setCurrentState(playersAdded);
+                    }
+
+                    cout << "Player " << splitCommand[1] << " has been created" << endl;
+
+                } else {
+                    cout << "Maximum number of Players added. Please start the game." << endl;
+                }
+            // If it is a gamestart command, we only enter it once 2-6 players have been created
+            } else if (currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {
+                if (players.size() < 2) {
+                    cout << "Cannot start game. At least 2 players are required." << endl;
+                } else {
+                    done = true;
+
+                    cout << "******* Players have been created ******" << endl;
+
+                    // Distributing territories evenly among players
+
+                    int territoryCount = this->map->getAllTerritories().size();
+                    vector<Territory *> tempTerritories = this->map->getAllTerritories();
+                    int currentPlayer;
+
+                    for (int i = 0; i < territoryCount; i++) {
+                        currentPlayer = i % players.size();
+                        tempTerritories[i]->setOwner(players[currentPlayer]);
+                        players[currentPlayer]->addTerritory(tempTerritories[i]);
+                    }
+
+                    cout << endl << "******** Territories Distributed *******" << endl;
+
+                    // Randomly generating a new playing order
+
+                    srand(time(NULL));
+
+                    for (int i = 0; i < (players.size() * 2); i++) {
+                        int shuffle = (rand() % players.size());
+                        players.emplace_back(players.at(shuffle));
+                        players.erase(players.begin() + shuffle, players.begin() + shuffle + 1);
+                    }
+
+                    cout << endl << "******* Playing Order Determined *******" << endl;
+
+                    // Assigning troops to each players' reinforcement pool
+
+                    for (int i = 0; i < players.size(); i++) {
+                        players[i]->setReinforcementPool(50);
+                    }
+
+                    cout << endl << "********* Army Units Dispatched ********" << endl;
+
+                    // Drawing Cards to each players' hands
+
+                    // Creating the Deck
+                    for (int i = 0; i < players.size(); i++) {
+                        this->deck->addCard(new BombCard);
+                        this->deck->addCard(new ReinforcementCard);
+                        this->deck->addCard(new BlockadeCard);
+                        this->deck->addCard(new AirliftCard);
+                        this->deck->addCard(new DiplomacyCard);
+                    }
+
+                    // Creating hands and drawing cards to them
+                    for (int i = 0; i < players.size(); i++) {
+                        Player *tempPlayer = players.at(i);
+                        Hand *hand = new Hand(tempPlayer, deck);
+                        deck->draw(hand);
+                        deck->draw(hand);
+                        tempPlayer->setHand(hand);
+                        tempPlayer = nullptr;
+                    }
+
+                    cout << endl << "************** Cards Drawn *************" << endl;
+                }
+            }
+        }
+    }
+    cout << endl;
+    for (int i = 0; i < players.size(); i++) {
+        cout << *players[i] << endl;
+    }
+
+    delete commandProcessor;
+
+    cout << "****************************************" << endl;
+    cout << "*        Startup Phase Complete        *" << endl;
+    cout << "****************************************" << endl;
 }

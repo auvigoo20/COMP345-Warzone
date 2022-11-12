@@ -109,6 +109,7 @@ void CommandProcessor::saveCommand(Command *command) {
 Command* CommandProcessor::getCommand() {
     cout << "Enter a command: " << endl;
     string userCommand = readCommand();
+    cout << endl;
     Command* command = new Command(userCommand);
     saveCommand(command);
     return command;

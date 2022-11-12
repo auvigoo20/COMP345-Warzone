@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Player.h"
+#include "Map.h"
+#include "Cards.h"
 #include <string>
 using std::string;
 
@@ -8,6 +11,10 @@ using std::ostream;
 
 #include <vector>
 using std::vector;
+
+// Forward declaration for Command in CommandProcessing.cpp
+class Command;
+
 
 // Declared here (forward declaration) because Transition needs to know State exists.
 class State;
@@ -50,20 +57,26 @@ public:
 class GameEngine {
 private:
     State* currentState;
-    string latestCommand;
-
+    Command* latestCommand;
+    vector<Player*> players;
+    Map* map;
+    Deck* deck;
     friend ostream& operator << (ostream&, const GameEngine&);
     static void initializeEngineStates();
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
+    ~GameEngine();
     explicit GameEngine(State* startingState);
     GameEngine& operator = (const GameEngine& g);
 
     State* getCurrentState();
-    string getLatestCommand();
+    Command* getLatestCommand();
     void setCurrentState(State* currentState);
-    void setLatestCommand(string latestCommand);
+    void setLatestCommand(Command* latestCommand);
+
+    // Startup Phase method
+    void startupPhase();
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.

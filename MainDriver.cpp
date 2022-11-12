@@ -4,19 +4,17 @@
 #include "OrdersDriver.h"
 #include "CardsDriver.h"
 #include "CommandProcessingDriver.h"
-#include "LoggingObserverDriver.h"
 #include <string>
 
 int main(int argc, char** argv){
     if(argc == 1){
-        //    testLoadMaps();
-//    testPlayer();
-//    testOrdersLists();
-//    testCards();
-//testOrderExecution();
-//    testGameStates();
+//        testLoadMaps();
+//        testPlayer();
+//        testOrdersLists();
+//        testCards();
+//        testGameStates();
 //        testCommandProcessor();
-    testLoggingObserver();
+        testStartupPhase();
     }
     else{
         if(string(argv[1]) == "-console"){
@@ -26,7 +24,6 @@ int main(int argc, char** argv){
             testCommandProcessorFile(string(argv[2]));
         }
     }
-
 
     return 0;
 }
