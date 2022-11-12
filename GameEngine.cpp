@@ -238,6 +238,12 @@ GameEngine::GameEngine(State *startingState) {
 GameEngine::~GameEngine(){
     delete deck;
     deck = nullptr;
+    delete map;
+    map = nullptr;
+    for (auto p : players){
+        delete p;
+        p = nullptr;
+    }
 }
 
 /**
@@ -439,7 +445,7 @@ void GameEngine::startupPhase() {
                 } else {
                     done = true;
 
-                    cout << endl << "******* Players have been created ******" << endl;
+                    cout << "******* Players have been created ******" << endl;
 
                     // Distributing territories evenly among players
 
@@ -505,6 +511,8 @@ void GameEngine::startupPhase() {
     for (int i = 0; i < players.size(); i++) {
         cout << *players[i] << endl;
     }
+
+    delete commandProcessor;
 
     cout << "****************************************" << endl;
     cout << "*        Startup Phase Complete        *" << endl;
