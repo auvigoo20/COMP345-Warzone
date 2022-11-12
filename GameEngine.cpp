@@ -421,5 +421,46 @@ void GameEngine::issueOrdersPhase() {
 }
 
 void GameEngine::executeOrdersPhase() {
-    
+
+    // First do all deploy orders
+    for (Player* player : this->players) {
+        while (true) {
+            // If player still has orders, they may still have deploy orders.
+            // Else, player is done executing deploy orders and we can move on to the next player.
+            if (player->getOrdersList()->getSize() >= 1) {
+                // If top order can still be casted to Deploy* then it is a deploy order to be executed.
+                // Else, player is done executing deploy orders and we can move on to the next player.
+                if (dynamic_cast<Deploy*>(player->getOrdersList()->getOrder(1)) != nullptr) {
+                    player->getOrdersList()->getOrder(1)->execute();
+                    player->getOrdersList()->removeOrder(1);
+                } else {
+                    break;
+                }
+            } else {
+                break;
+            }
+        }
+    }
+
+    // Now do the rest of the orders
+    // Keep executing orders until all players have no more orders to execute
+    int playersWithoutOrders = 0;
+    while (playersWithoutOrders < this->players.size()) {
+        // Loop through each player and execute the top order in their list
+        for (Player* player : this->players) {
+            // If player does not have any orders to execute, increment the counter by 1
+            // Else if the player has at lease 1 order, reset the counter to 0 and then execute the order.
+            //
+            // Resetting the counter is necessary as any player that had no orders will be checked again in the round-
+            // robin and thus will increment again.
+            // In other words, we keep checking every player until we're sure that no more players have orders left.
+            if (player->getOrdersList()->getSize() >= 1) {
+                playersWithoutOrders = 0;
+                player->getOrdersList()->getOrder(1)->execute();
+                player->getOrdersList()->removeOrder(1);
+            } else {
+                playersWithoutOrders++;
+            }
+        }
+    }
 }
