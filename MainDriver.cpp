@@ -8,11 +8,11 @@
 
 int main(int argc, char** argv){
     if(argc == 1){
-        //    testLoadMaps();
-//    testPlayer();
-//    testOrdersLists();
-//    testCards();
-//    testGameStates();
+//        testLoadMaps();
+//        testPlayer();
+//        testOrdersLists();
+//        testCards();
+//        testGameStates();
         testCommandProcessor();
     }
     else{

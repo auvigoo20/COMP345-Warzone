@@ -37,7 +37,7 @@ Player::~Player() {
 
 Player::Player(string name, Hand* hand, OrdersList* ordersList, int reinforcementPool) {
     this->name = name;
-    this->hand =hand;
+    this->hand = hand;
     this->orderList = ordersList;
     this->reinforcementPool = reinforcementPool;
 }

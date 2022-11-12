@@ -351,6 +351,7 @@ void GameEngine::startupPhase() {
     bool done = false;
 
     while(!done) {
+
         // Receive the command from Console input using the getCommand()
         currentCommand = commandProcessor->getCommand();
         this->setLatestCommand(currentCommand);
@@ -363,6 +364,7 @@ void GameEngine::startupPhase() {
         }
         else {
             if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start" || stateName == "map loaded")){
+
                 // To obtain file directory from the command
                 std::stringstream commandToSplit(currentCommand->getCommand());
                 string segment;
@@ -384,13 +386,17 @@ void GameEngine::startupPhase() {
                 else{
                     cout << "Please enter another file directory." << endl;
                 }
+
             }
             else if(currentCommand->getCommand() == "validatemap" && stateName == "map loaded"){
+
                 this->map->validate();
                 this->setCurrentState(mapValidated);
+
             }
             else if(currentCommand->getCommand().find("addplayer") != string::npos && (stateName == "map validated" || stateName == "players added")){
                 if (players.size() < 6) {
+
                     std::stringstream commandToSplit(currentCommand->getCommand());
                     string segment;
                     vector<string> splitCommand;
@@ -405,6 +411,7 @@ void GameEngine::startupPhase() {
                     if (stateName == "map validated") {
                         this->setCurrentState(playersAdded);
                     }
+
                 }
                 else{
                     cout << "Maximum number of Players added. Please start the game." << endl;
@@ -417,7 +424,18 @@ void GameEngine::startupPhase() {
                 else {
                     done = true;
 
+                    cout << "Distributing territories..." << endl;
 
+                    int territoryCount = this->map->getAllTerritories().size();
+                    vector<Territory*> tempTerritories = this->map->getAllTerritories();
+                    int currentPlayer;
+                    for (int i = 0; i < (territoryCount/players.size()); i++){
+                        currentPlayer = i % players.size();
+                        tempTerritories[i]->setOwner(players[currentPlayer]);
+                        players[currentPlayer]->addTerritory(tempTerritories[i]);
+
+                        }
+                    }
 
                     cout << "Determining play order..." << endl;
 
@@ -449,7 +467,7 @@ void GameEngine::startupPhase() {
 
                     for (int i=0; i<players.size(); i++) {
                         Player* tempPlayer = players.at(i);
-                        Hand* hand = new Hand(deck);
+                        Hand* hand = new Hand(tempPlayer,deck);
                         deck->draw(hand);
                         deck->draw(hand);
                         tempPlayer->setHand(hand);
@@ -458,11 +476,15 @@ void GameEngine::startupPhase() {
                 }
             }
         }
+    for (int i = 0; i < players.size(); i++){
+        cout << endl << *players[i] <<;
     }
 
-
-
-    cout << "****************************************" << endl;
+    cout << endl << "****************************************" << endl;
     cout << "*        Startup Phase Complete        *" << endl;
     cout << "****************************************" << endl;
 }
+
+
+
+
