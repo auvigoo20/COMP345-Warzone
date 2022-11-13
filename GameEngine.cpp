@@ -737,6 +737,9 @@ void GameEngine::mainGameLoop() {
             winningPlayer = nullptr;
             delete this->map;
             map = nullptr;
+            delete this->deck;
+            deck = nullptr;
+
             break;
         }
     }
