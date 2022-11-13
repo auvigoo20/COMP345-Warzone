@@ -130,8 +130,7 @@ void Hand::removeCard(int index) {
  */
 
 void Hand::playCard(int index){
-    Card* card = handList[index-1];
-    card->play(this-> owner);                     //create order
+    Card* card = handList[index];
     removeCard(index);               //remove card from hand player
     deckList->addCard(card);        // add card to deck
 }
@@ -256,9 +255,8 @@ DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
  * Creating Order and adding the order in the Order List
  */
 
-void BombCard::play(Player* owner) const{
-    //Engine should choose numOfUnits and targetTerritory for constructor bellow.
-    Bomb* bomb = new Bomb();
+void BombCard::play(Player* owner, Territory* targetTerritory) {
+    Bomb* bomb = new Bomb(owner, targetTerritory);
     owner->getOrdersList()->addOrder(bomb);
     cout << "output bomb card" << endl;
 }
@@ -282,7 +280,7 @@ ostream& BombCard::printCard(std::ostream &output) const {
  {
  }
 
-void ReinforcementCard::play(Player* owner) const {  // Reinforcement Card does not create an order
+void ReinforcementCard::play(Player* owner) {  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
 
@@ -305,9 +303,8 @@ ReinforcementCard::~ReinforcementCard()
 {
 }
 
-void BlockadeCard::play(Player* owner) const{
-    //Engine should choose targetTerritory for constructor bellow.
-    Blockade* blockade = new Blockade();
+void BlockadeCard::play(Player* owner, Territory* targetTerritory) {
+    Blockade* blockade = new Blockade(owner, targetTerritory);
     owner->getOrdersList()->addOrder(blockade);
     cout << "output blockade card" << endl;
 }
@@ -331,9 +328,8 @@ BlockadeCard::~BlockadeCard()
 {
 }
 
-void AirliftCard::play(Player* owner) const{
-    //Engine should choose numOfUnits, sourceTerritory, and targetTerritory for constructor bellow.
-    Airlift* airlift = new Airlift();
+void AirliftCard::play(Player* owner, int numOfUnits, Territory* sourceTerritory, Territory* targetTerritory) {
+    Airlift* airlift = new Airlift(owner, numOfUnits, sourceTerritory, targetTerritory);
     owner->getOrdersList()->addOrder(airlift);
     cout << "output airlift card" << endl;
 }
@@ -357,9 +353,8 @@ AirliftCard::~AirliftCard()
 {
 }
 
-void DiplomacyCard::play(Player* owner) const{
-    //Engine should choose targetPlayer for constructor bellow.
-    Negotiate* negotiate = new Negotiate();
+void DiplomacyCard::play(Player* owner, Player* targetPlayer) {
+    Negotiate* negotiate = new Negotiate(owner, targetPlayer);
     owner->getOrdersList()->addOrder(negotiate);
     cout << "output diplomacy card" << endl;
 }

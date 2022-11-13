@@ -681,6 +681,12 @@ void GameEngine::executeOrdersPhase() {
             if (player->getOrdersList()->getSize() >= 1) {
                 playersWithoutOrders = 0;
                 player->getOrdersList()->getOrder(1)->execute();
+
+                // If player is entitled to a card, give it to them
+                if (player->getEntitledToCard()) {
+                    this->deck->draw(player->getHand());
+                    player->setEntitledToCard(false);
+                }
                 player->getOrdersList()->removeOrder(1);
             } else {
                 playersWithoutOrders++;

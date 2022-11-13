@@ -387,8 +387,7 @@ void Advance::attackSimulation() const {
         targetTerritory->setOwner(currentPlayer);
         targetTerritory->setNumOfArmies(remainingAttackers);
         cout << "Player is eligible to get a card (MAX 1 PER TURN)" << endl;
-        // ****** Must notify the game engine to give card to attacking player for this win
-        // (MAX 1 SUCH CARD PER TURN)
+        currentPlayer->setEntitledToCard(true);
     } else {
         cout << "Territory successfully defended !" << endl;
         targetTerritory->setNumOfArmies(remainingDefenders);

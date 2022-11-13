@@ -3,6 +3,9 @@
 #include "Orders.h"
 #include "Cards.h"
 
+#include <algorithm>
+using std::find;
+
 using namespace std;
 
 /**
@@ -63,6 +66,9 @@ Player::Player(const Player &p){
     for(auto player: p.allyPlayerList){
         allyPlayerList.push_back(player);
     }
+    for(auto player: p.opponentPlayerList){
+        opponentPlayerList.push_back(player);
+    }
 }
 
 /**
@@ -81,6 +87,9 @@ Player& Player::operator=(const Player &p) {
     for(auto player : p.allyPlayerList){
         allyPlayerList.push_back(player);
     }
+    for(auto player : p.opponentPlayerList){
+        opponentPlayerList.push_back(player);
+    }
     return *this;
 }
 
@@ -88,16 +97,8 @@ vector<Territory *> Player::getTerritories() {
     return ownedTerritories;
 }
 
-void Player::setTerritories(vector<Territory *> territories) {
-    ownedTerritories = territories;
-}
-
 Hand *Player::getHand() {
     return hand;
-}
-
-void Player::setHand(Hand *hand) {
-    this->hand = hand;
 }
 
 string Player::getName() {
@@ -108,6 +109,14 @@ OrdersList *Player::getOrdersList() {
     return this->orderList;
 }
 
+int Player::getReinforcementPool() {
+    return this->reinforcementPool;
+}
+
+bool Player::getEntitledToCard() {
+    return this->entitledToCard;
+}
+
 void Player::setReinforcementPool(int reinforcementPool) {
     this->reinforcementPool = reinforcementPool;
 }
@@ -116,12 +125,16 @@ void Player::setOrdersList(OrdersList *ordersList) {
     this->orderList = ordersList;
 }
 
-int Player::getReinforcementPool() {
-    return this->reinforcementPool;
+void Player::setTerritories(vector<Territory *> territories) {
+    ownedTerritories = territories;
 }
 
-void Player::setReinforcementPool(int reinforcementPool) {
-    this->reinforcementPool = reinforcementPool;
+void Player::setEntitledToCard(bool entitledToCard) {
+    this->entitledToCard = entitledToCard;
+}
+
+void Player::setHand(Hand *hand) {
+    this->hand = hand;
 }
 
 /**
@@ -150,7 +163,12 @@ void Player::addTerritory(Territory* t){
  * @param p  Player to be added as an ally for this turn
  */
 void Player::addAlly(Player* p) {
-   allyPlayerList.push_back(p);
+    for (int i=0; i<opponentPlayerList.size(); i++) {
+        if (opponentPlayerList.at(i) == p) {
+            opponentPlayerList.erase(opponentPlayerList.begin()+i);
+        }
+    }
+    allyPlayerList.push_back(p);
 }
 
 /**
@@ -249,7 +267,35 @@ void Player::issueOrder(){
 
         // Play the card
         if (!this->hand->getHandList()->empty()) {
-            this->hand->playCard(1);
+            Card* card = this->hand->getHandList()->front();
+            AirliftCard* airliftCard = dynamic_cast<AirliftCard*>(card);
+            BombCard* bombCard = dynamic_cast<BombCard*>(card);
+            BlockadeCard* blockadeCard = dynamic_cast<BlockadeCard*>(card);
+            DiplomacyCard* diplomacyCard = dynamic_cast<DiplomacyCard*>(card);
+
+            if (airliftCard != nullptr) {
+                if (this->getTerritories().size() < 2) {
+                    Territory* targetTerritory = this->getTerritories().front();
+                    airliftCard->play(this, targetTerritory->getNumOfArmies(), targetTerritory, targetTerritory);
+                } else {
+                    Territory* targetTerritory = this->getTerritories().front();
+                    airliftCard->play()
+                }
+                airliftCard->play(this, 0, )
+                this->hand->playCard(0);
+            }
+            else if (bombCard != nullptr) {
+
+                this->hand->playCard(0);
+            }
+            else if (blockadeCard != nullptr) {
+
+                this->hand->playCard(0);
+            }
+            else if (diplomacyCard != nullptr) {
+
+                this->hand->playCard(0);
+            }
         }
 
         // Player indicates that they are done issuing orders for this turn
@@ -282,7 +328,7 @@ vector<Player*> Player::getAllyPlayerList() {
  */
 bool Player::isAlly(Player* targetPlayer) {
     for(auto player:allyPlayerList){
-        if(targetPlayer->getName() == player->getName()){
+        if(targetPlayer == player) {
             return true;
         }
     }

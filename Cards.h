@@ -46,7 +46,6 @@ private:
 
 class Card{
 public:
-    virtual void play(Player* owner) const = 0; //Need to pass ordersList as a parameter because Cards have no access to it.
     virtual ostream& printCard(ostream& output) const = 0;
     virtual Card* copy() const = 0;
     virtual ~Card() = default;
@@ -58,7 +57,7 @@ class BombCard : public Card{
 public:
     BombCard();
     BombCard(const BombCard& b);
-    void play(Player* owner) const override;
+    void play(Player* owner, Territory* targetTerritory);
     ostream& printCard(ostream& output) const override;
     BombCard* copy() const override;
     ~BombCard() override;
@@ -68,7 +67,7 @@ class ReinforcementCard : public Card{
 public:
     ReinforcementCard();
     ReinforcementCard(const ReinforcementCard& r);
-    void play(Player* owner) const override;
+    void play(Player* owner);
     ostream& printCard(ostream& output) const override;
     ReinforcementCard* copy() const override;
     ~ReinforcementCard() override;
@@ -78,7 +77,7 @@ class BlockadeCard : public Card{
 public:
     BlockadeCard();
     BlockadeCard(const BlockadeCard& bl);
-    void play(Player* owner) const override;
+    void play(Player* owner, Territory* targetTerritory);
     ostream& printCard(ostream& output) const override;
     BlockadeCard* copy() const override;
     ~BlockadeCard() override;
@@ -88,7 +87,7 @@ class AirliftCard : public Card{
 public:
     AirliftCard();
     AirliftCard(const AirliftCard& a);
-    void play(Player* owner) const override;
+    void play(Player* owner, int numOfUnits, Territory* sourceTerritory, Territory* targetTerritory);
     ostream& printCard(ostream& output) const override;
     AirliftCard* copy() const override;
     ~AirliftCard() override;
@@ -98,7 +97,7 @@ class DiplomacyCard : public Card{
 public:
     DiplomacyCard();
     DiplomacyCard(const DiplomacyCard& d);
-    void play(Player* owner) const override;
+    void play(Player* owner, Player* targetPlayer);
     ostream& printCard(ostream& output) const override;
     DiplomacyCard* copy() const override;
     ~DiplomacyCard() override;
