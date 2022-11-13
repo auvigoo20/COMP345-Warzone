@@ -277,6 +277,13 @@ void Player::issueOrder(){
         orderList->addOrder(defendOrder);
 
         // Play the card
+        // FOR NOW the parameters for playing the card are hardcoded.
+        //
+        // What will need to remain when the parameters are freed is this:
+        // - The card's type needs to be determined
+        // - The parameters need to be set
+        // - The card's play() method needs to be called (to create the order and add it to orderlist)
+        // - The hand's playCard() method needs to be called (to remove card from hand and put it back)
         if (!this->hand->getHandList()->empty()) {
             Card* card = this->hand->getHandList()->front();
             AirliftCard* airliftCard = dynamic_cast<AirliftCard*>(card);
@@ -285,26 +292,29 @@ void Player::issueOrder(){
             DiplomacyCard* diplomacyCard = dynamic_cast<DiplomacyCard*>(card);
 
             if (airliftCard != nullptr) {
-                if (this->getTerritories().size() < 2) {
-                    Territory* targetTerritory = this->getTerritories().front();
-                    airliftCard->play(this, targetTerritory->getNumOfArmies(), targetTerritory, targetTerritory);
-                } else {
-                    Territory* targetTerritory = this->toAttack().front();
-                    Territory* sourceTerritory = this->toDefend().front();
-                    int numOfArmies = sourceTerritory->getNumOfArmies() / 2;
-                    airliftCard->play(this, numOfArmies, sourceTerritory, targetTerritory);
-                }
+                // For now just airlift half the units from the last territory in toDefend to the first territory in toDefend
+                Territory* targetTerritory = this->toDefend().front();
+                Territory* sourceTerritory = this->toDefend().back();
+                int numOfArmies = sourceTerritory->getNumOfArmies() / 2;
+                airliftCard->play(this, numOfArmies, sourceTerritory, targetTerritory);
                 this->hand->playCard(0);
             }
             else if (bombCard != nullptr) {
+                // For now just bomb a random territory in toAttack
+                Territory* targetTerritory = this->toAttack().front();
+                bombCard->play(this, targetTerritory);
                 this->hand->playCard(0);
             }
             else if (blockadeCard != nullptr) {
-
+                // For now just blockade a random territory in toAttack
+                Territory* targetTerritory = this->toAttack().front();
+                blockadeCard->play(this, targetTerritory);
                 this->hand->playCard(0);
             }
             else if (diplomacyCard != nullptr) {
-
+                // For now just ally with a random targetPlayer
+                Player* targetPlayer = this->opponentPlayerList.front();
+                diplomacyCard->play(this, targetPlayer);
                 this->hand->playCard(0);
             }
         }
