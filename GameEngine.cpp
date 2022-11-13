@@ -420,7 +420,6 @@ void GameEngine::startupPhase() {
 
     this->currentState = start;
     Command *currentCommand;
-    CommandProcessor *commandProcessor = new CommandProcessor(this);
     string stateName, fileDirectory;
     bool done = false;
 
@@ -577,8 +576,6 @@ void GameEngine::startupPhase() {
     for (int i = 0; i < players.size(); i++) {
         cout << *players[i] << endl;
     }
-
-    delete commandProcessor;
 
     cout << "****************************************" << endl;
     cout << "*        Startup Phase Complete        *" << endl;
