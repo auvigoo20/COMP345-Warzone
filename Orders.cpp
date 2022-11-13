@@ -261,7 +261,7 @@ void Deploy::execute()
  */
 bool Deploy::validate() const
 {
-    if (this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+    if (this->targetTerritory->getOwner() != this->currentPlayer) {
         cout << "Specified territory is not owned" << endl;
         return false;
     }
@@ -402,7 +402,7 @@ void Advance::execute()
 {
    if(!validate()) {
        cout << "Invalid Order !" << endl;
-   } else if(targetTerritory->getOwner()->getName() == sourceTerritory->getOwner()->getName()) {
+   } else if(targetTerritory->getOwner() == sourceTerritory->getOwner()) {
        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
        printOrder(cout);
@@ -421,7 +421,7 @@ void Advance::execute()
  */
 bool Advance::validate() const
 {
-   if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+   if (this->sourceTerritory->getOwner() != this->currentPlayer) {
        cout << "Source territory is not owned" << endl;
        return false;
    } else if (!this->sourceTerritory->isAdjacentTerritory(targetTerritory)) {
@@ -524,7 +524,7 @@ void Bomb::execute()
  */
 bool Bomb::validate() const
 {
-    if( this->targetTerritory->getOwner()->getName() == this->currentPlayer->getName()){
+    if( this->targetTerritory->getOwner() == this->currentPlayer){
         cout << "Target territory is owned by the player issuing the order" << endl;
         return false;
     }else if (!(this->currentPlayer->isAdjacentTerritory(targetTerritory))){
@@ -626,7 +626,7 @@ void Blockade::execute()
  */
 bool Blockade::validate() const
 {
-    if(this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()){
+    if(this->targetTerritory->getOwner() != this->currentPlayer){
         cout << "Target territory is not owned by the player issuing the order" << endl;
         return false;
     }
@@ -733,8 +733,8 @@ void Airlift::execute()
  */
 bool Airlift::validate() const
 {
-    if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName() ||
-    this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+    if (this->sourceTerritory->getOwner() != this->currentPlayer ||
+    this->targetTerritory->getOwner() != this->currentPlayer) {
         cout << "Source and/or target territory are not owned" << endl;
         return false;
     }
@@ -832,7 +832,7 @@ void Negotiate::execute()
  */
 bool Negotiate::validate() const
 {
-    if(targetPlayer->getName() == currentPlayer->getName()){
+    if(targetPlayer == currentPlayer){
         cout << "The target player must be different than the player issuing the order" <<endl;
         return false;
     }
