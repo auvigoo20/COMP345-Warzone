@@ -246,6 +246,10 @@ GameEngine::~GameEngine(){
     }
 }
 
+string GameEngine::stringToLog() {
+    return "Game Engine New State: " + this->currentState->getName();
+}
+
 /**
  * Getter for the "currentState" variable
  * @return currentState
@@ -268,6 +272,7 @@ Command* GameEngine::getLatestCommand() {
  */
 void GameEngine::setCurrentState(State *currentState) {
     this->currentState = currentState;
+    notify(this);
 }
 
 /**
@@ -369,22 +374,20 @@ void GameEngine::startupPhase() {
         stateName = currentState->getName();
         MapLoader mapLoader;
 
-        // Check if the command is valid. Also checks if the command is valid for a state
         if (!commandProcessor->validate(currentCommand)) {
             cout << "Invalid Command." << endl;
-        } else {
-            // If it is a loadmap command, we enter the if statement
-            if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start" || stateName == "map loaded")) {
-
+            currentCommand->saveEffect("Invalid Command was entered. No change in state.");
+        }
+        else {
+            if (currentCommand->getCommand().find("loadmap") != string::npos && (stateName == "start"
+            || stateName == "map loaded")) {
                 // Obtains file directory from the command
                 std::stringstream commandToSplit(currentCommand->getCommand());
                 string segment;
                 vector<string> splitCommand;
-
                 while (getline(commandToSplit, segment, ' ')) {
                     splitCommand.push_back(segment);
                 }
-
                 fileDirectory = splitCommand[1];
 
                 // Loading the map using the MapLoader object and assign the map to the game engine
@@ -395,26 +398,37 @@ void GameEngine::startupPhase() {
                 if (this->map != nullptr) {
                     cout << *this->map;
                     cout << "************** Map Loaded **************" << endl;
-
                     if (stateName == "start") {
                         this->setCurrentState(mapLoaded);
+                        currentCommand->saveEffect("loadmap command executed. Map file was loaded. "
+                                                   "State has changed from start to map loaded.");
+                    }
+                    else{
+                        currentCommand->saveEffect("loadmap command executed. Map file was loaded. "
+                                                   "No change in state.");
                     }
                 }
                 else {
                     cout <<"Please enter another map file directory." << endl;
+                    currentCommand->saveEffect("loadmap command executed. Map file was not loaded. "
+                                               "No change in state.");
                 }
             }
-            // If it is a validatemap command, we enter the if statement
             else if (currentCommand->getCommand() == "validatemap" && stateName == "map loaded") {
                 // If the map that has been loaded is valid, we change state to map validated
                 if (this->map->validate()) {
                     this->setCurrentState(mapValidated);
-                } else {
-                    cout << "Please enter another map file directory" << endl;
+                    currentCommand->saveEffect("validatemap command executed. Map is Valid. State has changed "
+                                               "from map loaded to map validated.");
                 }
-            // If it is an addplayer command, we enter the if statement
-            } else if (currentCommand->getCommand().find("addplayer") != string::npos &&
-                       (stateName == "map validated" || stateName == "players added")) {
+                else {
+                    cout << "Please enter another map file directory" << endl;
+                    currentCommand->saveEffect("validatemap command executed. Map is Invalid. "
+                                               "No change in state.");
+                }
+            }
+            else if (currentCommand->getCommand().find("addplayer") != string::npos && (stateName == "map validated"
+            || stateName == "players added")) {
                 if (players.size() < 6) {
                     // Obtaining the player name from the command to create player
                     std::stringstream commandToSplit(currentCommand->getCommand());
@@ -425,23 +439,29 @@ void GameEngine::startupPhase() {
                     }
 
                     Player *player = new Player(splitCommand[1]);
-
-                    // Player is added to the list of players
                     players.push_back(player);
-                    // State is changed to players added
+
                     if (stateName == "map validated") {
                         this->setCurrentState(playersAdded);
+                        currentCommand->saveEffect("addplayer command executed. Player object created. State "
+                                                   "has changed from map validated to players added.");
                     }
-
+                    else {
+                        currentCommand->saveEffect("addplayer command executed. Player object created. "
+                                                   "No change in state.");
+                    }
                     cout << "Player " << splitCommand[1] << " has been created" << endl;
-
-                } else {
-                    cout << "Maximum number of Players added. Please start the game." << endl;
                 }
-            // If it is a gamestart command, we only enter it once 2-6 players have been created
+                else {
+                    cout << "Maximum number of Players added. Please start the game." << endl;
+                    currentCommand->saveEffect("addplayer command executed. Player object limit reached. No "
+                                               "change in state.");
+                }
             } else if (currentCommand->getCommand() == "gamestart" && currentState->getName() == "players added") {
                 if (players.size() < 2) {
                     cout << "Cannot start game. At least 2 players are required." << endl;
+                    currentCommand->saveEffect("gamestart command executed. Minimum number of player objects "
+                                               "not present. No change in state.");
                 } else {
                     done = true;
 
@@ -503,6 +523,9 @@ void GameEngine::startupPhase() {
                     }
 
                     cout << endl << "************** Cards Drawn *************" << endl;
+                    currentCommand->saveEffect("gamestart command executed. Territories distributed. "
+                                               "Playing Order Determined. Army Units Assigned. Hands Created "
+                                               "with 2 Cards from Deck");
                 }
             }
         }
@@ -511,8 +534,6 @@ void GameEngine::startupPhase() {
     for (int i = 0; i < players.size(); i++) {
         cout << *players[i] << endl;
     }
-
-    delete commandProcessor;
 
     cout << "****************************************" << endl;
     cout << "*        Startup Phase Complete        *" << endl;
