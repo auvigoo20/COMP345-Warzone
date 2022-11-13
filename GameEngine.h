@@ -61,6 +61,7 @@ private:
     vector<Player*> players;
     Map* map;
     CommandProcessor* commandProcessor;
+    int turn;
 
     Command* latestCommand;
     Deck* deck;
@@ -83,12 +84,17 @@ public:
     Map* getMap();
     CommandProcessor* getCommandProcessor();
     Command* getLatestCommand();
+    Deck* getDeck();
+
     void setCurrentState(State* currentState);
     void setPlayers(vector<Player*> players);
     void setMap(Map* map);
     void setCommandProcessor(CommandProcessor* commandProcessor);
     void setLatestCommand(Command* latestCommand);
+    void setDeck(Deck* deck);
+
     void updatePlayersOpponentLists();
+    vector<int> checkAndEliminatePlayers();
 
     // Startup Phase method
     void startupPhase();

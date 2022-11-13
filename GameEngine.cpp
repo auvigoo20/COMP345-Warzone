@@ -302,6 +302,14 @@ CommandProcessor *GameEngine::getCommandProcessor() {
 }
 
 /**
+ * Getter for the deck
+ * @return
+ */
+Deck *GameEngine::getDeck() {
+    return deck;
+}
+
+/**
  * Setter for the "currentState" variable
  * @param currentState
  */
@@ -339,6 +347,14 @@ void GameEngine::setMap(Map *map) {
  */
 void GameEngine::setCommandProcessor(CommandProcessor *commandProcessor) {
     this->commandProcessor = commandProcessor;
+}
+
+/**
+ * Setter for the deck
+ * @param deck
+ */
+void GameEngine::setDeck(Deck *deck) {
+    this->deck = deck;
 }
 
 /**
@@ -589,6 +605,8 @@ void GameEngine::startupPhase() {
  * Loops through every player and adds the deserved number of reinforcement troops to their pool.
  */
 void GameEngine::reinforcementPhase() {
+    cout << endl << "********** Reinforcement Phase **********" << endl;
+
     // Provide the required reinforcements to all players
     // This includes the neutral player (who for now is treated/behaves like any other player)
     for (Player* player : this->players) {
@@ -600,19 +618,25 @@ void GameEngine::reinforcementPhase() {
             numReinforcementTroops = numTerritoriesOwned / 3;
         }
 
+        cout << "Player " << player->getName() << " owns " << player->getTerritories().size() << " territories and receives " << numReinforcementTroops << " troops." << endl;
+
         // Player also receives bonus troops for owning all territories in a continent.
         // Loop through each continent, check if player owns all territories in it, and give bonus if so.
         for (Continent* continent : this->map->getAllContinents()) {
             bool ownsAllTerritories = true;
             for (Territory* territory : this->map->getAllTerritoriesByContinent(continent)) {
                 // if any territory in continent is not in player's owned territories
-                if (std::find(player->getTerritories().begin(), player->getTerritories().end(), territory) == player->getTerritories().end()) {
-                    ownsAllTerritories = false;
+                for (int i=0; i<player->getTerritories().size(); i++) {
+                    if (territory == player->getTerritories().at(i)) {
+                        ownsAllTerritories = false;
+                        break;
+                    }
                 }
             }
             // Give bonus troops
             if (ownsAllTerritories) {
                 numReinforcementTroops += continent->getBonus();
+                cout << "Player " << player->getName() << " receives " << continent->getBonus() << " bonus troops from continent " << continent->getName() << ". (total: " << numReinforcementTroops << ")" << endl;
             }
         }
 
@@ -622,58 +646,64 @@ void GameEngine::reinforcementPhase() {
 }
 
 void GameEngine::issueOrdersPhase() {
+    cout << endl << "********** Issue Orders Phase **********" << endl;
 
     // issueOrder() will only complete once the player signifies that they don't have any more orders to issue
     // Thus just a simple forloop like this will ensure that every player issues orders and that every player has
     // signified that they are done issuing orders.
     // This includes the neutral player (who for now is treated/behaves like any other player)
     for (Player* player : this->players) {
+        cout << "Player issuing order: " << player->getName() << "..." << endl;
         player->issueOrder();
+        cout << "Done issuing orders for " << player->getName() << ". " << *player << endl;
     }
 
     this->setCurrentState(executeOrders);
 }
 
 void GameEngine::executeOrdersPhase() {
+    cout << endl << "********** Execute Orders Phase **********" << endl;
+
+    for (Player* player : this->players) {
+        cout << "Player " << player->getName() << " has " << player->getTerritories().size() << " territories." << endl;
+    }
+
+    bool gameWon = false;
 
     // First do all deploy orders of all players
     // This includes the neutral player (who for now is treated/behaves like any other player)
-    for (Player* player : this->players) {
-        while (true) {
+    int playersWithoutOrders = 0;
+    while (playersWithoutOrders < this->players.size()) {
+        for (Player* player : this->players) {
             // If player still has orders, they may still have deploy orders.
             // Else, player is done executing deploy orders and we can move on to the next player.
             if (player->getOrdersList()->getSize() >= 1) {
                 // If top order can still be casted to Deploy* then it is a deploy order to be executed.
                 // Else, player is done executing deploy orders and we can move on to the next player.
                 if (dynamic_cast<Deploy*>(player->getOrdersList()->getOrder(1)) != nullptr) {
+                    cout << "Executing deploy order for " << player->getName() << endl;
                     player->getOrdersList()->getOrder(1)->execute();
                     player->getOrdersList()->removeOrder(1);
+                    cout << "***" << endl;
                 } else {
-                    break;
+                    playersWithoutOrders++;
                 }
             } else {
-                break;
+                playersWithoutOrders++;
             }
         }
     }
 
     // Now do the rest of the orders
     // Keep executing orders until all players have no more orders to execute
-    int playersWithoutOrders = 0;
-    bool gameWon = false;
-    while (playersWithoutOrders < this->players.size()) {
+    playersWithoutOrders = 0;
+    int nextPlayer = 0;
+    while (playersWithoutOrders < this->players.size() && !gameWon) {
         // Loop through each player and execute the top order in their list
         // This includes the neutral player (who for now is treated/behaves like any other player)
-        for (int i=0; i<this->players.size(); i++) {
+        for (int i=nextPlayer; i < this->players.size(); i++) {
+            cout << "Player index " << i << " of " << this->players.size() << endl;
             Player* player = players.at(i);
-
-            // If player controls no territories, remove them from the game.
-            // This includes the neutral player (who for now is treated/behaves like any other player)
-            if (player->getTerritories().empty()) {
-                delete *(this->players.begin()+i);
-                *(this->players.begin()+i) = nullptr;
-                this->players.erase(this->players.begin()+i);
-            }
 
             // If player does not have any orders to execute, increment the counter by 1
             // Else if the player has at lease 1 order, reset the counter to 0 and then execute the order.
@@ -682,8 +712,10 @@ void GameEngine::executeOrdersPhase() {
             // robin and thus will increment again.
             // In other words, we keep checking every player until we're sure that no more players have orders left.
             if (player->getOrdersList()->getSize() >= 1) {
+                cout << "Executing non-deploy order for " << player->getName() << endl;
                 playersWithoutOrders = 0;
                 player->getOrdersList()->getOrder(1)->execute();
+                cout << "***" << endl;
 
                 // If player is entitled to a card, give it to them
                 if (player->getEntitledToCard()) {
@@ -695,16 +727,77 @@ void GameEngine::executeOrdersPhase() {
                 playersWithoutOrders++;
             }
 
-            // If player controls all territories then declare win.
-            // Neutral territories must therefore not exist; any neutral territories need to be conquered before a win
-            // can be declared.
-            if (player->getTerritories().size() == this->map->getAllTerritories().size()) {
+            // FOR NOW
+            // To demonstrate that during the loop, the game removes players that have no territories and declares win when
+            // a player controls all territories, I set here that after the first order of turn 2, player 3 will have no
+            // territories and after the first order of turn 4, player 1 will have all territories.
+            //
+            // This is for demonstration purposes and thus this code can/will be removed in part 3.
+            if (turn == 2) {
+                for (Territory* territory : this->players.at(2)->getTerritories()) {
+                    territory->setOwner(this->players.at(0));
+                    this->players.at(0)->addTerritory(territory);
+                }
+                this->players.at(2)->setTerritories({});
+                cout << "All " << this->players.at(2)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
+            }
+            if (turn == 4) {
+                for (Territory* territory : this->players.at(1)->getTerritories()) {
+                    territory->setOwner(this->players.at(0));
+                    this->players.at(0)->addTerritory(territory);
+                }
+                this->players.at(1)->setTerritories({});
+                cout << "All " << this->players.at(1)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
+            }
+            //
+            // Game loop continues here.
+
+            // After every order execution, eliminate any players that control no territories.
+            vector<int>result = checkAndEliminatePlayers();
+
+            cout << "Eliminated: {";
+            for (int j : result) {
+                cout << j << ", ";
+            }
+            cout << "}" << endl;
+
+            // If no players were eliminated, continue as normal
+            if (result.empty()) {
+                nextPlayer = 0;
+            }
+
+            // If a player has won the game, set the flag.
+            else if (result.front() == -1) {
                 gameWon = true;
+                break;
+            }
 
-                // "Hack" to force the main while loop to exit on win
-                playersWithoutOrders = this->players.size();
+            // If a player has eliminated, the loop needs to be broken as the player list has changed
+            // and we need to restart the loop from the player that "deserves" to go next.
+            else {
+                // nextPlayer will be one above the current index by default
+                nextPlayer = i + 1;
 
-                // Exit forloop since the game is won, so we don't need to check further players' orders
+
+                // if the next player's index is more than we have players, then that means the next player was the one
+                // eliminated, so the actual next player is the 0th player.
+                if (nextPlayer >= this->players.size()) {
+                    nextPlayer = 0;
+                }
+
+                // otherwise, the player eliminated was either the current player or a previous one. In either case, the
+                // next player's index will have also gone down by one.
+                else {
+                    for (int j : result) {
+                        if (j <= i) {
+                            nextPlayer--;
+                        }
+                    }
+                }
+
+                // Break the loop and restart from nextPlayer
+                cout << "Restarting loop at index " << nextPlayer << " (current players: " << this->players.size() << ")" << endl;
+                cout << "***" << endl;
                 break;
             }
         }
@@ -727,19 +820,27 @@ void GameEngine::executeOrdersPhase() {
 }
 
 void GameEngine::mainGameLoop() {
+    cout << "****************************************" << endl;
+    cout << "*      Initiating Main Game Loop       *" << endl;
+    cout << "****************************************" << endl;
+
+    turn = 1;
+
     while(true) {
+        cout << endl << "********** Turn " << turn << " **********" << endl;
         if (this->currentState == assignReinforcement) {
             reinforcementPhase();
         }
-        else if (this->currentState == issueOrders) {
+        if (this->currentState == issueOrders) {
             issueOrdersPhase();
         }
-        else if (this->currentState == executeOrders) {
+        if (this->currentState == executeOrders) {
             executeOrdersPhase();
         }
-        else if (this->currentState == win) {
+        if (this->currentState == win) {
             break;
         }
+        turn++;
     }
 
     // Get the command from the console on game win
@@ -781,4 +882,31 @@ void GameEngine::updatePlayersOpponentLists() {
         // Set allyPlayerList to empty since the turn is over, and reset the opponentPlayerList
         player->setOpponentPlayerList(opponentPlayerList);
     }
+}
+
+vector<int> GameEngine::checkAndEliminatePlayers() {
+    vector<int> numEliminated = {};
+    for (int i=0; i<this->getPlayers().size(); i++) {
+        Player* player = players.at(i);
+
+        // If player controls no territories, remove them from the game.
+        // This includes the neutral player (who for now is treated/behaves like any other player)
+        if (player->getTerritories().empty()) {
+            cout << "Player " << player->getName() << " was eliminated." << endl;
+            delete this->players.at(i);
+            this->players.at(i) = nullptr;
+            this->players.erase(this->players.begin()+i);
+            numEliminated.push_back(i);
+        }
+
+        // If player controls all territories then declare win.
+        // Neutral territories must therefore not exist; any neutral territories need to be conquered before a win
+        // can be declared.
+        if (player->getTerritories().size() == this->map->getAllTerritories().size()) {
+            cout << "Player " << player->getName() << " has won! Game over." << endl;
+            return vector<int>{-1};
+        }
+    }
+
+    return numEliminated;
 }

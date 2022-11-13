@@ -3,3 +3,5 @@
 int testGameStates();
 
 int testStartupPhase();
+
+int testMainGameLoop();

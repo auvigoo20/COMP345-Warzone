@@ -39,9 +39,9 @@ void testPlayer() {
     }
 
     cout << "Player1 Issuing 3 orders!" << endl;
-    p1->issueOrder(0);
-    p1->issueOrder(1);
-    p1->issueOrder(2);
+    p1->issueOrder();
+    p1->issueOrder();
+    p1->issueOrder();
 
     cout << "Player information: " << endl;
     cout << *p1 << endl;

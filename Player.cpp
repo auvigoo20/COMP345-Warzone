@@ -193,10 +193,18 @@ vector<Territory*> Player::toAttack(){    //attack method
     // Initialize random seed to ensure randomness
     srand(time(NULL));
 
-    int numOfTerritories = (rand() % ownedTerritories.size()) + 1; // generate number from 1 to number of owned territories
-    for(int i = 0; i < numOfTerritories; i++) {
-        int randomIndex = rand() % (ownedTerritories.size()-1);
-        attackTerritories.push_back(ownedTerritories.at(randomIndex));
+    // generate number from 1 to number of owned territories
+    int numOfTerritories = (rand() % ownedTerritories.size()) + 1;
+
+    // If we have more than 1 territory, randomly pick (numOfTerritories) territories from the owned lest to return.
+    // Else just return the 1 territory we have.
+    if (ownedTerritories.size() > 1) {
+        for (int i = 0; i < numOfTerritories; i++) {
+            int randomIndex = rand() % (ownedTerritories.size() - 1);
+            attackTerritories.push_back(ownedTerritories.at(randomIndex));
+        }
+    } else {
+        attackTerritories.push_back(ownedTerritories.at(0));
     }
     return attackTerritories;
 
@@ -213,10 +221,18 @@ vector<Territory*> Player::toDefend(){    //defend method
     // Initialize random seed to ensure randomness
     srand(time(NULL));
 
-    int numOfTerritories = (rand() % ownedTerritories.size()) + 1; // generate number from 1 to number of owned territories
-    for(int i = 0; i < numOfTerritories; i++) {
-        int randomIndex = rand() % (ownedTerritories.size()-1);
-        defendTerritories.push_back(ownedTerritories.at(randomIndex));
+    // generate number from 1 to number of owned territories
+    int numOfTerritories = (rand() % ownedTerritories.size()) + 1;
+
+    // If we have more than 1 territory, randomly pick (numOfTerritories) territories from the owned lest to return.
+    // Else just return the 1 territory we have.
+    if (ownedTerritories.size() > 1) {
+        for(int i = 0; i < numOfTerritories; i++) {
+            int randomIndex = rand() % (ownedTerritories.size()-1);
+            defendTerritories.push_back(ownedTerritories.at(randomIndex));
+        }
+    } else {
+        defendTerritories.push_back(ownedTerritories.at(0));
     }
     return defendTerritories;
 }
@@ -226,12 +242,16 @@ vector<Territory*> Player::toDefend(){    //defend method
  * @param orderID
  */
 void Player::issueOrder(){
+    cout << "Issuing deploy orders for " << this->getName() << " (" << this->getReinforcementPool() << " available troops, " << this->getTerritories().size() << " available territories)" << endl;
 
     // Deploy orders
     int numDeployed = 0;
     while(true) {
+        cout << "Issuing order " << this->getOrdersList()->getSize() << " (deploy) for " << this->getName()  << endl;
+
         int toDeployNow = 0;
         Deploy* deploy;
+
 
         // HARDCODED ORDER FOR THE PURPOSE OF THIS ASSIGNMENT:
         // For now, deploy a troop to each territory in toDefend.
@@ -265,6 +285,8 @@ void Player::issueOrder(){
     // Other orders
     bool done = false;
     while(!done) {
+        cout << "Issuing order " << this->getOrdersList()->getSize() << " (other) for " << this->getName()  << endl;
+
         // HARDCODED ORDERS FOR THE PURPOSE OF THIS ASSIGNMENT:
         // For now, just try to (1) advance half the available troops from the first territory in toDefend to the first
         // territory in toAttack, then (2) advance another half of the available troops from the first territory in
