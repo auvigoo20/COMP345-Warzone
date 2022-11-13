@@ -70,7 +70,6 @@ private:
     void reinforcementPhase();
     void issueOrdersPhase();
     void executeOrdersPhase();
-    void mainGameLoop();
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
@@ -89,9 +88,13 @@ public:
     void setMap(Map* map);
     void setCommandProcessor(CommandProcessor* commandProcessor);
     void setLatestCommand(Command* latestCommand);
+    void updatePlayersOpponentLists();
 
     // Startup Phase method
     void startupPhase();
+
+    // Main game loop
+    void mainGameLoop();
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.

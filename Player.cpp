@@ -117,6 +117,14 @@ bool Player::getEntitledToCard() {
     return this->entitledToCard;
 }
 
+vector<Player*> Player::getAllyPlayerList() {
+    return this->allyPlayerList;
+}
+
+vector<Player*> Player::getOpponentPlayerList() {
+    return this->opponentPlayerList;
+}
+
 void Player::setReinforcementPool(int reinforcementPool) {
     this->reinforcementPool = reinforcementPool;
 }
@@ -135,6 +143,14 @@ void Player::setEntitledToCard(bool entitledToCard) {
 
 void Player::setHand(Hand *hand) {
     this->hand = hand;
+}
+
+void Player::setAllyPlayerList(vector<Player *> allyPlayerList) {
+    this->allyPlayerList = allyPlayerList;
+}
+
+void Player::setOpponentPlayerList(vector<Player *> opponentPlayerList) {
+    this->opponentPlayerList = opponentPlayerList;
 }
 
 /**
@@ -163,11 +179,6 @@ void Player::addTerritory(Territory* t){
  * @param p  Player to be added as an ally for this turn
  */
 void Player::addAlly(Player* p) {
-    for (int i=0; i<opponentPlayerList.size(); i++) {
-        if (opponentPlayerList.at(i) == p) {
-            opponentPlayerList.erase(opponentPlayerList.begin()+i);
-        }
-    }
     allyPlayerList.push_back(p);
 }
 
@@ -315,10 +326,6 @@ bool Player::isAdjacentTerritory(Territory* targetTerritory) {
         }
     }
     return false;
-}
-
-vector<Player*> Player::getAllyPlayerList() {
-    return this->allyPlayerList;
 }
 
 /**
