@@ -278,14 +278,14 @@ void Player::issueOrder(){
                     Territory* targetTerritory = this->getTerritories().front();
                     airliftCard->play(this, targetTerritory->getNumOfArmies(), targetTerritory, targetTerritory);
                 } else {
-                    Territory* targetTerritory = this->getTerritories().front();
-                    airliftCard->play()
+                    Territory* targetTerritory = this->toAttack().front();
+                    Territory* sourceTerritory = this->toDefend().front();
+                    int numOfArmies = sourceTerritory->getNumOfArmies() / 2;
+                    airliftCard->play(this, numOfArmies, sourceTerritory, targetTerritory);
                 }
-                airliftCard->play(this, 0, )
                 this->hand->playCard(0);
             }
             else if (bombCard != nullptr) {
-
                 this->hand->playCard(0);
             }
             else if (blockadeCard != nullptr) {
