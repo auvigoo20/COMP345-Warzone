@@ -55,7 +55,7 @@ public:
     void setTransitions(vector<Transition*> transitions);
 };
 
-class GameEngine {
+class GameEngine : public Subject, ILoggable {
 private:
     State* currentState;
     vector<Player*> players;
@@ -95,6 +95,8 @@ public:
 
     void updatePlayersOpponentLists();
     vector<int> checkAndEliminatePlayers();
+
+    string stringToLog();
 
     // Startup Phase method
     void startupPhase();
