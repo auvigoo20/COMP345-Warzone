@@ -14,6 +14,7 @@ public:
     Player();
     ~Player();
     Player(string name, Hand* hand, OrdersList* ordersList, int reinforcementPool);
+    Player(string name);
     Player(const Player&);
     Player& operator=(const Player &p);
 
@@ -21,10 +22,12 @@ public:
     Hand* getHand();
     OrdersList* getOrdersList();
     int getReinforcementPool();
+    string getName();
 
     void setTerritories(vector<Territory*> territories);
     void setHand(Hand* hand);
     void setOrdersList(OrdersList* ordersList);
+    void setName(string name);
     void setReinforcementPool(int reinforcementPool);
 
     void addTerritory(Territory* t);
@@ -34,7 +37,7 @@ public:
     vector<Territory*> toDefend();
     void issueOrder();
     void addReinforcements(int reinforcements);
-    string getName();
+    void issueOrder(int orderID);
     void addOwnedTerritory(Territory* territory);
     bool isAdjacentTerritory(Territory* targetTerritory);
     vector<Player*> getAllyPlayerList ();

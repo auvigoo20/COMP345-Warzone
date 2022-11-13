@@ -44,6 +44,11 @@ string Command::getEffect() {
 
 void Command::saveEffect(string effect) {
     this->effect = effect;
+    notify(this);   //notify the observer of the state change
+}
+
+string Command::stringToLog() {
+    return "Command's effect: " + effect;
 }
 
 /**
@@ -98,11 +103,13 @@ string CommandProcessor::readCommand() {
 
 void CommandProcessor::saveCommand(Command *command) {
     this->commands.push_back(command);
+    notify(this);   // notify the observer of the state change
 }
 
 Command* CommandProcessor::getCommand() {
     cout << "Enter a command: " << endl;
     string userCommand = readCommand();
+    cout << endl;
     Command* command = new Command(userCommand);
     saveCommand(command);
     return command;
@@ -158,6 +165,12 @@ bool CommandProcessor::validate(Command* command) {
     }
 
     return commandIsValid;
+}
+
+string CommandProcessor::stringToLog() {
+    // Return the last created command (whether it's valid or not)
+    Command* lastCreatedCommand = commands.back();
+    return "Command: " + lastCreatedCommand->getCommand();
 }
 
 /**

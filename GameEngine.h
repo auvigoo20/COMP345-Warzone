@@ -1,5 +1,8 @@
 #pragma once
 
+#include "Player.h"
+#include "Map.h"
+#include "Cards.h"
 #include <string>
 using std::string;
 
@@ -7,10 +10,11 @@ using std::string;
 using std::ostream;
 
 #include <vector>
-#include "Player.h"
-#include "Map.h"
-
 using std::vector;
+
+// Forward declaration for Command in CommandProcessing.cpp
+class Command;
+
 
 // Declared here (forward declaration) because Transition needs to know State exists.
 class State;
@@ -54,11 +58,12 @@ public:
 class GameEngine {
 private:
     State* currentState;
-    string latestCommand;
     vector<Player*> players;
     Map* map;
     CommandProcessor* commandProcessor;
 
+    Command* latestCommand;
+    Deck* deck;
     friend ostream& operator << (ostream&, const GameEngine&);
     static void initializeEngineStates();
 
@@ -69,20 +74,24 @@ private:
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
+    ~GameEngine();
     explicit GameEngine(State* startingState);
     explicit GameEngine(State* startingState, vector<Player*> players, Map* map);
     GameEngine& operator = (const GameEngine& g);
 
     State* getCurrentState();
-    string getLatestCommand();
     vector<Player*> getPlayers();
     Map* getMap();
     CommandProcessor* getCommandProcessor();
+    Command* getLatestCommand();
     void setCurrentState(State* currentState);
-    void setLatestCommand(string latestCommand);
     void setPlayers(vector<Player*> players);
     void setMap(Map* map);
     void setCommandProcessor(CommandProcessor* commandProcessor);
+    void setLatestCommand(Command* latestCommand);
+
+    // Startup Phase method
+    void startupPhase();
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.

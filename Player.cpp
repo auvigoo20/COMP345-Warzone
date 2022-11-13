@@ -37,9 +37,15 @@ Player::~Player() {
 
 Player::Player(string name, Hand* hand, OrdersList* ordersList, int reinforcementPool) {
     this->name = name;
-    this->hand =hand;
+    this->hand = hand;
     this->orderList = ordersList;
     this->reinforcementPool = reinforcementPool;
+}
+
+Player::Player(std::string name) {
+    this->name = name;
+    this->hand = new Hand();
+    this->orderList = new OrdersList();
 }
 
 /**
@@ -102,6 +108,10 @@ OrdersList *Player::getOrdersList() {
     return this->orderList;
 }
 
+void Player::setReinforcementPool(int reinforcementPool) {
+    this->reinforcementPool = reinforcementPool;
+}
+
 void Player::setOrdersList(OrdersList *ordersList) {
     this->orderList = ordersList;
 }
@@ -120,6 +130,10 @@ void Player::setReinforcementPool(int reinforcementPool) {
  */
 void Player::addReinforcements(int reinforcements) {
     this->reinforcementPool += reinforcements;
+}
+
+void Player::setName(std::string name) {
+    this->name = name;
 }
 
 /**
