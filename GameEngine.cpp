@@ -510,6 +510,9 @@ void GameEngine::startupPhase() {
 
                     cout << "******* Players have been created ******" << endl;
 
+                    // Resetting each players' ally and opponent lists
+                    this->updatePlayersOpponentLists();
+
                     // Distributing territories evenly among players
 
                     int territoryCount = this->map->getAllTerritories().size();
@@ -708,6 +711,15 @@ void GameEngine::executeOrdersPhase() {
     }
 
     if (!gameWon) {
+        // Reset every players' ally lists
+        for (Player* player : this->players) {
+            player->setAllyPlayerList({});
+        }
+
+        // Update players' opponent lists (in case an opponent was removed from the game)
+        this->updatePlayersOpponentLists();
+
+        // Move to the assign reinforcement phase
         this->setCurrentState(assignReinforcement);
     } else {
         this->setCurrentState(win);
@@ -753,5 +765,20 @@ void GameEngine::mainGameLoop() {
     // Re-start the game if command is replay
     if (command->getCommand() == "replay") {
         this->currentState = start;
+    }
+}
+
+void GameEngine::updatePlayersOpponentLists() {
+    for (Player* player : this->players) {
+        // Create opponentPlayerList for each player which is the list of all players minus that player
+        vector<Player*> opponentPlayerList = this->players;
+        for (int i=0; i<opponentPlayerList.size(); i++) {
+            if (opponentPlayerList.at(i) == player) {
+                opponentPlayerList.erase(opponentPlayerList.begin()+i);
+            }
+        }
+
+        // Set allyPlayerList to empty since the turn is over, and reset the opponentPlayerList
+        player->setOpponentPlayerList(opponentPlayerList);
     }
 }

@@ -25,6 +25,8 @@ public:
     int getReinforcementPool();
     string getName();
     bool getEntitledToCard();
+    vector<Player*> getAllyPlayerList();
+    vector<Player*> getOpponentPlayerList();
 
     void setTerritories(vector<Territory*> territories);
     void setHand(Hand* hand);
@@ -32,6 +34,8 @@ public:
     void setName(string name);
     void setReinforcementPool(int reinforcementPool);
     void setEntitledToCard(bool entitledToCard);
+    void setAllyPlayerList(vector<Player*> allyPlayerList);
+    void setOpponentPlayerList(vector<Player*> opponentPlayerList);
 
     void addTerritory(Territory* t);
     void addAlly(Player* p);
@@ -41,7 +45,6 @@ public:
     void issueOrder();
     void addReinforcements(int reinforcements);
     bool isAdjacentTerritory(Territory* targetTerritory);
-    vector<Player*> getAllyPlayerList ();
     bool isAlly(Player* targetPlayer);
 
 private:
