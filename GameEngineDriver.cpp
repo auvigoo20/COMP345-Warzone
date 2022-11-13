@@ -15,9 +15,6 @@ int testGameStates(){
     cout << "*          Testing Game Engine         *" << endl;
     cout << "****************************************" << endl;
 
-    GameEngine ge;
-    ge.startupPhase();
-
     bool done = false;
     GameEngine testGameEngine {GameEngine::start};
     Command* latestCommand;

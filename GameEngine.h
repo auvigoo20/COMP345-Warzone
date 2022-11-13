@@ -54,7 +54,7 @@ public:
     void setTransitions(vector<Transition*> transitions);
 };
 
-class GameEngine {
+class GameEngine : public Subject, ILoggable {
 private:
     State* currentState;
     Command* latestCommand;
@@ -74,6 +74,8 @@ public:
     Command* getLatestCommand();
     void setCurrentState(State* currentState);
     void setLatestCommand(Command* latestCommand);
+
+    string stringToLog();
 
     // Startup Phase method
     void startupPhase();

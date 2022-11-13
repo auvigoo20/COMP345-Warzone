@@ -246,6 +246,10 @@ GameEngine::~GameEngine(){
     }
 }
 
+string GameEngine::stringToLog() {
+    return "Game Engine New State: " + this->currentState->getName();
+}
+
 /**
  * Getter for the "currentState" variable
  * @return currentState
@@ -268,6 +272,7 @@ Command* GameEngine::getLatestCommand() {
  */
 void GameEngine::setCurrentState(State *currentState) {
     this->currentState = currentState;
+    notify(this);
 }
 
 /**
