@@ -722,7 +722,6 @@ void GameEngine::executeOrdersPhase() {
         // Loop through each player and execute the top order in their list
         // This includes the neutral player (who for now is treated/behaves like any other player)
         for (int i=nextPlayer; i < this->players.size(); i++) {
-            cout << "Player index " << i << " of " << this->players.size() << endl;
             Player* player = players.at(i);
 
             // If player does not have any orders to execute, increment the counter by 1
@@ -735,6 +734,56 @@ void GameEngine::executeOrdersPhase() {
                 cout << "Executing non-deploy order for " << player->getName() << endl;
                 playersWithoutOrders = 0;
                 player->getOrdersList()->getOrder(1)->execute();
+
+                // After every order execution, eliminate any players that control no territories.
+                vector<int>result = checkAndEliminatePlayers();
+
+                cout << "Eliminated: {";
+                for (int j : result) {
+                    cout << j << ", ";
+                }
+                cout << "}" << endl;
+
+                // If no players were eliminated, continue as normal
+                if (result.empty()) {
+                    nextPlayer = 0;
+                }
+
+                    // If a player has won the game, set the flag.
+                else if (result.front() == -1) {
+                    gameWon = true;
+                    break;
+                }
+
+                    // If a player has eliminated, the loop needs to be broken as the player list has changed
+                    // and we need to restart the loop from the player that "deserves" to go next.
+                else {
+                    // nextPlayer will be one above the current index by default
+                    nextPlayer = i + 1;
+
+
+                    // if the next player's index is more than we have players, then that means the next player was the one
+                    // eliminated, so the actual next player is the 0th player.
+                    if (nextPlayer >= this->players.size()) {
+                        nextPlayer = 0;
+                    }
+
+                        // otherwise, the player eliminated was either the current player or a previous one. In either case, the
+                        // next player's index will have also gone down by one.
+                    else {
+                        for (int j : result) {
+                            if (j <= i) {
+                                nextPlayer--;
+                            }
+                        }
+                    }
+
+                    // Break the loop and restart from nextPlayer
+                    cout << "Restarting loop at index " << nextPlayer << " (current players: " << this->players.size() << ")" << endl;
+                    cout << "***" << endl;
+                    break;
+                }
+
                 cout << "***" << endl;
 
                 // If player is entitled to a card, give it to them
@@ -745,55 +794,6 @@ void GameEngine::executeOrdersPhase() {
                 player->getOrdersList()->removeOrder(1);
             } else {
                 playersWithoutOrders++;
-            }
-
-            // After every order execution, eliminate any players that control no territories.
-            vector<int>result = checkAndEliminatePlayers();
-
-            cout << "Eliminated: {";
-            for (int j : result) {
-                cout << j << ", ";
-            }
-            cout << "}" << endl;
-
-            // If no players were eliminated, continue as normal
-            if (result.empty()) {
-                nextPlayer = 0;
-            }
-
-            // If a player has won the game, set the flag.
-            else if (result.front() == -1) {
-                gameWon = true;
-                break;
-            }
-
-            // If a player has eliminated, the loop needs to be broken as the player list has changed
-            // and we need to restart the loop from the player that "deserves" to go next.
-            else {
-                // nextPlayer will be one above the current index by default
-                nextPlayer = i + 1;
-
-
-                // if the next player's index is more than we have players, then that means the next player was the one
-                // eliminated, so the actual next player is the 0th player.
-                if (nextPlayer >= this->players.size()) {
-                    nextPlayer = 0;
-                }
-
-                // otherwise, the player eliminated was either the current player or a previous one. In either case, the
-                // next player's index will have also gone down by one.
-                else {
-                    for (int j : result) {
-                        if (j <= i) {
-                            nextPlayer--;
-                        }
-                    }
-                }
-
-                // Break the loop and restart from nextPlayer
-                cout << "Restarting loop at index " << nextPlayer << " (current players: " << this->players.size() << ")" << endl;
-                cout << "***" << endl;
-                break;
             }
         }
     }
@@ -843,6 +843,7 @@ void GameEngine::mainGameLoop() {
                 this->deck->draw(player->getHand());
             }
         }
+//        this->deck->draw(this->players.at(0)->getHand());
         if (turn == 3) {
             for (Territory* territory : this->players.at(2)->getTerritories()) {
                 territory->setOwner(this->players.at(0));

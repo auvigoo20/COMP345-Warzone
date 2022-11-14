@@ -40,12 +40,16 @@ void Deck::removeCard(int index) {
 
 void Deck::draw(Hand* hand) {
 
-    // Initialize random seed to ensure randomness
-    srand(time(NULL));
-    int index = rand() % deckList.size();
-    Card* cardDraw = deckList[index];
-    removeCard(index);
-    hand->addCard(cardDraw);
+    if (this->deckList.empty()) {
+        cout << "Attempted to draw, but the deck is empty!" << endl;
+    } else {
+        // Initialize random seed to ensure randomness
+        srand(time(NULL));
+        int index = rand() % deckList.size();
+        Card* cardDraw = deckList.at(index);
+        removeCard(index);
+        hand->addCard(cardDraw);
+    }
 }
 
 vector<Card*> Deck::getDeck() {

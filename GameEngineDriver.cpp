@@ -115,7 +115,6 @@ int testMainGameLoop() {
 
     for (int i = 0; i < players.size(); i++) {
         deck->addCard(new BombCard);
-        deck->addCard(new ReinforcementCard);
         deck->addCard(new BlockadeCard);
         deck->addCard(new AirliftCard);
         deck->addCard(new DiplomacyCard);
