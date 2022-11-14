@@ -290,5 +290,14 @@ int testOrderExecution(){
     invalidNegotiate->execute();
     cout << '\n' << endl;
 
+    delete player1;
+    delete player2;
+    delete continent;
+    delete ownedTerritory1;
+    delete alliedNonAdjacentTer;
+    delete alliedAdjacentTer;
+    delete enemyTerritory1;
+    delete enemyNonAdjacentTer;
+
     return 0;
 }
