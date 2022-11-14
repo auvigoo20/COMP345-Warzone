@@ -92,6 +92,13 @@ void testLoggingObserver(){
        order->execute();
    }
 
+   delete player;
+   delete enemyPlayer;
+   delete continent;
+   delete ownedTerritory1;
+   delete ownedTerritory2;
+   delete enemyTerritory;
+   delete logObserver;
 
 
 }
