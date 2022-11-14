@@ -33,7 +33,7 @@ void testCommandProcessor(){
 
 
         // Validate command in MAP LOADED state
-        gameEngine->setCurrentState(GameEngine::mapLoaded);
+        gameEngine->transition(GameEngine::mapLoaded);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -50,7 +50,7 @@ void testCommandProcessor(){
         cout << *cmd;
 
         // Validate command in MAP VALIDATED state
-        gameEngine->setCurrentState(GameEngine::mapValidated);
+        gameEngine->transition(GameEngine::mapValidated);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -64,7 +64,7 @@ void testCommandProcessor(){
         cout << *cmd;
 
         // Validate command in PLAYERS ADDED state
-        gameEngine->setCurrentState(GameEngine::playersAdded);
+        gameEngine->transition(GameEngine::playersAdded);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -81,7 +81,7 @@ void testCommandProcessor(){
         cout << *cmd;
 
         // Validate command in WIN state
-        gameEngine->setCurrentState(GameEngine::win);
+        gameEngine->transition(GameEngine::win);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -97,7 +97,7 @@ void testCommandProcessor(){
         }
         else{
             cmd->saveEffect("Replaying another game.");
-            gameEngine->setCurrentState(GameEngine::start);
+            gameEngine->transition(GameEngine::start);
 
         }
         cout << *cmd;
@@ -135,7 +135,7 @@ void testCommandProcessorConsole(){
 
 
         // Validate command in MAP LOADED state
-        gameEngine->setCurrentState(GameEngine::mapLoaded);
+        gameEngine->transition(GameEngine::mapLoaded);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -152,7 +152,7 @@ void testCommandProcessorConsole(){
         cout << *cmd;
 
         // Validate command in MAP VALIDATED state
-        gameEngine->setCurrentState(GameEngine::mapValidated);
+        gameEngine->transition(GameEngine::mapValidated);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -166,7 +166,7 @@ void testCommandProcessorConsole(){
         cout << *cmd;
 
         // Validate command in PLAYERS ADDED state
-        gameEngine->setCurrentState(GameEngine::playersAdded);
+        gameEngine->transition(GameEngine::playersAdded);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -183,7 +183,7 @@ void testCommandProcessorConsole(){
         cout << *cmd;
 
         // Validate command in WIN state
-        gameEngine->setCurrentState(GameEngine::win);
+        gameEngine->transition(GameEngine::win);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -199,7 +199,7 @@ void testCommandProcessorConsole(){
         }
         else{
             cmd->saveEffect("Replaying another game.");
-            gameEngine->setCurrentState(GameEngine::start);
+            gameEngine->transition(GameEngine::start);
 
         }
         cout << *cmd;
@@ -237,7 +237,7 @@ void testCommandProcessorFile(string fileName){
 
 
         // Validate command in MAP LOADED state
-        gameEngine->setCurrentState(GameEngine::mapLoaded);
+        gameEngine->transition(GameEngine::mapLoaded);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -254,7 +254,7 @@ void testCommandProcessorFile(string fileName){
         cout << *cmd;
 
         // Validate command in MAP VALIDATED state
-        gameEngine->setCurrentState(GameEngine::mapValidated);
+        gameEngine->transition(GameEngine::mapValidated);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -268,7 +268,7 @@ void testCommandProcessorFile(string fileName){
         cout << *cmd;
 
         // Validate command in PLAYERS ADDED state
-        gameEngine->setCurrentState(GameEngine::playersAdded);
+        gameEngine->transition(GameEngine::playersAdded);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -285,7 +285,7 @@ void testCommandProcessorFile(string fileName){
         cout << *cmd;
 
         // Validate command in WIN state
-        gameEngine->setCurrentState(GameEngine::win);
+        gameEngine->transition(GameEngine::win);
         cout << *gameEngine;
         cmd = commandProcessor->getCommand();
         commandProcessor->validate(cmd);
@@ -301,7 +301,7 @@ void testCommandProcessorFile(string fileName){
         }
         else{
             cmd->saveEffect("Replaying another game.");
-            gameEngine->setCurrentState(GameEngine::start);
+            gameEngine->transition(GameEngine::start);
 
         }
         cout << *cmd;
