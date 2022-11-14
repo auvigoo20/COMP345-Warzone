@@ -11,10 +11,9 @@ int main(int argc, char** argv){
     if(argc == 1){
 //        testCommandProcessor();
 //        testStartupPhase();
-//        testMainGameLoop();
-
-//        testStartupPhase();
-        testLoggingObserver();
+//        testOrderExecution();
+        testMainGameLoop();
+//        testLoggingObserver();
     }
     else{
         if(string(argv[1]) == "-console"){
