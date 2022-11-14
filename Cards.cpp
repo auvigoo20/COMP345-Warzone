@@ -21,7 +21,6 @@ Deck::Deck(const Deck& d){
 
 void Deck::addCard(Card* card) {
     deckList.push_back(card);
-
 }
 
 /**
@@ -41,12 +40,20 @@ void Deck::removeCard(int index) {
 
 void Deck::draw(Hand* hand) {
 
-    // Initialize random seed to ensure randomness
-    srand(time(NULL));
-    int index = rand() % deckList.size();
-    Card* cardDraw = deckList[index];
-    removeCard(index);
-    hand->addCard(cardDraw);
+    if (this->deckList.empty()) {
+        cout << "Attempted to draw, but the deck is empty!" << endl;
+    } else {
+        // Initialize random seed to ensure randomness
+        srand(time(NULL));
+        int index = rand() % deckList.size();
+        Card* cardDraw = deckList.at(index);
+        removeCard(index);
+        hand->addCard(cardDraw);
+    }
+}
+
+vector<Card*> Deck::getDeck() {
+    return this->deckList;
 }
 
 ostream& Deck::printDeck(std::ostream &output) {
@@ -119,7 +126,7 @@ void Hand::addCard(Card* card) {
  */
 
 void Hand::removeCard(int index) {
-    handList.erase(handList.begin() + index-1);
+    handList.erase(handList.begin() + index);
 }
 
 /**
@@ -130,9 +137,8 @@ void Hand::removeCard(int index) {
  */
 
 void Hand::playCard(int index){
-    Card* card = handList[index-1];
-    card->play(this-> owner);                     //create order
-    removeCard(index);               //remove card from hand player
+    Card* card = handList.at(index);
+    removeCard(index);              //remove card from hand player
     deckList->addCard(card);        // add card to deck
 }
 
@@ -177,8 +183,7 @@ Hand& Hand::operator=(const Hand &h)
 Hand::~Hand()
 {
     for(auto card: handList){
-        delete card;
-        card = nullptr;
+        this->deckList->addCard(card);
     }
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Card*>().swap(this->handList);
@@ -256,9 +261,8 @@ DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
  * Creating Order and adding the order in the Order List
  */
 
-void BombCard::play(Player* owner) const{
-    //Engine should choose numOfUnits and targetTerritory for constructor bellow.
-    Bomb* bomb = new Bomb();
+void BombCard::play(Player* owner, Territory* targetTerritory) {
+    Bomb* bomb = new Bomb(owner, targetTerritory);
     owner->getOrdersList()->addOrder(bomb);
     cout << "output bomb card" << endl;
 }
@@ -282,7 +286,7 @@ ostream& BombCard::printCard(std::ostream &output) const {
  {
  }
 
-void ReinforcementCard::play(Player* owner) const {  // Reinforcement Card does not create an order
+void ReinforcementCard::play(Player* owner) {  // Reinforcement Card does not create an order
     cout << "output reinforcement card" << endl;
 }
 
@@ -305,9 +309,8 @@ ReinforcementCard::~ReinforcementCard()
 {
 }
 
-void BlockadeCard::play(Player* owner) const{
-    //Engine should choose targetTerritory for constructor bellow.
-    Blockade* blockade = new Blockade();
+void BlockadeCard::play(Player* owner, Territory* targetTerritory) {
+    Blockade* blockade = new Blockade(owner, targetTerritory);
     owner->getOrdersList()->addOrder(blockade);
     cout << "output blockade card" << endl;
 }
@@ -331,9 +334,8 @@ BlockadeCard::~BlockadeCard()
 {
 }
 
-void AirliftCard::play(Player* owner) const{
-    //Engine should choose numOfUnits, sourceTerritory, and targetTerritory for constructor bellow.
-    Airlift* airlift = new Airlift();
+void AirliftCard::play(Player* owner, int numOfUnits, Territory* sourceTerritory, Territory* targetTerritory) {
+    Airlift* airlift = new Airlift(owner, numOfUnits, sourceTerritory, targetTerritory);
     owner->getOrdersList()->addOrder(airlift);
     cout << "output airlift card" << endl;
 }
@@ -357,9 +359,8 @@ AirliftCard::~AirliftCard()
 {
 }
 
-void DiplomacyCard::play(Player* owner) const{
-    //Engine should choose targetPlayer for constructor bellow.
-    Negotiate* negotiate = new Negotiate();
+void DiplomacyCard::play(Player* owner, Player* targetPlayer) {
+    Negotiate* negotiate = new Negotiate(owner, targetPlayer);
     owner->getOrdersList()->addOrder(negotiate);
     cout << "output diplomacy card" << endl;
 }

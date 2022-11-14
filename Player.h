@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+
 #include "Cards.h"
 #include "Map.h"
 #include "Orders.h"
@@ -21,23 +22,30 @@ public:
     vector<Territory*> getTerritories();
     Hand* getHand();
     OrdersList* getOrdersList();
+    int getReinforcementPool();
     string getName();
+    bool getEntitledToCard();
+    vector<Player*> getAllyPlayerList();
+    vector<Player*> getOpponentPlayerList();
 
     void setTerritories(vector<Territory*> territories);
     void setHand(Hand* hand);
     void setOrdersList(OrdersList* ordersList);
     void setName(string name);
     void setReinforcementPool(int reinforcementPool);
+    void setEntitledToCard(bool entitledToCard);
+    void setAllyPlayerList(vector<Player*> allyPlayerList);
+    void setOpponentPlayerList(vector<Player*> opponentPlayerList);
 
     void addTerritory(Territory* t);
+    void removeTerritory(Territory* t);
     void addAlly(Player* p);
 
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
-    void issueOrder(int orderID);
-    void addOwnedTerritory(Territory* territory);
+    void issueOrder();
+    void addReinforcements(int reinforcements);
     bool isAdjacentTerritory(Territory* targetTerritory);
-    vector<Player*> getAllyPlayerList ();
     bool isAlly(Player* targetPlayer);
 
 private:
@@ -48,4 +56,6 @@ private:
     OrdersList* orderList;
     int reinforcementPool;
     vector<Player*> allyPlayerList;
+    vector<Player*> opponentPlayerList;
+    bool entitledToCard;
 };

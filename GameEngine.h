@@ -18,6 +18,7 @@ class Command;
 
 // Declared here (forward declaration) because Transition needs to know State exists.
 class State;
+class CommandProcessor;
 
 class Transition {
 private:
@@ -57,28 +58,51 @@ public:
 class GameEngine : public Subject, ILoggable {
 private:
     State* currentState;
-    Command* latestCommand;
     vector<Player*> players;
     Map* map;
+    CommandProcessor* commandProcessor;
+    int turn;
+
+    Command* latestCommand;
     Deck* deck;
     friend ostream& operator << (ostream&, const GameEngine&);
     static void initializeEngineStates();
+
+    void reinforcementPhase();
+    void issueOrdersPhase();
+    void executeOrdersPhase();
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
     ~GameEngine();
     explicit GameEngine(State* startingState);
+    explicit GameEngine(State* startingState, vector<Player*> players, Map* map);
     GameEngine& operator = (const GameEngine& g);
 
     State* getCurrentState();
+    vector<Player*> getPlayers();
+    Map* getMap();
+    CommandProcessor* getCommandProcessor();
     Command* getLatestCommand();
+    Deck* getDeck();
+
     void setCurrentState(State* currentState);
+    void setPlayers(vector<Player*> players);
+    void setMap(Map* map);
+    void setCommandProcessor(CommandProcessor* commandProcessor);
     void setLatestCommand(Command* latestCommand);
+    void setDeck(Deck* deck);
+
+    void updatePlayersAllyAndOpponentLists();
+    vector<int> checkAndEliminatePlayers();
 
     string stringToLog();
 
     // Startup Phase method
     void startupPhase();
+
+    // Main game loop
+    void mainGameLoop();
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.

@@ -86,14 +86,14 @@ void OrdersList::moveOrderUp(int index)
 
     if(size == 0 || size == 1) {
         cout << "Moving orders within the orders list is not possible at the moment" << endl;
-    } else if (index == 1) {
+    } else if (index == 0) {
         cout << "Order already on top of list." << endl;
-    } else if (index < 1 || index > size) {
+    } else if (index < 0 || index >= size) {
         cout << "Index out of bound !" << endl;
     } else {
-        Order* temp = ordersList[index - 1];
-        ordersList[index - 1] = ordersList[index - 2];
-        ordersList[index - 2] = temp;
+        Order* temp = ordersList[index];
+        ordersList[index] = ordersList[index - 1];
+        ordersList[index - 1] = temp;
     }
 }
 
@@ -108,14 +108,14 @@ void OrdersList::moveOrderDown(int index)
 
     if(size == 0 || size == 1) {
         cout << "Moving orders within the orders list is not possible at the moment" << endl;
-    } else if (index == size) {
+    } else if (index == size-1) {
         cout << "Order already bottom of the list !" << endl;
-    } else if (index < 1 || index > size) {
+    } else if (index < 0 || index >= size) {
         cout << "Index out of bound !" << endl;
     } else {
-        Order* temp = ordersList[index - 1];
-        ordersList[index - 1] = ordersList[index];
-        ordersList[index] = temp;
+        Order* temp = ordersList[index];
+        ordersList[index] = ordersList[index - 1];
+        ordersList[index - 1] = temp;
     }
 }
 
@@ -247,9 +247,10 @@ string Deploy::stringToLog() {
 void Deploy::execute()
 {
     if(!validate()) {
-       cout << "Invalid Order !" << endl;
+       cout << "Invalid Order; Deploy not executed." << endl;
     } else {
         this->targetTerritory->setNumOfArmies(this->targetTerritory->getNumOfArmies() + this->numOfArmies);
+        this->currentPlayer->setReinforcementPool(this->currentPlayer->getReinforcementPool() - this->numOfArmies);
         printOrder(cout);
         notify(this);
     }
@@ -261,11 +262,11 @@ void Deploy::execute()
  */
 bool Deploy::validate() const
 {
-    if (this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+    if (this->targetTerritory->getOwner() != this->currentPlayer) {
         cout << "Specified territory is not owned" << endl;
         return false;
     }
-    cout << "Order successfully verified. Ready for execution !" << endl;
+    cout << "Deploy order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
@@ -383,12 +384,12 @@ void Advance::attackSimulation() const {
 
     if(remainingDefenders == 0 && remainingAttackers > 0) {
         cout << "Territory conquered !" << endl;
+        targetTerritory->getOwner()->removeTerritory(targetTerritory);
         currentPlayer->addTerritory(targetTerritory);
         targetTerritory->setOwner(currentPlayer);
         targetTerritory->setNumOfArmies(remainingAttackers);
         cout << "Player is eligible to get a card (MAX 1 PER TURN)" << endl;
-        // ****** Must notify the game engine to give card to attacking player for this win
-        // (MAX 1 SUCH CARD PER TURN)
+        currentPlayer->setEntitledToCard(true);
     } else {
         cout << "Territory successfully defended !" << endl;
         targetTerritory->setNumOfArmies(remainingDefenders);
@@ -402,8 +403,8 @@ void Advance::attackSimulation() const {
 void Advance::execute()
 {
    if(!validate()) {
-       cout << "Invalid Order !" << endl;
-   } else if(targetTerritory->getOwner()->getName() == sourceTerritory->getOwner()->getName()) {
+       cout << "Invalid Order; Advance not executed." << endl;
+   } else if(targetTerritory->getOwner() == sourceTerritory->getOwner()) {
        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
        printOrder(cout);
@@ -422,7 +423,7 @@ void Advance::execute()
  */
 bool Advance::validate() const
 {
-   if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+   if (this->sourceTerritory->getOwner() != this->currentPlayer) {
        cout << "Source territory is not owned" << endl;
        return false;
    } else if (!this->sourceTerritory->isAdjacentTerritory(targetTerritory)) {
@@ -510,7 +511,7 @@ string Bomb::stringToLog() {
 void Bomb::execute()
 {
     if(!validate()) {
-        cout << "Invalid Order !" << endl;
+        cout << "Invalid Order; Bomb not executed." << endl;
     } else {
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() / 2);
         printOrder(cout);
@@ -525,7 +526,7 @@ void Bomb::execute()
  */
 bool Bomb::validate() const
 {
-    if( this->targetTerritory->getOwner()->getName() == this->currentPlayer->getName()){
+    if( this->targetTerritory->getOwner() == this->currentPlayer){
         cout << "Target territory is owned by the player issuing the order" << endl;
         return false;
     }else if (!(this->currentPlayer->isAdjacentTerritory(targetTerritory))){
@@ -535,7 +536,7 @@ bool Bomb::validate() const
         cout << "Target territory owner is an ally; cant attack!" << endl;
         return false;
     }
-    cout << "Order successfully verified. Ready for execution !" << endl;
+    cout << "Bomb order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
@@ -611,7 +612,7 @@ string Blockade::stringToLog() {
 void Blockade::execute()
 {
     if(!validate()) {
-        cout << "Invalid Order !" << endl;
+        cout << "Invalid Order; Blockade not executed." << endl;
     } else {
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() * 2);
         targetTerritory->setOwner(neutralPlayer);
@@ -627,7 +628,7 @@ void Blockade::execute()
  */
 bool Blockade::validate() const
 {
-    if(this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()){
+    if(this->targetTerritory->getOwner() != this->currentPlayer){
         cout << "Target territory is not owned by the player issuing the order" << endl;
         return false;
     }
@@ -716,7 +717,7 @@ string Airlift::stringToLog() {
 void Airlift::execute()
 {
     if(!validate()) {
-        cout << "Invalid Order !" << endl;
+        cout << "Invalid Order; Airlift not executed." << endl;
     } else {
         sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
@@ -734,12 +735,12 @@ void Airlift::execute()
  */
 bool Airlift::validate() const
 {
-    if (this->sourceTerritory->getOwner()->getName() != this->currentPlayer->getName() ||
-    this->targetTerritory->getOwner()->getName() != this->currentPlayer->getName()) {
+    if (this->sourceTerritory->getOwner() != this->currentPlayer ||
+    this->targetTerritory->getOwner() != this->currentPlayer) {
         cout << "Source and/or target territory are not owned" << endl;
         return false;
     }
-    cout << "Order successfully verified. Ready for execution !" << endl;
+    cout << "Airlift order successfully verified. Ready for execution !" << endl;
     return true;
 }
 
@@ -817,7 +818,7 @@ string Negotiate::stringToLog() {
 void Negotiate::execute()
 {
     if(!validate()) {
-        cout << "Invalid Order !" << endl;
+        cout << "Invalid Order; Negotiate not executed." << endl;
     } else {
         this->currentPlayer->addAlly(targetPlayer);
         this->targetPlayer->addAlly(currentPlayer);
@@ -833,7 +834,7 @@ void Negotiate::execute()
  */
 bool Negotiate::validate() const
 {
-    if(targetPlayer->getName() == currentPlayer->getName()){
+    if(targetPlayer == currentPlayer){
         cout << "The target player must be different than the player issuing the order" <<endl;
         return false;
     }

@@ -261,6 +261,15 @@ int testOrderExecution(){
     invalidBlockade->execute();
     cout << '\n' << endl;
 
+    // Testing correct behavior for Advance order
+    cout << " -- Testing that territory ownership is transferred given successful attack" << endl;
+    Order* successfulAttack = new Advance(player1, 5, ownedTerritory1, enemyTerritory1);
+    cout << "Print 'enemyTerritory1 owner before successful attack" << endl;
+    cout << enemyTerritory1->getOwner()->getName() << endl;
+    successfulAttack->execute();
+    cout << "Print 'enemyTerritory1 owner after successful attack" << endl;
+    cout << enemyTerritory1->getOwner()->getName() << endl;
+    cout << "\n" << endl;
 
     //TESTING NEGOTIATE ORDER VALIDATION
 
@@ -281,15 +290,14 @@ int testOrderExecution(){
     invalidNegotiate->execute();
     cout << '\n' << endl;
 
-    // Testing correct behavior for Advance order
-    cout << " -- Testing that territory ownership is transferred given successful attack" << endl;
-    Order* successfulAttack = new Advance(player1, 5, ownedTerritory1, enemyTerritory1);
-    cout << "Print 'enemyTerritory1 owner before successful attack" << endl;
-    cout << enemyTerritory1->getOwner()->getName() << endl;
-    successfulAttack->execute();
-    cout << "Print 'enemyTerritory1 owner after successful attack" << endl;
-    cout << enemyTerritory1->getOwner()->getName() << endl;
-    cout << "\n" << endl;
+    delete player1;
+    delete player2;
+    delete continent;
+    delete ownedTerritory1;
+    delete alliedNonAdjacentTer;
+    delete alliedAdjacentTer;
+    delete enemyTerritory1;
+    delete enemyNonAdjacentTer;
 
     return 0;
 }

@@ -95,6 +95,14 @@ CommandProcessor &CommandProcessor::operator=(const CommandProcessor &c) {
     return *this;
 }
 
+void CommandProcessor::setGameEngine(GameEngine *ge) {
+    this->gameEngine = ge;
+}
+
+GameEngine *CommandProcessor::getGameEngine() {
+    return gameEngine;
+}
+
 string CommandProcessor::readCommand() {
     string command;
     getline(cin, command);
@@ -218,6 +226,10 @@ ostream& operator<<(ostream &strm, const FileLineReader &f){
 }
 
 FileCommandProcessorAdapter::FileCommandProcessorAdapter(GameEngine *gameEngine, std::string fileName) : CommandProcessor(gameEngine){
+    flr = new FileLineReader(fileName);
+}
+
+FileCommandProcessorAdapter::FileCommandProcessorAdapter(std::string fileName){
     flr = new FileLineReader(fileName);
 }
 

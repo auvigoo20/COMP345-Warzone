@@ -40,6 +40,8 @@ class CommandProcessor: public Subject, ILoggable{
         ~CommandProcessor();
         CommandProcessor& operator=(const CommandProcessor& c);
         Command* getCommand();
+        void setGameEngine(GameEngine* ge);
+        GameEngine* getGameEngine();
         bool validate(Command*);
         string stringToLog();
 
@@ -67,6 +69,7 @@ class FileCommandProcessorAdapter: public CommandProcessor{
         friend ostream& operator<<(ostream&, const FileCommandProcessorAdapter&);
 public:
         FileCommandProcessorAdapter(GameEngine* gameEngine, string fileName);
+        FileCommandProcessorAdapter(string fileName);
         FileCommandProcessorAdapter();
         FileCommandProcessorAdapter(const FileCommandProcessorAdapter &f);
         ~FileCommandProcessorAdapter();
