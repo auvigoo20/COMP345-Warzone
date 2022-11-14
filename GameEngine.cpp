@@ -381,7 +381,7 @@ GameEngine& GameEngine::operator=(const GameEngine& g) {
  * @return strm
  */
 ostream& operator << (ostream &strm, const GameEngine &g){
-    return strm << "GAME ENGINE: Current State: {" << *g.currentState << "}, Latest Command: " << g.latestCommand;
+    return strm << "GAME ENGINE: Current State: {" << *g.currentState << "}" << endl;
 }
 
 
