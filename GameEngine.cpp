@@ -441,7 +441,6 @@ void GameEngine::startupPhase() {
 
     this->currentState = start;
     Command *currentCommand;
-    CommandProcessor *commandProcessor = new CommandProcessor(this);
     string stateName, fileDirectory;
     bool done = false;
 

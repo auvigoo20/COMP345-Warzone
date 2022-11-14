@@ -18,7 +18,6 @@ int testGameStates(){
     bool done = false;
     GameEngine testGameEngine {GameEngine::start};
     Command* latestCommand;
-    CommandProcessor* commandProcessor;
 
     cout << testGameEngine << endl;
 
@@ -60,8 +59,11 @@ int testStartupPhase(){
     cout << "*         Testing Startup Phase        *" << endl;
     cout << "****************************************" << endl;
 
-    GameEngine ge;
-    ge.startupPhase();
+    GameEngine* ge = new GameEngine();
+    CommandProcessor* commandProcessor = new CommandProcessor();
+    ge->setCommandProcessor(commandProcessor);
+    commandProcessor->setGameEngine(ge);
+    ge->startupPhase();
 
     return 0;
 }
