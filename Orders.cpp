@@ -86,14 +86,14 @@ void OrdersList::moveOrderUp(int index)
 
     if(size == 0 || size == 1) {
         cout << "Moving orders within the orders list is not possible at the moment" << endl;
-    } else if (index == 1) {
+    } else if (index == 0) {
         cout << "Order already on top of list." << endl;
-    } else if (index < 1 || index > size) {
+    } else if (index < 0 || index >= size) {
         cout << "Index out of bound !" << endl;
     } else {
-        Order* temp = ordersList[index - 1];
-        ordersList[index - 1] = ordersList[index - 2];
-        ordersList[index - 2] = temp;
+        Order* temp = ordersList[index];
+        ordersList[index] = ordersList[index - 1];
+        ordersList[index - 1] = temp;
     }
 }
 
@@ -108,14 +108,14 @@ void OrdersList::moveOrderDown(int index)
 
     if(size == 0 || size == 1) {
         cout << "Moving orders within the orders list is not possible at the moment" << endl;
-    } else if (index == size) {
+    } else if (index == size-1) {
         cout << "Order already bottom of the list !" << endl;
-    } else if (index < 1 || index > size) {
+    } else if (index < 0 || index >= size) {
         cout << "Index out of bound !" << endl;
     } else {
-        Order* temp = ordersList[index - 1];
-        ordersList[index - 1] = ordersList[index];
-        ordersList[index] = temp;
+        Order* temp = ordersList[index];
+        ordersList[index] = ordersList[index - 1];
+        ordersList[index - 1] = temp;
     }
 }
 
