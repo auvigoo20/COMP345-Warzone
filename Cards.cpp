@@ -126,7 +126,7 @@ void Hand::addCard(Card* card) {
  */
 
 void Hand::removeCard(int index) {
-    handList.erase(handList.begin() + index-1);
+    handList.erase(handList.begin() + index);
 }
 
 /**

@@ -833,17 +833,14 @@ void GameEngine::mainGameLoop() {
         // FOR NOW
         // To demonstrate that during the loop, the game removes players that have no territories and declares win when
         // a player controls all territories, I manually perform the following actions:
-        // - After the issueorder phase of turn 1, each player will be given a (random) card.
+        // - After every turn, each player will be given a (random) card.
         // - After the issueorder phase of turn 3, player 3 will have no territories
         // - After the issueorder phase of turn 4, player 1 will have all territories.
         //
         // This is for demonstration purposes and thus this code can/will be removed in part 3.
-        if (turn == 1) {
-            for (Player *player: this->players) {
-                this->deck->draw(player->getHand());
-            }
+        for (Player *player: this->players) {
+            this->deck->draw(player->getHand());
         }
-//        this->deck->draw(this->players.at(0)->getHand());
         if (turn == 3) {
             for (Territory* territory : this->players.at(2)->getTerritories()) {
                 territory->setOwner(this->players.at(0));
@@ -918,6 +915,8 @@ void GameEngine::updatePlayersAllyAndOpponentLists() {
 
 vector<int> GameEngine::checkAndEliminatePlayers() {
     vector<int> numEliminated = {};
+    bool win = false;
+    Player* winningPlayer;
     for (int i=0; i<this->getPlayers().size(); i++) {
         Player* player = players.at(i);
 
@@ -935,10 +934,15 @@ vector<int> GameEngine::checkAndEliminatePlayers() {
         // Neutral territories must therefore not exist; any neutral territories need to be conquered before a win
         // can be declared.
         if (player->getTerritories().size() == this->map->getAllTerritories().size()) {
-            cout << "Player " << player->getName() << " has won! Game over." << endl;
-            return vector<int>{-1};
+            winningPlayer = player;
+            win = true;
         }
     }
 
-    return numEliminated;
+    if (win) {
+        cout << "Player " << winningPlayer->getName() << " has won! Game over." << endl;
+        return vector<int>{-1};
+    } else {
+        return numEliminated;
+    }
 }
