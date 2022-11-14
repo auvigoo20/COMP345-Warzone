@@ -179,8 +179,7 @@ Hand& Hand::operator=(const Hand &h)
 Hand::~Hand()
 {
     for(auto card: handList){
-        delete card;
-        card = nullptr;
+        this->deckList->addCard(card);
     }
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Card*>().swap(this->handList);

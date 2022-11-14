@@ -833,13 +833,15 @@ void GameEngine::mainGameLoop() {
         // FOR NOW
         // To demonstrate that during the loop, the game removes players that have no territories and declares win when
         // a player controls all territories, I manually perform the following actions:
-        // - After the issueorder phase any turn, each player will be given a (random) card.
+        // - After the issueorder phase of turn 1, each player will be given a (random) card.
         // - After the issueorder phase of turn 3, player 3 will have no territories
         // - After the issueorder phase of turn 4, player 1 will have all territories.
         //
         // This is for demonstration purposes and thus this code can/will be removed in part 3.
-        for (Player* player : this->players) {
-//            this->deck->draw(player->getHand());
+        if (turn == 1) {
+            for (Player *player: this->players) {
+                this->deck->draw(player->getHand());
+            }
         }
         if (turn == 3) {
             for (Territory* territory : this->players.at(2)->getTerritories()) {
