@@ -384,6 +384,7 @@ void Advance::attackSimulation() const {
 
     if(remainingDefenders == 0 && remainingAttackers > 0) {
         cout << "Territory conquered !" << endl;
+        targetTerritory->getOwner()->removeTerritory(targetTerritory);
         currentPlayer->addTerritory(targetTerritory);
         targetTerritory->setOwner(currentPlayer);
         targetTerritory->setNumOfArmies(remainingAttackers);
