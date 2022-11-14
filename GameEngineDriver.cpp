@@ -92,23 +92,28 @@ int testMainGameLoop() {
     hand2->setOwner(player2);
     hand3->setOwner(player3);
 
-    Continent* continent =  new Continent("Africa", 12);
+    Continent* continent =  new Continent("continent1", 5);
     Territory* ownedTerritory1 = new Territory("ownedTerritory1", 1, 1, continent);
     Territory* enemyTerritory1 = new Territory("enemyTerritory1", 1, 2, continent);
     Territory* enemyTerritory2 = new Territory("enemyTerritory1", 1, 2, continent);
     Territory* alliedAdjacentTer = new Territory("alliedAdjacentTer", 2, 1, continent);
 
+    Continent* continent2 = new Continent("continent2", 5);
+    Territory* loneTerritory = new Territory("loneTerritory", 1, 1, continent2);
+
     player1->addTerritory(ownedTerritory1);
     player1->addTerritory(alliedAdjacentTer);
+    player1->addTerritory(loneTerritory);
     player2->addTerritory(enemyTerritory1);
     player3->addTerritory(enemyTerritory2);
 
     ownedTerritory1->addAdjacentTerritory(enemyTerritory1);
     ownedTerritory1->addAdjacentTerritory(enemyTerritory2);
     ownedTerritory1->addAdjacentTerritory(alliedAdjacentTer);
+    ownedTerritory1->addAdjacentTerritory(loneTerritory);
 
-    vector<Territory*> territories = {ownedTerritory1, enemyTerritory1, enemyTerritory2, alliedAdjacentTer};
-    vector<Continent*> continents = {continent};
+    vector<Territory*> territories = {ownedTerritory1, enemyTerritory1, enemyTerritory2, alliedAdjacentTer, loneTerritory};
+    vector<Continent*> continents = {continent, continent2};
     Map* map = new Map(territories, continents);
 
     Deck* deck = new Deck();
