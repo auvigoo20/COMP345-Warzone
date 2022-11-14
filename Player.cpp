@@ -298,16 +298,17 @@ void Player::issueOrder(){
     // Other orders
     bool done = false;
     while(!done) {
-        cout << "Issuing order " << this->getOrdersList()->getSize() << " (other) for " << this->getName()  << endl;
 
         // HARDCODED ORDERS FOR THE PURPOSE OF THIS ASSIGNMENT:
         // For now, just try to (1) advance half the available troops from the first territory in toDefend to the first
         // territory in toAttack, then (2) advance another half of the available troops from the first territory in
         // getTerritories to the first territory in toDefend, finally (3) play the first card in hand (if it exists)
 
+        cout << "Issuing order " << this->getOrdersList()->getSize() << " (advance) for " << this->getName()  << endl;
         Advance* attackOrder = new Advance(this, this->reinforcementPool/2, this->toDefend().front(), this->toAttack().front());
         orderList->addOrder(attackOrder);
 
+        cout << "Issuing order " << this->getOrdersList()->getSize() << " (advance) for " << this->getName()  << endl;
         Advance* defendOrder = new Advance(this, this->reinforcementPool/2, this->getTerritories().front(), this->toDefend().front());
         orderList->addOrder(defendOrder);
 
@@ -327,6 +328,7 @@ void Player::issueOrder(){
             DiplomacyCard* diplomacyCard = dynamic_cast<DiplomacyCard*>(card);
 
             if (airliftCard != nullptr) {
+                cout << "Playing airlift card for " << this->getName()  << endl;
                 // For now just airlift half the units from the last territory in toDefend to the first territory in toDefend
                 Territory* targetTerritory = this->toDefend().front();
                 Territory* sourceTerritory = this->toDefend().back();
@@ -335,18 +337,21 @@ void Player::issueOrder(){
                 this->hand->playCard(0);
             }
             else if (bombCard != nullptr) {
+                cout << "Playing bomb card for " << this->getName()  << endl;
                 // For now just bomb a random territory in toAttack
                 Territory* targetTerritory = this->toAttack().front();
                 bombCard->play(this, targetTerritory);
                 this->hand->playCard(0);
             }
             else if (blockadeCard != nullptr) {
+                cout << "Playing blockade card for " << this->getName()  << endl;
                 // For now just blockade a random territory in toAttack
                 Territory* targetTerritory = this->toAttack().front();
                 blockadeCard->play(this, targetTerritory);
                 this->hand->playCard(0);
             }
             else if (diplomacyCard != nullptr) {
+                cout << "Playing diplomacy card for " << this->getName()  << endl;
                 // For now just ally with a random targetPlayer
                 Player* targetPlayer = this->opponentPlayerList.front();
                 diplomacyCard->play(this, targetPlayer);

@@ -124,7 +124,16 @@ int testMainGameLoop() {
     State* startingState = GameEngine::assignReinforcement;
 
     ge = new GameEngine(startingState, players, map);
+
+    CommandProcessor* commandProcessor = new CommandProcessor();
+    ge->setCommandProcessor(commandProcessor);
+    commandProcessor->setGameEngine(ge);
+
     ge->setDeck(deck);
+
+    hand1->setDeckList(ge->getDeck());
+    hand2->setDeckList(ge->getDeck());
+    hand3->setDeckList(ge->getDeck());
 
     ge->mainGameLoop();
 
