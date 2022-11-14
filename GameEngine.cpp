@@ -893,7 +893,8 @@ void GameEngine::mainGameLoop() {
 
     // Re-start the game if command is replay
     if (command->getCommand() == "replay") {
-        this->currentState = start;
+        this->setCurrentState(start);
+        command->saveEffect("Replay command executed. Game engine is now in start state.");
         this->startupPhase();
     }
 }
