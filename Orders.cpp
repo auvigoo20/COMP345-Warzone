@@ -402,13 +402,8 @@ void Advance::attackSimulation() const {
 void Advance::execute()
 {
    if(!validate()) {
-<<<<<<< HEAD
        cout << "Invalid Order; Advance not executed." << endl;
-   } else if(targetTerritory->getOwner()->getName() == sourceTerritory->getOwner()->getName()) {
-=======
-       cout << "Invalid Order !" << endl;
    } else if(targetTerritory->getOwner() == sourceTerritory->getOwner()) {
->>>>>>> 5a7f7ef474db2f4349209f38d49e9c380740995e
        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
        printOrder(cout);
