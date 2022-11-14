@@ -175,6 +175,19 @@ void Player::addTerritory(Territory* t){
 }
 
 /**
+ * Remove territory from Player's owned territories list.
+ * @param t
+ */
+void Player::removeTerritory(Territory *t) {
+    for(int i=0; i < this->ownedTerritories.size(); i++) {
+        if (this->ownedTerritories.at(i) == t) {
+           this->ownedTerritories.erase(this->ownedTerritories.begin() + i);
+        }
+    }
+
+}
+
+/**
  * Adds a player to the list of ally
  * @param p  Player to be added as an ally for this turn
  */

@@ -38,6 +38,7 @@ public:
     void setOpponentPlayerList(vector<Player*> opponentPlayerList);
 
     void addTerritory(Territory* t);
+    void removeTerritory(Territory* t);
     void addAlly(Player* p);
 
     vector<Territory*> toAttack();
