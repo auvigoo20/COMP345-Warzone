@@ -546,7 +546,7 @@ void GameEngine::startupPhase() {
                     cout << "******* Players have been created ******" << endl;
 
                     // Resetting each players' ally and opponent lists
-                    this->updatePlayersOpponentLists();
+                    this->updatePlayersAllyAndOpponentLists();
 
                     // Distributing territories evenly among players
 
@@ -747,31 +747,6 @@ void GameEngine::executeOrdersPhase() {
                 playersWithoutOrders++;
             }
 
-            // FOR NOW
-            // To demonstrate that during the loop, the game removes players that have no territories and declares win when
-            // a player controls all territories, I set here that after the first order of turn 2, player 3 will have no
-            // territories and after the first order of turn 4, player 1 will have all territories.
-            //
-            // This is for demonstration purposes and thus this code can/will be removed in part 3.
-            if (turn == 2) {
-                for (Territory* territory : this->players.at(2)->getTerritories()) {
-                    territory->setOwner(this->players.at(0));
-                    this->players.at(0)->addTerritory(territory);
-                }
-                this->players.at(2)->setTerritories({});
-                cout << "All " << this->players.at(2)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
-            }
-            if (turn == 4) {
-                for (Territory* territory : this->players.at(1)->getTerritories()) {
-                    territory->setOwner(this->players.at(0));
-                    this->players.at(0)->addTerritory(territory);
-                }
-                this->players.at(1)->setTerritories({});
-                cout << "All " << this->players.at(1)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
-            }
-            //
-            // Game loop continues here.
-
             // After every order execution, eliminate any players that control no territories.
             vector<int>result = checkAndEliminatePlayers();
 
@@ -830,7 +805,7 @@ void GameEngine::executeOrdersPhase() {
         }
 
         // Update players' opponent lists (in case an opponent was removed from the game)
-        this->updatePlayersOpponentLists();
+        this->updatePlayersAllyAndOpponentLists();
 
         // Move to the assign reinforcement phase
         this->setCurrentState(assignReinforcement);
@@ -854,6 +829,37 @@ void GameEngine::mainGameLoop() {
         if (this->currentState == issueOrders) {
             issueOrdersPhase();
         }
+
+        // FOR NOW
+        // To demonstrate that during the loop, the game removes players that have no territories and declares win when
+        // a player controls all territories, I manually perform the following actions:
+        // - After the issueorder phase any turn, each player will be given a (random) card.
+        // - After the issueorder phase of turn 3, player 3 will have no territories
+        // - After the issueorder phase of turn 4, player 1 will have all territories.
+        //
+        // This is for demonstration purposes and thus this code can/will be removed in part 3.
+        for (Player* player : this->players) {
+//            this->deck->draw(player->getHand());
+        }
+        if (turn == 3) {
+            for (Territory* territory : this->players.at(2)->getTerritories()) {
+                territory->setOwner(this->players.at(0));
+                this->players.at(0)->addTerritory(territory);
+            }
+            this->players.at(2)->setTerritories({});
+            cout << "All " << this->players.at(2)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
+        }
+        if (turn == 4) {
+            for (Territory* territory : this->players.at(1)->getTerritories()) {
+                territory->setOwner(this->players.at(0));
+                this->players.at(0)->addTerritory(territory);
+            }
+            this->players.at(1)->setTerritories({});
+            cout << "All " << this->players.at(1)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
+        }
+        //
+        // Game loop continues here.
+
         if (this->currentState == executeOrders) {
             executeOrdersPhase();
         }
@@ -886,10 +892,11 @@ void GameEngine::mainGameLoop() {
     // Re-start the game if command is replay
     if (command->getCommand() == "replay") {
         this->currentState = start;
+        this->startupPhase();
     }
 }
 
-void GameEngine::updatePlayersOpponentLists() {
+void GameEngine::updatePlayersAllyAndOpponentLists() {
     for (Player* player : this->players) {
         // Create opponentPlayerList for each player which is the list of all players minus that player
         vector<Player*> opponentPlayerList = this->players;
@@ -901,6 +908,7 @@ void GameEngine::updatePlayersOpponentLists() {
 
         // Set allyPlayerList to empty since the turn is over, and reset the opponentPlayerList
         player->setOpponentPlayerList(opponentPlayerList);
+        player->setAllyPlayerList({});
     }
 }
 

@@ -93,7 +93,7 @@ public:
     void setLatestCommand(Command* latestCommand);
     void setDeck(Deck* deck);
 
-    void updatePlayersOpponentLists();
+    void updatePlayersAllyAndOpponentLists();
     vector<int> checkAndEliminatePlayers();
 
     string stringToLog();

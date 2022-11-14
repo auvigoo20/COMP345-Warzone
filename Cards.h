@@ -15,6 +15,7 @@ public:
     void addCard(Card* card);
     void removeCard(int index);
     void draw(Hand* hand);            // Deck needs the Hand List of the player to add the draw card
+    vector<Card*> getDeck();
     ostream& printDeck(ostream& output);
     Deck& operator = (const Deck& d);
     ~Deck();

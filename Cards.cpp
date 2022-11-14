@@ -21,7 +21,6 @@ Deck::Deck(const Deck& d){
 
 void Deck::addCard(Card* card) {
     deckList.push_back(card);
-
 }
 
 /**
@@ -47,6 +46,10 @@ void Deck::draw(Hand* hand) {
     Card* cardDraw = deckList[index];
     removeCard(index);
     hand->addCard(cardDraw);
+}
+
+vector<Card*> Deck::getDeck() {
+    return this->deckList;
 }
 
 ostream& Deck::printDeck(std::ostream &output) {
@@ -130,8 +133,8 @@ void Hand::removeCard(int index) {
  */
 
 void Hand::playCard(int index){
-    Card* card = handList[index];
-    removeCard(index);               //remove card from hand player
+    Card* card = handList.at(index);
+    removeCard(index);              //remove card from hand player
     deckList->addCard(card);        // add card to deck
 }
 
