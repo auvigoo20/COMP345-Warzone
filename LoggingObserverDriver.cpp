@@ -8,7 +8,10 @@ void testLoggingObserver(){
 
     LogObserver* logObserver = new LogObserver();
 
+    //***************************************
     // TESTING COMMAND AND COMMAND PROCESSOR
+    //***************************************
+
     GameEngine* gameEngine = new GameEngine();
     CommandProcessor* commandProcessor = new CommandProcessor(gameEngine);
     commandProcessor->attach(logObserver);
@@ -23,16 +26,21 @@ void testLoggingObserver(){
     gameEngine = nullptr;
     commandProcessor = nullptr;
 
-    // TESTING CHANGE OF STATE
+    //***************************************
+    // TESTING CHANGE OF STATE OF GAME ENGINE
+    //***************************************
 
     GameEngine* ge = new GameEngine();
     ge->attach(logObserver);
-    ge->setCurrentState(ge->start);
-    ge->setCurrentState(ge->mapLoaded);
+    ge->transition(ge->start);
+    ge->transition(ge->mapLoaded);
     delete ge;
     ge = nullptr;
 
+    //***************************************
     // TESTING ORDERS LIST AND ORDERS
+    //***************************************
+
     // Creating needed objects
     Hand* hand = new Hand();
     OrdersList* ordersList = new OrdersList();

@@ -86,7 +86,7 @@ public:
     Command* getLatestCommand();
     Deck* getDeck();
 
-    void setCurrentState(State* currentState);
+    void transition(State* currentState);
     void setPlayers(vector<Player*> players);
     void setMap(Map* map);
     void setCommandProcessor(CommandProcessor* commandProcessor);

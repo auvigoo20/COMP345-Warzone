@@ -35,7 +35,7 @@ int testGameStates(){
                     done = true;
                     break;
                 }
-                testGameEngine.setCurrentState(testGameEngine.getCurrentState()->getTransitions().at(i)->getTo());
+                testGameEngine.transition(testGameEngine.getCurrentState()->getTransitions().at(i)->getTo());
                 cout << testGameEngine << endl;
                 invalidCommand = false;
                 break;
