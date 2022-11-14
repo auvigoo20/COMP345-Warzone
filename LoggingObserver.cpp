@@ -7,11 +7,21 @@
 using std::string;
 using std::list;
 using std::ios;
+using std::endl;
 
+ILoggable::~ILoggable() {}
+
+ostream& operator<<(ostream &strm, const ILoggable &il){
+    return strm << "ILoggable" << endl;
+}
 
 Observer::Observer() {}
 
 Observer::~Observer() {}
+
+ostream& operator<<(ostream &strm, const Observer &o){
+    return strm << "Observer" << endl;
+}
 
 Subject::Subject() {
     observers = new list<Observer*>;
@@ -20,6 +30,15 @@ Subject::Subject() {
 Subject::~Subject() {
     delete observers;
     observers = nullptr;
+}
+
+Subject::Subject(const Subject &s) {
+    this->observers = s.observers;
+}
+
+Subject &Subject::operator=(const Subject &s) {
+    this->observers = s.observers;
+    return *this;
 }
 
 void Subject::attach(Observer *o) {
@@ -37,6 +56,12 @@ void Subject::notify(ILoggable *il) {
     }
 }
 
+ostream& operator<<(ostream &strm, const Subject &s){
+    return strm << "Number of observers attached to this subject: " << s.observers->size() << endl;
+}
+
+LogObserver::LogObserver() {}
+
 void LogObserver::update(ILoggable* il) {
     const string logfile = "../gamelog.txt";
     string s = il->stringToLog();
@@ -50,7 +75,8 @@ void LogObserver::update(ILoggable* il) {
     else{
         std::cout << "ERROR: gamelog.txt cannot be opened." << std::endl;
     }
+}
 
-
-
+ostream& operator<<(ostream &strm, const LogObserver &lo){
+    return strm << "LogObserver" << endl;
 }
