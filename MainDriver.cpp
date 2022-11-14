@@ -9,10 +9,10 @@
 
 int main(int argc, char** argv){
     if(argc == 1){
-//        testCommandProcessor();
+        testCommandProcessor();
 //        testStartupPhase();
 //        testOrderExecution();
-        testMainGameLoop();
+//        testMainGameLoop();
 //        testLoggingObserver();
     }
     else{

@@ -317,7 +317,7 @@ Deck *GameEngine::getDeck() {
  * Setter for the "currentState" variable
  * @param currentState
  */
-void GameEngine::setCurrentState(State *currentState) {
+void GameEngine::transition(State *currentState) {
     this->currentState = currentState;
     notify(this);
 }
@@ -477,7 +477,7 @@ void GameEngine::startupPhase() {
                     cout << *this->map;
                     cout << "************** Map Loaded **************" << endl;
                     if (stateName == "start") {
-                        this->setCurrentState(mapLoaded);
+                        this->transition(mapLoaded);
                         currentCommand->saveEffect("loadmap command executed. Map file was loaded. "
                                                    "State has changed from start to map loaded.");
                     }
@@ -495,7 +495,7 @@ void GameEngine::startupPhase() {
             else if (currentCommand->getCommand() == "validatemap" && stateName == "map loaded") {
                 // If the map that has been loaded is valid, we change state to map validated
                 if (this->map->validate()) {
-                    this->setCurrentState(mapValidated);
+                    this->transition(mapValidated);
                     currentCommand->saveEffect("validatemap command executed. Map is Valid. State has changed "
                                                "from map loaded to map validated.");
                 }
@@ -520,7 +520,7 @@ void GameEngine::startupPhase() {
                     players.push_back(player);
 
                     if (stateName == "map validated") {
-                        this->setCurrentState(playersAdded);
+                        this->transition(playersAdded);
                         currentCommand->saveEffect("addplayer command executed. Player object created. State "
                                                    "has changed from map validated to players added.");
                     }
@@ -662,7 +662,7 @@ void GameEngine::reinforcementPhase() {
 
         player->addReinforcements(numReinforcementTroops);
     }
-    this->setCurrentState(issueOrders);
+    this->transition(issueOrders);
 }
 
 void GameEngine::issueOrdersPhase() {
@@ -678,7 +678,7 @@ void GameEngine::issueOrdersPhase() {
         cout << "Done issuing orders for " << player->getName() << ". " << *player << endl;
     }
 
-    this->setCurrentState(executeOrders);
+    this->transition(executeOrders);
 }
 
 void GameEngine::executeOrdersPhase() {
@@ -808,9 +808,9 @@ void GameEngine::executeOrdersPhase() {
         this->updatePlayersAllyAndOpponentLists();
 
         // Move to the assign reinforcement phase
-        this->setCurrentState(assignReinforcement);
+        this->transition(assignReinforcement);
     } else {
-        this->setCurrentState(win);
+        this->transition(win);
     }
 }
 
@@ -891,7 +891,7 @@ void GameEngine::mainGameLoop() {
 
     // Re-start the game if command is replay
     if (command->getCommand() == "replay") {
-        this->setCurrentState(start);
+        this->transition(start);
         command->saveEffect("Replay command executed. Game engine is now in start state.");
         this->startupPhase();
     }
