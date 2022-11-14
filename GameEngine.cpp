@@ -646,11 +646,9 @@ void GameEngine::reinforcementPhase() {
             bool ownsAllTerritories = true;
             for (Territory* territory : this->map->getAllTerritoriesByContinent(continent)) {
                 // if any territory in continent is not in player's owned territories
-                for (int i=0; i<player->getTerritories().size(); i++) {
-                    if (territory == player->getTerritories().at(i)) {
-                        ownsAllTerritories = false;
-                        break;
-                    }
+                if (territory->getOwner() != player) {
+                    ownsAllTerritories = false;
+                    break;
                 }
             }
             // Give bonus troops
