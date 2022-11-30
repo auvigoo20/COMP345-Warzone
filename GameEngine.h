@@ -71,6 +71,13 @@ private:
     void reinforcementPhase();
     void issueOrdersPhase();
     void executeOrdersPhase();
+
+    //TOURNAMENT FIELDS
+    vector<string> tournamentMapFiles;
+    vector<string> tournamentPlayerStrategies;
+    int tournamentNumOfGames;
+    int tournamentMaxNumOfTurns;
+
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
@@ -98,11 +105,18 @@ public:
 
     string stringToLog();
 
-    // Startup Phase method
     void startupPhase();
-
-    // Main game loop
     void mainGameLoop();
+
+    //TOURNAMENT METHODS
+    vector<string> getTournamentMapFiles();
+    void addTournamentMapFile(string filename);
+    vector<string> getTournamentPlayerStrategies();
+    void addTournamentPlayerStrategy(string strategy);
+    int getTournamentNumOfGames();
+    void setTournamentNumOfGames(int numOfGames);
+    int getTournamentMaxNumOfTurns();
+    void setTournamentMaxNumOfTurns(int numOfTurns);
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.
@@ -126,4 +140,5 @@ public:
     static Transition* winTransition;
     static Transition* quitTransition;
     static Transition* replayTransition;
+    static Transition* tournamentTransition;
 };

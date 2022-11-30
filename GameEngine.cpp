@@ -418,13 +418,14 @@ Transition* GameEngine::winTransition = new Transition("win", GameEngine::win);
 Transition* GameEngine::replayTransition = new Transition("replay", GameEngine::start);
 // The 'end' Transition effectively finishes the GameEngine flow; thus it does not point to any other state.
 Transition* GameEngine::quitTransition = new Transition("quit", nullptr);
+Transition* GameEngine::tournamentTransition = new Transition("tournament", GameEngine::win);
 
 /**
  * Initializes the states by providing them with the vector of possible transitions away from these states.
  * This is static because it handles the "fixed" possible transitions away from any current state.
  */
 void GameEngine::initializeEngineStates() {
-    start->setTransitions({loadmapTransition});
+    start->setTransitions({loadmapTransition, tournamentTransition});
     mapLoaded->setTransitions({loadmapTransition, validatemapTransition});
     mapValidated->setTransitions({addplayerTransition});
     playersAdded->setTransitions({addplayerTransition, gamestartTransition});
@@ -943,4 +944,38 @@ vector<int> GameEngine::checkAndEliminatePlayers() {
     } else {
         return numEliminated;
     }
+}
+//******************
+//TOURNAMENT METHODS
+//******************
+vector<string> GameEngine::getTournamentMapFiles() {
+    return tournamentMapFiles;
+}
+
+void GameEngine::addTournamentMapFile(std::string filename) {
+    tournamentMapFiles.push_back(filename);
+}
+
+vector<string> GameEngine::getTournamentPlayerStrategies() {
+    return tournamentPlayerStrategies;
+}
+
+void GameEngine::addTournamentPlayerStrategy(std::string strategy) {
+    tournamentPlayerStrategies.push_back(strategy);
+}
+
+int GameEngine::getTournamentNumOfGames() {
+    return tournamentNumOfGames;
+}
+
+void GameEngine::setTournamentNumOfGames(int numOfGames) {
+    tournamentNumOfGames = numOfGames;
+}
+
+int GameEngine::getTournamentMaxNumOfTurns() {
+    return tournamentMaxNumOfTurns;
+}
+
+void GameEngine::setTournamentMaxNumOfTurns(int numOfTurns) {
+    tournamentMaxNumOfTurns = numOfTurns;
 }
