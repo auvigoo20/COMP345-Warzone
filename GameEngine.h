@@ -78,6 +78,7 @@ private:
     int tournamentNumOfGames;
     int tournamentMaxNumOfTurns;
 
+
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
@@ -111,8 +112,10 @@ public:
     //TOURNAMENT METHODS
     vector<string> getTournamentMapFiles();
     void addTournamentMapFile(string filename);
+    void setTournamentMapFiles(vector<string> tournamentMapFiles);
     vector<string> getTournamentPlayerStrategies();
     void addTournamentPlayerStrategy(string strategy);
+    void setTournamentPlayerStrategies(vector<string> tournamentPlayerStrategies);
     int getTournamentNumOfGames();
     void setTournamentNumOfGames(int numOfGames);
     int getTournamentMaxNumOfTurns();

@@ -956,12 +956,20 @@ void GameEngine::addTournamentMapFile(std::string filename) {
     tournamentMapFiles.push_back(filename);
 }
 
+void GameEngine::setTournamentMapFiles(vector<std::string> tournamentMapFiles) {
+    this->tournamentMapFiles.swap(tournamentMapFiles);
+}
+
 vector<string> GameEngine::getTournamentPlayerStrategies() {
     return tournamentPlayerStrategies;
 }
 
 void GameEngine::addTournamentPlayerStrategy(std::string strategy) {
     tournamentPlayerStrategies.push_back(strategy);
+}
+
+void GameEngine::setTournamentPlayerStrategies(vector<std::string> tournamentPlayerStrategies) {
+    this->tournamentPlayerStrategies.swap(tournamentPlayerStrategies);
 }
 
 int GameEngine::getTournamentNumOfGames() {
