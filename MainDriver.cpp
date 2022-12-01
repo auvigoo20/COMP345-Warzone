@@ -5,15 +5,17 @@
 #include "CardsDriver.h"
 #include "CommandProcessingDriver.h"
 #include "LoggingObserverDriver.h"
+#include "TournamentDriver.h"
 #include <string>
 
 int main(int argc, char** argv){
     if(argc == 1){
-        testCommandProcessor();
-        testStartupPhase();
-        testOrderExecution();
-        testMainGameLoop();
-        testLoggingObserver();
+//        testCommandProcessor();
+//        testStartupPhase();
+//        testOrderExecution();
+//        testMainGameLoop();
+//        testLoggingObserver();
+testTournament();
     }
     else{
         if(string(argv[1]) == "-console"){
