@@ -14,7 +14,7 @@ class Order: public Subject, public ILoggable
 public:
     virtual ostream& printOrder(ostream& output) const = 0;
     virtual bool validate() const = 0;
-    virtual void execute()  = 0;
+    virtual void execute() = 0;
     virtual Order* copy() const = 0;
     virtual ~Order() = default;
 
