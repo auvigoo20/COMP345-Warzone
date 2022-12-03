@@ -6,6 +6,7 @@
 #include "Cards.h"
 #include "Map.h"
 #include "Orders.h"
+#include "PlayerStrategies.h"
 
 using namespace std;
 
@@ -27,6 +28,7 @@ public:
     bool getEntitledToCard();
     vector<Player*> getAllyPlayerList();
     vector<Player*> getOpponentPlayerList();
+    PlayerStrategy* getPlayerStrategy();
 
     void setTerritories(vector<Territory*> territories);
     void setHand(Hand* hand);
@@ -36,6 +38,7 @@ public:
     void setEntitledToCard(bool entitledToCard);
     void setAllyPlayerList(vector<Player*> allyPlayerList);
     void setOpponentPlayerList(vector<Player*> opponentPlayerList);
+    void setPlayerStrategy(PlayerStrategy* ps);
 
     void addTerritory(Territory* t);
     void removeTerritory(Territory* t);
@@ -58,4 +61,5 @@ private:
     vector<Player*> allyPlayerList;
     vector<Player*> opponentPlayerList;
     bool entitledToCard;
+    PlayerStrategy* strategy;
 };

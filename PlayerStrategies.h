@@ -3,11 +3,12 @@
 #include "Map.h"
 #include "Player.h"
 
-class PlayerStrategies{
+class PlayerStrategy{
 public:
     virtual vector<Territory*> toAttack() = 0;
     virtual vector<Territory*> toDefend() = 0;
     virtual bool issueOrder(bool isDeployPhase) = 0;
+    virtual ~PlayerStrategy() = 0;
 
 private:
     Player* player;
@@ -22,12 +23,12 @@ private:
 
 };
 
-class NeutralPlayerStrategy: public PlayerStrategies {
+class NeutralPlayerStrategy: public PlayerStrategy {
 public:
     NeutralPlayerStrategy();
     NeutralPlayerStrategy(Player* player);
     NeutralPlayerStrategy(const NeutralPlayerStrategy& s);
-    ~NeutralPlayerStrategy();
+    ~NeutralPlayerStrategy() override;
 
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
@@ -43,12 +44,12 @@ private:
 };
 
 
-class AggressivePlayerStrategy: public PlayerStrategies {
+class AggressivePlayerStrategy: public PlayerStrategy {
 public:
     AggressivePlayerStrategy();
     AggressivePlayerStrategy(Player* player);
     AggressivePlayerStrategy(const AggressivePlayerStrategy& s);
-    ~AggressivePlayerStrategy();
+    ~AggressivePlayerStrategy() override;
 
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
@@ -63,12 +64,12 @@ private:
     Player* player;
 };
 
-class BenevolentPlayerStrategy: public PlayerStrategies {
+class BenevolentPlayerStrategy: public PlayerStrategy {
 public:
     BenevolentPlayerStrategy();
     BenevolentPlayerStrategy(Player* player);
     BenevolentPlayerStrategy(const BenevolentPlayerStrategy& s);
-    ~BenevolentPlayerStrategy();
+    ~BenevolentPlayerStrategy() override;
 
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
@@ -83,12 +84,12 @@ private:
     Player* player;
 };
 
-class HumanPlayerStrategy: public PlayerStrategies {
+class HumanPlayerStrategy: public PlayerStrategy {
 public:
     HumanPlayerStrategy();
     HumanPlayerStrategy(Player* player);
     HumanPlayerStrategy(const HumanPlayerStrategy& s);
-    ~HumanPlayerStrategy();
+    ~HumanPlayerStrategy() override;
 
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
@@ -116,12 +117,12 @@ private:
     friend ostream& operator<<(ostream& output, HumanPlayerStrategy& s);
 };
 
-class CheaterPlayerStrategy: public PlayerStrategies {
+class CheaterPlayerStrategy: public PlayerStrategy {
 public:
     CheaterPlayerStrategy();
     CheaterPlayerStrategy(Player* player);
     CheaterPlayerStrategy(const CheaterPlayerStrategy& s);
-    ~CheaterPlayerStrategy();
+    ~CheaterPlayerStrategy() override;
 
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
