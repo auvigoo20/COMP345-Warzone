@@ -819,12 +819,14 @@ void GameEngine::executeOrdersPhase() {
     }
 }
 
-void GameEngine::mainGameLoop() {
+void GameEngine::mainGameLoop(int maxTurns, bool tournamentMode) {
     cout << "****************************************" << endl;
     cout << "*      Initiating Main Game Loop       *" << endl;
     cout << "****************************************" << endl;
 
     turn = 1;
+
+    bool checkMaxTurns = (maxTurns > 0);
 
     while(true) {
         cout << endl << "********** Turn " << turn << " **********" << endl;
@@ -869,9 +871,20 @@ void GameEngine::mainGameLoop() {
             executeOrdersPhase();
         }
         if (this->currentState == win) {
+            winningPlayer = this->players.front();
+            break;
+        }
+        if (checkMaxTurns && turn == maxTurns) {
+            // Here, the win state is being used to signal that a game ended successfully, albeit on a draw.
+            this->transition(win);
+            winningPlayer = nullptr;
             break;
         }
         turn++;
+    }
+
+    if (tournamentMode) {
+        return;
     }
 
     // Get the command from the console on game win
@@ -879,8 +892,11 @@ void GameEngine::mainGameLoop() {
     while(true) {
         command = this->commandProcessor->getCommand();
         if (commandProcessor->validate(command)) {
-            Player* winningPlayer = this->players.front();
-            command->saveEffect("player" + winningPlayer->getName() + " has won");
+            if (winningPlayer == nullptr) {
+                command->saveEffect("game ended in a draw");
+            } else {
+                command->saveEffect("player" + winningPlayer->getName() + " has won");
+            }
 
             // Clean up memory on game end
             delete winningPlayer;

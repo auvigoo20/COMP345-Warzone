@@ -62,6 +62,7 @@ private:
     Map* map;
     CommandProcessor* commandProcessor;
     int turn;
+    Player* winningPlayer;
 
     Command* latestCommand;
     Deck* deck;
@@ -108,7 +109,7 @@ public:
 
     void prepareGame();
     void startupPhase();
-    void mainGameLoop();
+    void mainGameLoop(int maxTurns, bool tournamentMode);
 
     //TOURNAMENT METHODS
     vector<string> getTournamentMapFiles();
