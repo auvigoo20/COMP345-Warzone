@@ -11,6 +11,15 @@ public:
 
 private:
     Player* player;
+
+    virtual bool issueDeployOrder() = 0;
+    virtual void issueAdvanceOrder() = 0;
+    virtual void issueAirliftOrder() = 0;
+    virtual void issueBombOrder() = 0;
+    virtual void issueBlockadeOrder() = 0;
+    virtual void issueNegotiateOrder()  = 0;
+    virtual void issueReinforcementOrder() = 0;
+
 };
 
 class NeutralPlayerStrategy: public PlayerStrategies {
@@ -92,8 +101,13 @@ public:
 private:
     Player* player;
 
-    bool issueDeployOrder();
-    void issueAdvanceOrder();
+    bool issueDeployOrder() override;
+    void issueAdvanceOrder() override;
+    void issueAirliftOrder() override;
+    void issueBombOrder() override;
+    void issueBlockadeOrder() override;
+    void issueNegotiateOrder() override;
+    void issueReinforcementOrder() override;
     void getAvailableOptions();
     void getHelp();
     bool validateChoice(const string& choice);

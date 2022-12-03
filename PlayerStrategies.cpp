@@ -115,23 +115,23 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
                 return false;
             }
             else if (choice == "airlift") {
-
+                issueAirliftOrder();
                 return false;
             }
             else if (choice == "bomb") {
-
+                issueBombOrder();
                 return false;
             }
             else if (choice == "blockade") {
-
+                issueBlockadeOrder();
                 return false;
             }
             else if (choice == "negotiate") {
-
+                issueNegotiateOrder();
                 return false;
             }
             else if (choice == "reinforcement") {
-
+                issueReinforcementOrder();
                 return false;
             }
             else if (choice == "-l") {
@@ -187,7 +187,7 @@ bool HumanPlayerStrategy::issueDeployOrder()
     Deploy *deployOrder = new Deploy(player, numArmies, targetTer);
     player->getOrdersList()->addOrder(deployOrder);
     player->setReinforcementPool(this->player->getReinforcementPool() - numArmies);
-    cout << "Deploy order issued for player " << player->getName() << ". ";
+    cout << "Deploy order issued for player " << player->getName() << ".\n";
     cout  << numArmies << "to be deployed on " << targetTer->getName() << "." << endl;
 
     //Verify if other deploy orders can be issued. If not return false.
@@ -254,10 +254,72 @@ void HumanPlayerStrategy::issueAdvanceOrder()
         // Create Order
         Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
         player->getOrdersList()->addOrder(advanceOrder);
-        cout << "Advance order issued for player " << player->getName() << ". ";
-        cout << numArmies << " advanced from " << sourceTer->getName() << " to ";
+        cout << "Advance order issued for player " << player->getName() << ".\n";
+        cout << numArmies << " to be advanced from " << sourceTer->getName() << " to ";
         cout << targetTer->getName() << "." << endl;
     }
+}
+
+/**
+ * Function that interacts with human to play an
+ * airlift card.
+ */
+void HumanPlayerStrategy::issueAirliftOrder()
+{
+    cout << " --- Airlift Order --- " << endl;
+    int index = 0;
+    AirliftCard* currentCard;
+    for(Card* card: *player->getHand()->getHandList()) {
+       if(card->getCardType() == "airlift") {
+           currentCard = dynamic_cast<AirliftCard*>(card);
+           break;
+       }
+       index++;
+    }
+    //Airlift order (to owned territory)
+    //Print owned territories for the player to see and make a decision.
+    vector<Territory*> territoryList = toDefend();
+    cout << " --- Source territory selection ---" << endl;
+    printTerritoryVector(territoryList);
+    Territory *sourceTer = chooseTerritory(territoryList);
+    int numArmies = chooseNumArmies(sourceTer);
+    cout << " --- Target territory selection ---" << endl;
+    Territory *targetTer = chooseTerritory(territoryList);
+
+    // Remove the card from the handlist and add it back to the decklist
+    player->getHand()->playCard(index);
+    //Plays the card and issues the order.
+    currentCard->play(player, numArmies, sourceTer, targetTer);
+    cout << "Airlift order issued for player " << player->getName() << ".\n";
+    cout << numArmies << " to be airlifted from " << sourceTer->getName() << " to ";
+    cout << targetTer->getName() << "." << endl;
+}
+
+void HumanPlayerStrategy::issueBombOrder()
+{
+    cout << " --- Bomb Order --- " << endl;
+    int index = 0;
+    BombCard* currentCard;
+    for(Card* card: *player->getHand()->getHandList()) {
+        if(card->getCardType() == "bomb") {
+            currentCard = dynamic_cast<BombCard*>(card);
+            break;
+        }
+        index++;
+    }
+    //Bomb order
+    //Print to attack territories for the player to see and make a decision.
+    vector<Territory*> territoryList = toAttack();
+    cout << " --- Target territory selection ---" << endl;
+    Territory *targetTer = chooseTerritory(territoryList);
+
+    // Remove the card from the handlist and add it back to the decklist
+    player->getHand()->playCard(index);
+    //Plays the card and issues the order.
+    currentCard->play(player, targetTer);
+    cout << "Bomb order issued for player " << player->getName() << ".\n";
+    cout << "Bomb to be thrown at enemy territory " << targetTer->getName();
+    cout << " owned by " << targetTer->getOwner()->getName() << "." << endl;
 }
 
 /**

@@ -277,7 +277,6 @@ DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
 void BombCard::play(Player* owner, Territory* targetTerritory) {
     Bomb* bomb = new Bomb(owner, targetTerritory);
     owner->getOrdersList()->addOrder(bomb);
-    cout << "output bomb card" << endl;
 }
 
 ostream& BombCard::printCard(std::ostream &output) const {
@@ -305,7 +304,6 @@ string BombCard::getCardType()
  }
 
 void ReinforcementCard::play(Player* owner) {  // Reinforcement Card does not create an order
-    cout << "output reinforcement card" << endl;
 }
 
 ostream& ReinforcementCard::printCard(std::ostream &output) const {
@@ -336,7 +334,6 @@ ReinforcementCard::~ReinforcementCard()
 void BlockadeCard::play(Player* owner, Territory* targetTerritory) {
     Blockade* blockade = new Blockade(owner, targetTerritory);
     owner->getOrdersList()->addOrder(blockade);
-    cout << "output blockade card" << endl;
 }
 
 ostream& BlockadeCard::printCard(std::ostream &output) const {
@@ -366,7 +363,6 @@ BlockadeCard::~BlockadeCard()
 void AirliftCard::play(Player* owner, int numOfUnits, Territory* sourceTerritory, Territory* targetTerritory) {
     Airlift* airlift = new Airlift(owner, numOfUnits, sourceTerritory, targetTerritory);
     owner->getOrdersList()->addOrder(airlift);
-    cout << "output airlift card" << endl;
 }
 
 ostream& AirliftCard::printCard(std::ostream &output) const {
@@ -396,7 +392,6 @@ AirliftCard::~AirliftCard()
 void DiplomacyCard::play(Player* owner, Player* targetPlayer) {
     Negotiate* negotiate = new Negotiate(owner, targetPlayer);
     owner->getOrdersList()->addOrder(negotiate);
-    cout << "output diplomacy card" << endl;
 }
 
 ostream& DiplomacyCard::printCard(std::ostream &output) const {
