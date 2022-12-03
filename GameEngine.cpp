@@ -1069,4 +1069,35 @@ void GameEngine::runTournament() {
         }
         tournamentResults.push_back(mapResults);
     }
+
+    // Print results
+    // TODO: Change this to logs later
+    cout << "Map: ";
+    for (int i=1; i<=getTournamentNumOfGames(); i++) {
+        cout << "Game " << i << " ";
+    }
+    cout << endl;
+
+    for (int i=0; i< getTournamentMapFiles().size(); i++) {
+        cout << getTournamentMapFiles()[i] << ": ";
+
+        // Size will be 0 if the map was skipped
+        if (tournamentResults[i].size() == 0) {
+            cout << "---MAP SKIPPED---";
+        }
+
+        // Otherwise print out the results
+        else {
+            for (int j=0; j<getTournamentNumOfGames(); j++) {
+                Player* gameWinner = tournamentResults[i][j];
+                if (gameWinner == nullptr) {
+                    cout << "DRAW ";
+                }
+                else {
+                    cout << tournamentResults[i][j] << " ";
+                }
+            }
+        }
+        cout << endl;
+    }
 }
