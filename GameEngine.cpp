@@ -245,14 +245,16 @@ GameEngine::GameEngine(State *startingState) {
 }
 
 GameEngine::~GameEngine(){
-    delete deck;
-    deck = nullptr;
-    delete map;
-    map = nullptr;
     for (auto p : players){
         delete p;
         p = nullptr;
     }
+    // Tournament players not cleaned up here as they are cleaned in runTournament()
+
+    delete map;
+    map = nullptr;
+    delete deck;
+    deck = nullptr;
 }
 
 GameEngine::GameEngine(State *startingState, vector<Player *> players, Map *map) {
@@ -865,6 +867,7 @@ void GameEngine::mainGameLoop(int maxTurns, bool tournamentMode) {
             // Here, the win state is being used to signal that a game ended successfully, albeit on a draw.
             this->transition(win);
             winningPlayer = nullptr;
+
             break;
         }
         turn++;
@@ -873,23 +876,13 @@ void GameEngine::mainGameLoop(int maxTurns, bool tournamentMode) {
     // Clean up after the game
     vector<Player*> playersToCleanUp = tournamentMode ? tournamentPlayers : players;
     for (Player* player : playersToCleanUp) {
-        for (Territory* territory : player->getTerritories()) {
-            delete territory;
-        }
         player->setTerritories({});
-        delete player->getHand();
+//        delete player->getHand();
         while(player->getOrdersList()->getSize() > 0) {
             player->getOrdersList()->removeOrder(0);
         }
         player->setReinforcementPool(0);
         player->setEntitledToCard(false);
-    }
-
-    // Clean up memory on game end
-    // Don't delete the winning player if this is a tournament, though.
-    if (!tournamentMode) {
-        delete winningPlayer;
-        winningPlayer = nullptr;
     }
     delete this->map;
     map = nullptr;
@@ -911,6 +904,15 @@ void GameEngine::mainGameLoop(int maxTurns, bool tournamentMode) {
             }
 
             break;
+        }
+    }
+
+    // Clean up remaining players, if this is not a tournament.
+    if(!tournamentMode) {
+        while(players.size() > 0) {
+            delete players.at(0);
+            players.at(0) = nullptr;
+            players.erase(players.begin());
         }
     }
 
@@ -1086,13 +1088,13 @@ void GameEngine::runTournament() {
 
     // Print results
     // TODO: Change this to logs later
-    cout << "Map: ";
+    cout << "Map | ";
     for (int i=1; i<=getTournamentNumOfGames(); i++) {
-        cout << "Game " << i << " ";
+        cout << "Game " << i << " | ";
     }
     cout << endl;
     for (int i=0; i< getTournamentMapFiles().size(); i++) {
-        cout << getTournamentMapFiles().at(i) << ": ";
+        cout << getTournamentMapFiles().at(i) << " | ";
 
         // Size will be 0 if the map was skipped
         if (tournamentResults.at(i).size() == 0) {
@@ -1107,15 +1109,20 @@ void GameEngine::runTournament() {
                     cout << "DRAW ";
                 }
                 else {
-                    cout << tournamentResults.at(i).at(j) << " ";
+                    cout << gameWinner->getName() << " | ";
                 }
             }
         }
         cout << endl;
     }
 
-    for (auto i : tournamentPlayers) {
-        delete i;
-        i = nullptr;
+    // Memory clean up for players
+    for (auto p : tournamentPlayers) {
+        delete p;
+        p = nullptr;
     }
+    vector<Player*>().swap(tournamentPlayers);
+
+    // Not a memory leak as players use the same objects as tournamentPlayers which was cleaned above
+    vector<Player*>().swap(players);
 }
