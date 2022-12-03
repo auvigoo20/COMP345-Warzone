@@ -43,7 +43,7 @@ public:
 
     vector<Territory*> toAttack();
     vector<Territory*> toDefend();
-    void issueOrder();
+    bool issueOrder(bool isDeployPhase);
     void addReinforcements(int reinforcements);
     bool isAdjacentTerritory(Territory* targetTerritory);
     bool isAlly(Player* targetPlayer);

@@ -671,9 +671,18 @@ void GameEngine::issueOrdersPhase() {
     // signified that they are done issuing orders.
     // This includes the neutral player (who for now is treated/behaves like any other player)
     for (Player* player : this->players) {
+        bool endPhase = false;
         cout << "Player issuing order: " << player->getName() << "..." << endl;
-        player->issueOrder();
-        cout << "Done issuing orders for " << player->getName() << ". " << *player << endl;
+        while(!endPhase) {
+            // Deploy phase
+           endPhase = player->issueOrder(true);
+        }
+        endPhase = false;
+        while(!endPhase) {
+            // Other orders' phase
+            endPhase = player->issueOrder(false);
+        }
+        cout << "Orders issued for " << player->getName() << ". " << *player << endl;
     }
 
     this->transition(executeOrders);

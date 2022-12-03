@@ -254,7 +254,7 @@ vector<Territory*> Player::toDefend(){    //defend method
  * Create an order, and add it to the player's OrderList
  * @param orderID
  */
-void Player::issueOrder(){
+bool Player::issueOrder(bool isDeployPhase){
     cout << "Issuing deploy orders for " << this->getName() << " (" << this->getReinforcementPool() << " available troops, " << this->getTerritories().size() << " available territories)" << endl;
 
     // Deploy orders

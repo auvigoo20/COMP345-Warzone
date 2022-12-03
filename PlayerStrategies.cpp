@@ -97,6 +97,7 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
 {
     if(isDeployPhase) {
         // Deploy phase
+        // returns true when reinforcement pool == 0 (endPhase)
         return issueDeployOrder();
     } else {
         // Reaches this line if deploy phase is done.
@@ -111,27 +112,27 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
             }
             else if (choice == "advance"){
                 issueAdvanceOrder();
-                return true;
+                return false;
             }
             else if (choice == "airlift") {
 
-                return true;
+                return false;
             }
             else if (choice == "bomb") {
 
-                return true;
+                return false;
             }
             else if (choice == "blockade") {
 
-                return true;
+                return false;
             }
             else if (choice == "negotiate") {
 
-                return true;
+                return false;
             }
             else if (choice == "reinforcement") {
 
-                return true;
+                return false;
             }
             else if (choice == "-l") {
                 //Print the options for the user
@@ -144,8 +145,8 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
                continue;
             }
             else if (choice == "-q") {
-                // Indicates that no more orders are to be issued.
-               return false;
+                // Indicates that no more orders are to be issued (endPhase).
+               return true;
             }
         }
     }
