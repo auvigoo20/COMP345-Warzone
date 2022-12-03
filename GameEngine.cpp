@@ -1039,7 +1039,7 @@ void GameEngine::tournamentStartupPhase(std::string currentMap) {
 
 void GameEngine::runTournament() {
     vector<Player*> tournamentPlayers;
-    vector<vector<int>> tournamentResults;
+    vector<vector<Player*>> tournamentResults;
 
     // WILL NEED TO CHANGE TO USE ACTUAL PLAYER STRATEGIES
     for (string strategy : getTournamentPlayerStrategies()) {
@@ -1050,13 +1050,23 @@ void GameEngine::runTournament() {
 
     // Loop through each map in M and play G games
     for (string currentMap : getTournamentMapFiles()) {
-        vector<int> mapResults;
+        vector<Player*> mapResults;
 
         // Play a game in G
         for (int gameNumber=0; gameNumber < getTournamentNumOfGames(); gameNumber++) {
             tournamentStartupPhase(currentMap);
 
+            // If the current state is not assignReinforcement then the startup phase has failed.
+            // Thus, the game has to be skipped.
+            if(currentState != assignReinforcement) {
+                break;
+            }
+
             // Execute game loop
+            mainGameLoop(getTournamentMaxNumOfTurns(), true);
+
+            mapResults.push_back(winningPlayer);
         }
+        tournamentResults.push_back(mapResults);
     }
 }
