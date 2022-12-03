@@ -5,6 +5,7 @@
 #include "Cards.h"
 
 #include <string>
+#include <iomanip>
 using std::string;
 
 #include <sstream>
@@ -1086,35 +1087,51 @@ void GameEngine::runTournament() {
         tournamentResults.push_back(mapResults);
     }
 
-    // Print results
-    // TODO: Change this to logs later
-    cout << "Map | ";
-    for (int i=1; i<=getTournamentNumOfGames(); i++) {
-        cout << "Game " << i << " | ";
-    }
-    cout << endl;
-    for (int i=0; i< getTournamentMapFiles().size(); i++) {
-        cout << getTournamentMapFiles().at(i) << " | ";
+    // Write results to gamelog.txt
+    const string logfile = "../gamelog.txt";
+    std::ofstream file;
+    // Open the gamelog file in "append" mode
+    file.open(logfile, ios::app);
+    if(file.is_open()){
 
-        // Size will be 0 if the map was skipped
-        if (tournamentResults.at(i).size() == 0) {
-            cout << "---MAP SKIPPED---";
+        file << "***************************************" << endl;
+        file << "*        TOURNAMENT RESULTS           *" << endl;
+        file << "***************************************" << endl;
+
+        file << left << setw(30) << "Map " << " | ";
+        for (int i=1; i<=getTournamentNumOfGames(); i++) {
+            file << left << setw(10) << "Game " + to_string(i) << " | ";
         }
+        file << endl;
+        for (int i=0; i< getTournamentMapFiles().size(); i++) {
+            file << left << setw(30) << getTournamentMapFiles().at(i) << " | ";
 
-        // Otherwise print out the results
-        else {
-            for (int j=0; j<getTournamentNumOfGames(); j++) {
-                Player* gameWinner = tournamentResults.at(i).at(j);
-                if (gameWinner == nullptr) {
-                    cout << "DRAW ";
-                }
-                else {
-                    cout << gameWinner->getName() << " | ";
+            // Size will be 0 if the map was skipped
+            if (tournamentResults.at(i).size() == 0) {
+                file << left << setw(30) << "---MAP SKIPPED---";
+            }
+
+                // Otherwise print out the results
+            else {
+                for (int j=0; j<getTournamentNumOfGames(); j++) {
+                    Player* gameWinner = tournamentResults.at(i).at(j);
+                    if (gameWinner == nullptr) {
+                        file << left << setw(10) << "DRAW ";
+                    }
+                    else {
+                        file << left << setw(10) << gameWinner->getName() << " | ";
+                    }
                 }
             }
+            file << endl;
         }
-        cout << endl;
+        file.close();
     }
+    else{
+        std::cout << "ERROR: gamelog.txt cannot be opened." << std::endl;
+    }
+
+
 
     // Memory clean up for players
     for (auto p : tournamentPlayers) {
