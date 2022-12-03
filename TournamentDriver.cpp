@@ -43,6 +43,9 @@ void testTournament(){
     cout << "Tournament maximum number of turns" << endl;
     cout <<  gameEngine->getTournamentMaxNumOfTurns() << endl;
 
+    cout << "Running tournament..." << endl;
+    gameEngine->runTournament();
+
     delete gameEngine;
     delete commandProcessor;
     gameEngine = nullptr;

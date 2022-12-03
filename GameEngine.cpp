@@ -435,6 +435,72 @@ void GameEngine::initializeEngineStates() {
     win->setTransitions({replayTransition, quitTransition});
 }
 
+void GameEngine::prepareGame() {
+    cout << "******* Players have been created ******" << endl;
+
+    // Resetting each players' ally and opponent lists
+    this->updatePlayersAllyAndOpponentLists();
+
+    // Distributing territories evenly among players
+
+    int territoryCount = this->map->getAllTerritories().size();
+    vector<Territory *> tempTerritories = this->map->getAllTerritories();
+    int currentPlayer;
+
+    for (int i = 0; i < territoryCount; i++) {
+        currentPlayer = i % players.size();
+        tempTerritories[i]->setOwner(players[currentPlayer]);
+        players[currentPlayer]->addTerritory(tempTerritories[i]);
+    }
+
+    cout << endl << "******** Territories Distributed *******" << endl;
+
+    // Randomly generating a new playing order
+
+    srand(time(NULL));
+
+    for (int i = 0; i < (players.size() * 2); i++) {
+        int shuffle = (rand() % players.size());
+        players.emplace_back(players.at(shuffle));
+        players.erase(players.begin() + shuffle, players.begin() + shuffle + 1);
+    }
+
+    cout << endl << "******* Playing Order Determined *******" << endl;
+
+    // Assigning troops to each players' reinforcement pool
+
+    for (int i = 0; i < players.size(); i++) {
+        players[i]->setReinforcementPool(50);
+    }
+
+    cout << endl << "********* Army Units Dispatched ********" << endl;
+
+    // Drawing Cards to each players' hands
+
+    // Creating the Deck
+    for (int i = 0; i < players.size(); i++) {
+        this->deck->addCard(new BombCard);
+        this->deck->addCard(new ReinforcementCard);
+        this->deck->addCard(new BlockadeCard);
+        this->deck->addCard(new AirliftCard);
+        this->deck->addCard(new DiplomacyCard);
+    }
+
+    // Creating hands and drawing cards to them
+    for (int i = 0; i < players.size(); i++) {
+        Player *tempPlayer = players.at(i);
+        Hand *hand = new Hand(tempPlayer, deck);
+        deck->draw(hand);
+        deck->draw(hand);
+        tempPlayer->setHand(hand);
+        tempPlayer = nullptr;
+    }
+
+    cout << endl << "************** Cards Drawn *************" << endl;
+
+    this->transition(assignReinforcement);
+}
+
 void GameEngine::startupPhase() {
     cout << "****************************************" << endl;
     cout << "*       Initiating Startup Phase       *" << endl;
@@ -543,68 +609,8 @@ void GameEngine::startupPhase() {
                                                "not present. No change in state.");
                 } else {
                     done = true;
+                    this->prepareGame();
 
-                    cout << "******* Players have been created ******" << endl;
-
-                    // Resetting each players' ally and opponent lists
-                    this->updatePlayersAllyAndOpponentLists();
-
-                    // Distributing territories evenly among players
-
-                    int territoryCount = this->map->getAllTerritories().size();
-                    vector<Territory *> tempTerritories = this->map->getAllTerritories();
-                    int currentPlayer;
-
-                    for (int i = 0; i < territoryCount; i++) {
-                        currentPlayer = i % players.size();
-                        tempTerritories[i]->setOwner(players[currentPlayer]);
-                        players[currentPlayer]->addTerritory(tempTerritories[i]);
-                    }
-
-                    cout << endl << "******** Territories Distributed *******" << endl;
-
-                    // Randomly generating a new playing order
-
-                    srand(time(NULL));
-
-                    for (int i = 0; i < (players.size() * 2); i++) {
-                        int shuffle = (rand() % players.size());
-                        players.emplace_back(players.at(shuffle));
-                        players.erase(players.begin() + shuffle, players.begin() + shuffle + 1);
-                    }
-
-                    cout << endl << "******* Playing Order Determined *******" << endl;
-
-                    // Assigning troops to each players' reinforcement pool
-
-                    for (int i = 0; i < players.size(); i++) {
-                        players[i]->setReinforcementPool(50);
-                    }
-
-                    cout << endl << "********* Army Units Dispatched ********" << endl;
-
-                    // Drawing Cards to each players' hands
-
-                    // Creating the Deck
-                    for (int i = 0; i < players.size(); i++) {
-                        this->deck->addCard(new BombCard);
-                        this->deck->addCard(new ReinforcementCard);
-                        this->deck->addCard(new BlockadeCard);
-                        this->deck->addCard(new AirliftCard);
-                        this->deck->addCard(new DiplomacyCard);
-                    }
-
-                    // Creating hands and drawing cards to them
-                    for (int i = 0; i < players.size(); i++) {
-                        Player *tempPlayer = players.at(i);
-                        Hand *hand = new Hand(tempPlayer, deck);
-                        deck->draw(hand);
-                        deck->draw(hand);
-                        tempPlayer->setHand(hand);
-                        tempPlayer = nullptr;
-                    }
-
-                    cout << endl << "************** Cards Drawn *************" << endl;
                     currentCommand->saveEffect("gamestart command executed. Territories distributed. "
                                                "Playing Order Determined. Army Units Assigned. Hands Created "
                                                "with 2 Cards from Deck");
@@ -986,4 +992,55 @@ int GameEngine::getTournamentMaxNumOfTurns() {
 
 void GameEngine::setTournamentMaxNumOfTurns(int numOfTurns) {
     tournamentMaxNumOfTurns = numOfTurns;
+}
+
+void GameEngine::tournamentStartupPhase(std::string currentMap) {
+    cout << "************* Starting Game ************" << endl;
+
+    // Receive the command from Console input using the getCommand()
+    MapLoader mapLoader;
+
+    // Loading the map using the MapLoader object and assign the map to the game engine
+    cout << "************ Loading Map... ************" << endl;
+    this->map = mapLoader.readMapFile(currentMap);
+
+    // If map file does not exist, the map has to be skipped.
+    if (this->map == nullptr) {
+        cout <<"WARN: Map " << currentMap << "not found; skipping map." << endl;
+        transition(start);
+        return;
+    }
+
+    // If the map that has been loaded is invalid, the map has to be skipped.
+    if (!this->map->validate()) {
+        cout <<"WARN: Map " << currentMap << "validation unsuccessful; skipping map." << endl;
+        transition(start);
+        return;
+    }
+
+    prepareGame();
+}
+
+void GameEngine::runTournament() {
+    vector<Player*> tournamentPlayers;
+    vector<vector<int>> tournamentResults;
+
+    // WILL NEED TO CHANGE TO USE ACTUAL PLAYER STRATEGIES
+    for (string strategy : getTournamentPlayerStrategies()) {
+        tournamentPlayers.push_back(new Player(strategy));
+    }
+
+    players = tournamentPlayers;
+
+    // Loop through each map in M and play G games
+    for (string currentMap : getTournamentMapFiles()) {
+        vector<int> mapResults;
+
+        // Play a game in G
+        for (int gameNumber=0; gameNumber < getTournamentNumOfGames(); gameNumber++) {
+            tournamentStartupPhase(currentMap);
+
+            // Execute game loop
+        }
+    }
 }

@@ -106,6 +106,7 @@ public:
 
     string stringToLog();
 
+    void prepareGame();
     void startupPhase();
     void mainGameLoop();
 
@@ -120,6 +121,8 @@ public:
     void setTournamentNumOfGames(int numOfGames);
     int getTournamentMaxNumOfTurns();
     void setTournamentMaxNumOfTurns(int numOfTurns);
+    void tournamentStartupPhase(string currentMap);
+    void runTournament();
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.
