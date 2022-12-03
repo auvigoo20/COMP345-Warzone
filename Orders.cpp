@@ -250,7 +250,6 @@ void Deploy::execute()
        cout << "Invalid Order; Deploy not executed." << endl;
     } else {
         this->targetTerritory->setNumOfArmies(this->targetTerritory->getNumOfArmies() + this->numOfArmies);
-        this->currentPlayer->setReinforcementPool(this->currentPlayer->getReinforcementPool() - this->numOfArmies);
         printOrder(cout);
         notify(this);
     }

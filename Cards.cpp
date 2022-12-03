@@ -197,7 +197,9 @@ ostream& operator <<(ostream& output, Card& c){
     return c.printCard(output);
 }
 
-BombCard::BombCard(){
+BombCard::BombCard()
+{
+    cardType = "bomb";
 }
 
 /**
@@ -207,9 +209,11 @@ BombCard::BombCard(){
  */
 BombCard::BombCard(const BombCard& b)
 {
+    cardType = "bomb";
 }
 
 ReinforcementCard::ReinforcementCard() {
+    cardType = "reinforcement";
 }
 
 /**
@@ -219,9 +223,11 @@ ReinforcementCard::ReinforcementCard() {
  */
 ReinforcementCard::ReinforcementCard(const ReinforcementCard& r)
 {
+    cardType = "reinforcement";
 }
 
 BlockadeCard::BlockadeCard() {
+    cardType = "blockade";
 }
 
 /**
@@ -231,9 +237,12 @@ BlockadeCard::BlockadeCard() {
  */
 BlockadeCard::BlockadeCard(const BlockadeCard& r)
 {
+    cardType = "blockade";
 }
 
-AirliftCard::AirliftCard() {
+AirliftCard::AirliftCard()
+{
+    cardType = "airlift";
 }
 
 /**
@@ -243,9 +252,12 @@ AirliftCard::AirliftCard() {
  */
 AirliftCard::AirliftCard(const AirliftCard& a)
 {
+    cardType = "airlift";
 }
 
-DiplomacyCard::DiplomacyCard() {
+DiplomacyCard::DiplomacyCard()
+{
+    cardType = "negotiate";
 }
 
 /**
@@ -255,6 +267,7 @@ DiplomacyCard::DiplomacyCard() {
  */
 DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
 {
+    cardType = "negotiate";
 }
 
 /**
@@ -270,6 +283,11 @@ void BombCard::play(Player* owner, Territory* targetTerritory) {
 ostream& BombCard::printCard(std::ostream &output) const {
     output << " Bomb Card " << endl;
     return output;
+}
+
+string BombCard::getCardType()
+{
+    return cardType;
 }
 
 /**
@@ -305,6 +323,12 @@ ReinforcementCard* ReinforcementCard::copy() const
     return new ReinforcementCard();
 }
 
+
+string ReinforcementCard::getCardType()
+{
+    return cardType;
+}
+
 ReinforcementCard::~ReinforcementCard()
 {
 }
@@ -328,6 +352,11 @@ ostream& BlockadeCard::printCard(std::ostream &output) const {
 BlockadeCard* BlockadeCard::copy() const
 {
     return new BlockadeCard();
+}
+
+string BlockadeCard::getCardType()
+{
+    return cardType;
 }
 
 BlockadeCard::~BlockadeCard()
@@ -355,6 +384,11 @@ AirliftCard* AirliftCard::copy() const
     return new AirliftCard();
 }
 
+string AirliftCard::getCardType()
+{
+    return cardType;
+}
+
 AirliftCard::~AirliftCard()
 {
 }
@@ -377,6 +411,11 @@ ostream& DiplomacyCard::printCard(std::ostream &output) const {
 DiplomacyCard* DiplomacyCard::copy() const
 {
     return new DiplomacyCard();
+}
+
+string DiplomacyCard::getCardType()
+{
+    return cardType;
 }
 
 DiplomacyCard::~DiplomacyCard()
