@@ -97,6 +97,8 @@ private:
     void getAvailableOptions();
     void getHelp();
     bool validateChoice(const string& choice);
+    Territory* chooseTerritory(vector<Territory*> territories);
+    int chooseNumArmies(Territory* territory);
     friend ostream& operator<<(ostream& output, HumanPlayerStrategy& s);
 };
 

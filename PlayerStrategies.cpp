@@ -99,7 +99,7 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
         // Deploy phase
         return issueDeployOrder();
     } else {
-        // Deploy phase is over
+        // Reaches this line if deploy phase is done.
         string choice;
         getAvailableOptions();
         while(true) {
@@ -110,7 +110,7 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
                 continue;
             }
             else if (choice == "advance"){
-
+                issueAdvanceOrder();
                 return true;
             }
             else if (choice == "airlift") {
@@ -159,33 +159,16 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
  */
 bool HumanPlayerStrategy::issueDeployOrder()
 {
-    int index; // Index of chosen country as in toDefend list
-    int numArmies; // Number of armies to deploy in said territory
-
-    cout << " --- Issuing Orders for player " << player->getName() << " --- " << endl;
     cout << " --- Deploy Orders --- \n\n" << endl;
+    cout << player->getReinforcementPool() << " units left to deploy." << endl;
 
     //Print owned territories for the player to see and make decision
-    printTerritoryVector(toDefend());
+    vector<Territory*> targetTerritoriesList = toDefend();
+    cout << " --- Target territory selection ---" << endl;
+    printTerritoryVector(targetTerritoriesList);
+    Territory* targetTer = chooseTerritory(targetTerritoriesList);
+    int numArmies; // Number of armies to deploy in said territory
 
-    while(true) {
-        // Prompt user to choose a territory
-        cout << player->getReinforcementPool() << " units left to deploy." << endl;
-        cout << "Please specify the index corresponding to the territory you want to deploy units in: ";
-        cin >> index;
-        cout << endl;
-
-        index--;
-        if (index < 0 || index >= toDefend().size()) {
-            cout << "The specified index is out of range. Index must be between 1 and "
-                 << toDefend().size() << " ! " << endl;
-            continue;
-        } else {
-            break;
-        }
-    }
-
-    // If chosen territory is valid prompt user to chose num of units to deploy.
     while (true) {
         cout << "Please specify the number of units to deploy:";
         cin >> numArmies;
@@ -200,12 +183,11 @@ bool HumanPlayerStrategy::issueDeployOrder()
         }
     }
     //Issue deploy order
-    Territory *ter = toDefend().at(index);
-    Deploy *deployOrder = new Deploy(player, numArmies, ter);
+    Deploy *deployOrder = new Deploy(player, numArmies, targetTer);
     player->getOrdersList()->addOrder(deployOrder);
     player->setReinforcementPool(this->player->getReinforcementPool() - numArmies);
-    cout << "Deploy order issued for player " << player->getName();
-    cout << ". " << numArmies << "to be deployed on " << ter->getName() << "." << endl;
+    cout << "Deploy order issued for player " << player->getName() << ". ";
+    cout  << numArmies << "to be deployed on " << targetTer->getName() << "." << endl;
 
     //Verify if other deploy orders can be issued. If not return false.
     if(player->getReinforcementPool() == 0) {
@@ -216,50 +198,116 @@ bool HumanPlayerStrategy::issueDeployOrder()
 }
 
 
-void issueAdvanceOrder()
+/**
+ * Function that interacts with human player to issue
+ * advance order.
+ */
+void HumanPlayerStrategy::issueAdvanceOrder()
 {
-    char issueAdvance;
-    cout << "Do you wish to issue an advance order ? (y/n): ";
-    cin >> issueAdvance;
-    cout << endl;
-    issueAdvance = tolower(issueAdvance);
-    if(issueAdvance != 'y' && issueAdvance != 'n') {
-        cout << "Invalid input !" << endl;
-    } else if (issueAdvance == 'n') {
-    } else if(issueAdvance == 'y') {
-        int advanceType;
-        while(true) {
-            cout << "Do you wish to:\n";
-            cout << "\t1 - Defend (move armies to a territory you own.\n";
-            cout << "\t2 -  Attack (move armies to an enemy territory." << endl;
-            cout << "Choose option 1 or 2: ";
-            cin >> advanceType;
-            cout << endl;
+    cout << " --- Advance Order --- \n\n" << endl;
+    int advanceType;
+    while(true) {
+        cout << "Do you wish to:\n";
+        cout << "\t1 - Defend (move armies to a territory you own.\n";
+        cout << "\t2 -  Attack (move armies to an enemy territory." << endl;
+        cout << "Choose option 1 or 2: ";
+        cin >> advanceType;
+        cout << endl;
 
-            if (advanceType != 1 && advanceType != 2) {
-                cout << "Invalid input !" << endl;
-                continue;
-            }
+        if (advanceType != 1 && advanceType != 2) {
+            cout << "Invalid input !" << endl;
+            continue;
         }
-        if (advanceType == 1) {
+        break;
+    }
+    if (advanceType == 1) {
+        //Defensive advance order (to owned territory)
+        //Print owned territories for the player to see and make a decision.
+        vector<Territory*> territoryList = toDefend();
+        cout << " --- Source territory selection ---" << endl;
+        printTerritoryVector(territoryList);
+        Territory *sourceTer = chooseTerritory(territoryList);
+        int numArmies = chooseNumArmies(sourceTer);
+        cout << " --- Target territory selection ---" << endl;
+        Territory *targetTer = chooseTerritory(territoryList);
 
-            //Defensive advance order (to owned territory)
-            //Print owned territories for the player to see and make a decision.
-            printTerritoryVector(toDefend());
-            int advanceSource;
-            int advanceTarget;
+        // Create Order
+        Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
+        player->getOrdersList()->addOrder(advanceOrder);
+        cout << "Advance order issued for player " << player->getName() << ". ";
+        cout << numArmies << " advanced from " << sourceTer->getName() << " to ";
+        cout << targetTer->getName() << "." << endl;
+    }
+    else if (advanceType == 2) {
+        //Offensive advance order (to enemy territory)
+        vector<Territory*> sourceTerritoryList = toDefend();
+        vector<Territory*> targetTerritoryList = toAttack();
+        cout << " --- Source territory selection ---" << endl;
+        printTerritoryVector(sourceTerritoryList);
+        Territory *sourceTer = chooseTerritory(sourceTerritoryList);
+        int numArmies = chooseNumArmies(sourceTer);
+        cout << " --- Target territory selection ---" << endl;
+        printTerritoryVector(targetTerritoryList);
+        Territory *targetTer = chooseTerritory(targetTerritoryList);
 
-            while(true) {
-                cout << "Please specify the index corresponding to the source territory";
-                cin >> advanceSource;
-                cout << endl;
-                advanceSource--;
-            }
-        }
-
-
+        // Create Order
+        Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
+        player->getOrdersList()->addOrder(advanceOrder);
+        cout << "Advance order issued for player " << player->getName() << ". ";
+        cout << numArmies << " advanced from " << sourceTer->getName() << " to ";
+        cout << targetTer->getName() << "." << endl;
     }
 }
+
+/**
+ * Allows human player to select a territory from a list of
+ * territory pointers and return said pointer.
+ * @param territories
+ * @return pointer to a territory
+ */
+Territory* HumanPlayerStrategy::chooseTerritory(vector<Territory *> territories)
+{
+    int index;
+    while(true) {
+        cout << "Please specify the index corresponding to the selected territory";
+        cin >> index;
+        cout << endl;
+        index--;
+
+        if (index< 0 || index>= territories.size()) {
+            cout << "The specified index is out of range. Index must be between 1 and "
+                 << territories.size() << " ! " << endl;
+            continue;
+        }
+        break;
+    }
+    return territories.at(index);
+}
+
+
+/**
+ * Allows for the player to select a number of armies to advance;
+ * @param sourceTerritory Source territory
+ * @return
+ */
+int HumanPlayerStrategy::chooseNumArmies(Territory *sourceTerritory)
+{
+    int numArmies;
+    while(true) {
+        cout << "Specify the number of armies to advance (between 1 and ";
+        cout << sourceTerritory->getNumOfArmies() << "). :";
+        cin >> numArmies;
+        cout << endl;
+
+        if(numArmies <= 0 || numArmies > sourceTerritory->getNumOfArmies()) {
+            cout << "Invalid input !" << endl;
+            continue;
+        }
+        break;
+    }
+    return numArmies;
+}
+
 
 /**
  * Helper method that prints the list of order options
