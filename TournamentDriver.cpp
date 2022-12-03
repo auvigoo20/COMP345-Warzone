@@ -50,6 +50,4 @@ void testTournament(){
     delete commandProcessor;
     gameEngine = nullptr;
     commandProcessor = nullptr;
-
-
 }

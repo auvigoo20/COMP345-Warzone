@@ -59,6 +59,7 @@ class GameEngine : public Subject, ILoggable {
 private:
     State* currentState;
     vector<Player*> players;
+    vector<Player*> tournamentPlayers;
     Map* map;
     CommandProcessor* commandProcessor;
     int turn;
@@ -71,7 +72,7 @@ private:
 
     void reinforcementPhase();
     void issueOrdersPhase();
-    void executeOrdersPhase();
+    void executeOrdersPhase(bool tournamentMode);
 
     //TOURNAMENT FIELDS
     vector<string> tournamentMapFiles;
@@ -103,7 +104,7 @@ public:
     void setDeck(Deck* deck);
 
     void updatePlayersAllyAndOpponentLists();
-    vector<int> checkAndEliminatePlayers();
+    vector<int> checkAndEliminatePlayers(bool tournamentMode);
 
     string stringToLog();
 
