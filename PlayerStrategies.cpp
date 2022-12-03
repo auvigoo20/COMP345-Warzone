@@ -106,7 +106,8 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
         while(true) {
             cout << "Enter your choice:";
             cin >> choice;
-            if(!validateChoice(choice)){
+            int cardIndex = validateChoice(choice);
+            if(cardIndex == -1){
                 cout << "Invalid input ! Enter '-h' for help." << endl;
                 continue;
             }
@@ -115,23 +116,23 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
                 return false;
             }
             else if (choice == "airlift") {
-                issueAirliftOrder();
+                issueAirliftOrder(cardIndex);
                 return false;
             }
             else if (choice == "bomb") {
-                issueBombOrder();
+                issueBombOrder(cardIndex);
                 return false;
             }
             else if (choice == "blockade") {
-                issueBlockadeOrder();
+                issueBlockadeOrder(cardIndex);
                 return false;
             }
             else if (choice == "negotiate") {
-                issueNegotiateOrder();
+                issueNegotiateOrder(cardIndex);
                 return false;
             }
             else if (choice == "reinforcement") {
-                issueReinforcementOrder();
+                issueReinforcementOrder(cardIndex);
                 return false;
             }
             else if (choice == "-l") {
@@ -264,18 +265,9 @@ void HumanPlayerStrategy::issueAdvanceOrder()
  * Function that interacts with human to play an
  * airlift card.
  */
-void HumanPlayerStrategy::issueAirliftOrder()
+void HumanPlayerStrategy::issueAirliftOrder(int cardIndex)
 {
     cout << " --- Airlift Order --- " << endl;
-    int index = 0;
-    AirliftCard* currentCard;
-    for(Card* card: *player->getHand()->getHandList()) {
-       if(card->getCardType() == "airlift") {
-           currentCard = dynamic_cast<AirliftCard*>(card);
-           break;
-       }
-       index++;
-    }
     //Airlift order (to owned territory)
     //Print owned territories for the player to see and make a decision.
     vector<Territory*> territoryList = toDefend();
@@ -287,7 +279,8 @@ void HumanPlayerStrategy::issueAirliftOrder()
     Territory *targetTer = chooseTerritory(territoryList);
 
     // Remove the card from the handlist and add it back to the decklist
-    player->getHand()->playCard(index);
+    player->getHand()->playCard(cardIndex);
+    AirliftCard* currentCard = dynamic_cast<AirliftCard*>(player->getHand()->getHandList()->at(cardIndex));
     //Plays the card and issues the order.
     currentCard->play(player, numArmies, sourceTer, targetTer);
     cout << "Airlift order issued for player " << player->getName() << ".\n";
@@ -295,18 +288,13 @@ void HumanPlayerStrategy::issueAirliftOrder()
     cout << targetTer->getName() << "." << endl;
 }
 
-void HumanPlayerStrategy::issueBombOrder()
+/**
+ * Function that interacts with human to play a
+ * bomb card.
+ */
+void HumanPlayerStrategy::issueBombOrder(int cardIndex)
 {
     cout << " --- Bomb Order --- " << endl;
-    int index = 0;
-    BombCard* currentCard;
-    for(Card* card: *player->getHand()->getHandList()) {
-        if(card->getCardType() == "bomb") {
-            currentCard = dynamic_cast<BombCard*>(card);
-            break;
-        }
-        index++;
-    }
     //Bomb order
     //Print to attack territories for the player to see and make a decision.
     vector<Territory*> territoryList = toAttack();
@@ -314,12 +302,35 @@ void HumanPlayerStrategy::issueBombOrder()
     Territory *targetTer = chooseTerritory(territoryList);
 
     // Remove the card from the handlist and add it back to the decklist
-    player->getHand()->playCard(index);
+    player->getHand()->playCard(cardIndex);
+    BombCard* currentCard = dynamic_cast<BombCard*>(player->getHand()->getHandList()->at(cardIndex));
     //Plays the card and issues the order.
     currentCard->play(player, targetTer);
     cout << "Bomb order issued for player " << player->getName() << ".\n";
     cout << "Bomb to be thrown at enemy territory " << targetTer->getName();
     cout << " owned by " << targetTer->getOwner()->getName() << "." << endl;
+}
+
+/**
+ * Function that interacts with human to play a
+ * blockade card.
+ */
+void HumanPlayerStrategy::issueBlockadeOrder(int cardIndex)
+{
+    cout << " --- Blockade Order --- " << endl;
+    //Blockade order
+    //Print to attack territories for the player to see and make a decision.
+    vector<Territory*> territoryList = toDefend();
+    cout << " --- Target territory selection ---" << endl;
+    Territory *targetTer = chooseTerritory(territoryList);
+
+    // Remove the card from the handlist and add it back to the decklist
+    player->getHand()->playCard(cardIndex);
+    BlockadeCard* currentCard = dynamic_cast<BlockadeCard*>(player->getHand()->getHandList()->at(cardIndex));
+    //Plays the card and issues the order.
+    currentCard->play(player, targetTer);
+    cout << "Blockade order issued for player " << player->getName() << ".\n";
+    cout << "Blockade to be effective on territory " << targetTer->getName() << endl;
 }
 
 /**
@@ -413,19 +424,21 @@ void HumanPlayerStrategy::getHelp()
  * @param choice string entered by the used.
  * @return true if string is valid, false otherwise.
  */
-bool HumanPlayerStrategy::validateChoice(const string& choice)
+int HumanPlayerStrategy::validateChoice(const string& choice)
 {
     vector<string> validChoices = {"airlift", "bomb", "blockade", "negotiate", "reinforcement"};
+    int index = 0;
     if(choice == "advance" || choice == "-h" || choice == "-l" || choice == "-q") {
-        return true;
+        return 0;
     } else {
         for(auto* card: *player->getHand()->getHandList()) {
             if(card->getCardType() == choice) {
-                return true;
+               return index;
             }
+            index++;
         }
     }
-    return false;
+    return -1;
 }
 
 // Aggressive Player Strategy

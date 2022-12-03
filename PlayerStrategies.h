@@ -14,11 +14,11 @@ private:
 
     virtual bool issueDeployOrder() = 0;
     virtual void issueAdvanceOrder() = 0;
-    virtual void issueAirliftOrder() = 0;
-    virtual void issueBombOrder() = 0;
-    virtual void issueBlockadeOrder() = 0;
-    virtual void issueNegotiateOrder()  = 0;
-    virtual void issueReinforcementOrder() = 0;
+    virtual void issueAirliftOrder(int cardIndex) = 0;
+    virtual void issueBombOrder(int cardIndex) = 0;
+    virtual void issueBlockadeOrder(int cardIndex) = 0;
+    virtual void issueNegotiateOrder(int cardIndex)  = 0;
+    virtual void issueReinforcementOrder(int cardIndex) = 0;
 
 };
 
@@ -103,14 +103,14 @@ private:
 
     bool issueDeployOrder() override;
     void issueAdvanceOrder() override;
-    void issueAirliftOrder() override;
-    void issueBombOrder() override;
-    void issueBlockadeOrder() override;
-    void issueNegotiateOrder() override;
-    void issueReinforcementOrder() override;
+    void issueAirliftOrder(int index) override;
+    void issueBombOrder(int index) override;
+    void issueBlockadeOrder(int index) override;
+    void issueNegotiateOrder(int index) override;
+    void issueReinforcementOrder(int index) override;
     void getAvailableOptions();
     void getHelp();
-    bool validateChoice(const string& choice);
+    int validateChoice(const string& choice);
     Territory* chooseTerritory(vector<Territory*> territories);
     int chooseNumArmies(Territory* territory);
     friend ostream& operator<<(ostream& output, HumanPlayerStrategy& s);
