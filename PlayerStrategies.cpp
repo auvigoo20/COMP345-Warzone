@@ -298,6 +298,7 @@ void HumanPlayerStrategy::issueBombOrder(int cardIndex)
     //Bomb order
     //Print to attack territories for the player to see and make a decision.
     vector<Territory*> territoryList = toAttack();
+    printTerritoryVector(territoryList);
     cout << " --- Target territory selection ---" << endl;
     Territory *targetTer = chooseTerritory(territoryList);
 
@@ -321,6 +322,7 @@ void HumanPlayerStrategy::issueBlockadeOrder(int cardIndex)
     //Blockade order
     //Print to attack territories for the player to see and make a decision.
     vector<Territory*> territoryList = toDefend();
+    printTerritoryVector(territoryList);
     cout << " --- Target territory selection ---" << endl;
     Territory *targetTer = chooseTerritory(territoryList);
 
@@ -333,6 +335,46 @@ void HumanPlayerStrategy::issueBlockadeOrder(int cardIndex)
     cout << "Blockade to be effective on territory " << targetTer->getName() << endl;
 }
 
+
+/**
+ * Function that interacts with human to play a
+ * diplomacy card.
+ */
+void HumanPlayerStrategy::issueNegotiateOrder(int cardIndex)
+{
+    cout << " --- Negotiate Order --- " << endl;
+    //Blockade order
+    //Print to attack territories for the player to see and make a decision.
+    int i = 1;
+    int index;
+    cout << "Please specify the index corresponding to the targeted player." << endl;
+    for (auto* p: player->getOpponentPlayerList()) {
+        cout << i << " - " << p->getName() << endl;
+        i++;
+    }
+    while(true) {
+        cout << "Please specify the index corresponding to the targeted player." << endl;
+        cin >> index;
+        cout << endl;
+        index--;
+        if(index < 0 || index >= player->getOpponentPlayerList().size()){
+            cout << "The specified index is out of range. Index must be between 1 and "
+                 << player->getOpponentPlayerList().size() << " ! " << endl;
+            continue;
+        }
+        break;
+    }
+
+    // Remove the card from the handlist and add it back to the decklist
+    player->getHand()->playCard(cardIndex);
+    Player* targetPlayer = player->getOpponentPlayerList().at(index);
+    DiplomacyCard* currentCard = dynamic_cast<DiplomacyCard*>(player->getHand()->getHandList()->at(cardIndex));
+    //Plays the card and issues the order.
+    currentCard->play(player, targetPlayer);
+    cout << "Diplomacy order issued for player " << player->getName() << ".\n";
+    cout << "Negotiation order issued on " << targetPlayer->getName() << "." << endl;
+}
+
 /**
  * Allows human player to select a territory from a list of
  * territory pointers and return said pointer.
@@ -343,7 +385,7 @@ Territory* HumanPlayerStrategy::chooseTerritory(vector<Territory *> territories)
 {
     int index;
     while(true) {
-        cout << "Please specify the index corresponding to the selected territory";
+        cout << "Please specify the index corresponding to the selected territory:";
         cin >> index;
         cout << endl;
         index--;
