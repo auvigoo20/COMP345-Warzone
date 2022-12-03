@@ -19,10 +19,10 @@ testTournament();
     }
     else{
         if(string(argv[1]) == "-console"){
-            testCommandProcessorConsole();
+            testTournament();
         }
         else if(string(argv[1]) == "-file"){
-            testCommandProcessorFile(string(argv[2]));
+            testTournamentFile(string(argv[2]));
         }
     }
 
