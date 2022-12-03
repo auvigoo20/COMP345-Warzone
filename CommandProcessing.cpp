@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <algorithm>
 
 using std::string;
 using std::cout;
@@ -123,6 +124,123 @@ Command* CommandProcessor::getCommand() {
     return command;
 }
 
+bool CommandProcessor::validateTournamentCommand(Command* command) {
+
+    // if validating another tournament command, or replaying another tournament, reset GameEngine fields
+    if(gameEngine->getTournamentMapFiles().size() != 0){
+        vector<string> emptyStringVector;
+        gameEngine->setTournamentMapFiles(emptyStringVector);
+    }
+    if(gameEngine->getTournamentPlayerStrategies().size() != 0){
+        vector<string> emptyStringVector;
+        gameEngine->setTournamentPlayerStrategies(emptyStringVector);
+    }
+    if(gameEngine->getTournamentNumOfGames() != 0){
+        gameEngine->setTournamentNumOfGames(0);
+    }
+    if(gameEngine->getTournamentMaxNumOfTurns() != 0){
+        gameEngine->setTournamentMaxNumOfTurns(0);
+    }
+
+    // Split each line by delimiter (" ") and store the strings in a vector.
+    // tournament command format is:
+    // tournament -M <listofmapfiles>(1-5) -P <listofplayerstrategies>(2-4) -G <numberofgames>(1-5) -D <maxnumberofturns>(10-50)
+    std::stringstream commandToSplit(command->getCommand());
+    string segment;
+    vector<string> splitCommand;
+    while (getline(commandToSplit, segment, ' ')) {
+        splitCommand.push_back(segment);
+    }
+    if(splitCommand.size() < 9){
+        command->saveEffect("Invalid amount of arguments passed for tournament mode.");
+        return false;
+    }
+
+    int currentIndex = 1;
+    // Validate -M part
+    int numOfMaps = 0;
+    while(splitCommand.at(currentIndex) != "-P"){
+        // Skip -M flag
+        if(splitCommand.at(currentIndex) == "-M"){
+            currentIndex++;
+            continue;
+        }
+
+        if(numOfMaps >= 5){
+            command->saveEffect("Invalid amount of maps passed for tournament mode.");
+            return false;
+        }
+        gameEngine->addTournamentMapFile(splitCommand.at(currentIndex));
+        numOfMaps++;
+        currentIndex++;
+    }
+    if(numOfMaps < 1){
+        command->saveEffect("Invalid amount of maps passed for tournament mode.");
+        return false;
+    }
+
+    // Validate -P part
+    int numOfPlayerStrategies = 0;
+    vector<string> possibleStrategies{"aggressive", "benevolent", "neutral", "cheater"};
+    while (splitCommand.at(currentIndex) != "-G"){
+        // Skip -P flag
+        if(splitCommand.at(currentIndex) == "-P"){
+            currentIndex++;
+            continue;
+        }
+        if(numOfPlayerStrategies >= 4){
+            command->saveEffect("Invalid amount of player strategies passed for tournament mode.");
+            return false;
+        }
+        // If the player strategy does not correspond to the predefined strategies
+        if(std::find(possibleStrategies.begin(), possibleStrategies.end(), splitCommand.at(currentIndex)) == possibleStrategies.end()){
+            command->saveEffect("Invalid player strategy passed for tournament mode.");
+            return false;
+        }
+        gameEngine->addTournamentPlayerStrategy(splitCommand.at(currentIndex));
+        numOfPlayerStrategies++;
+        currentIndex++;
+    }
+    if(numOfPlayerStrategies < 2 || numOfPlayerStrategies > 4){
+        command->saveEffect("Invalid amount of player strategies passed for tournament mode.");
+        return false;
+    }
+
+    // Validate -G part
+    while(splitCommand.at(currentIndex) != "-D"){
+        // Skip -G flag
+        if(splitCommand.at(currentIndex) == "-G"){
+            currentIndex++;
+            continue;
+        }
+        int numOfGames = std::stoi(splitCommand.at(currentIndex));
+        if(numOfGames < 1 || numOfGames > 5){
+            command->saveEffect("Invalid number of games for tournament mode.");
+            return false;
+        }
+        gameEngine->setTournamentNumOfGames(numOfGames);
+        currentIndex++;
+    }
+
+    // Validate -D part
+    while(currentIndex < splitCommand.size()){
+        // Skip -D flag
+        if(splitCommand.at(currentIndex) == "-D"){
+            currentIndex++;
+            continue;
+        }
+        int numOfTurns = std::stoi(splitCommand.at(currentIndex));
+        if(numOfTurns < 10 || numOfTurns > 50){
+            command->saveEffect("Invalid number of maximum turns for tournament mode.");
+            return false;
+        }
+        gameEngine->setTournamentMaxNumOfTurns(numOfTurns);
+        currentIndex++;
+    }
+    return true;
+
+}
+
 bool CommandProcessor::validate(Command* command) {
     string currentState = gameEngine->getCurrentState()->getName();
     bool commandIsValid = false;
@@ -167,6 +285,9 @@ bool CommandProcessor::validate(Command* command) {
     }
     else if((command->getCommand() == "replay" || command->getCommand() == "quit") && currentState == "win"){
         commandIsValid = true;
+    }
+    else if (command->getCommand().find("tournament") != string::npos && currentState == "start"){
+        commandIsValid = validateTournamentCommand(command);
     }
     else{
         command->saveEffect("Invalid command.");
