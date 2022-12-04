@@ -1,3 +1,5 @@
+#include <cstdlib>
+
 #include "PlayerStrategies.h"
 #include "Player.h"
 
@@ -790,6 +792,19 @@ bool CheaterPlayerStrategy::issueOrder(bool isDeployPhase)
         return issueDeployOrder();
    }
 
+    // toAttack returns a vector of all the enemy territories adjacent to his own.
+    vector<Territory*>  adjacentTerritories = player->toAttack();
+
+    // Looping through the adjacentTerritories vector. Removing the territories
+    // from the other players' list of territories, adding it to the cheater player's
+    // list and set the cheater as the territory owner.
+    for(auto* adjacentTerritory: adjacentTerritories) {
+        adjacentTerritory->getOwner()->removeTerritory(adjacentTerritory);
+        adjacentTerritory->setOwner(player);
+        player->addTerritory(adjacentTerritory);
+        cout << adjacentTerritory->getName() << " was wrongfully taken by ";
+        cout << player->getName() << "!" << endl;
+    }
    // Does not issue any other kind of orders but issue orders.
    return true;
 }
@@ -801,10 +816,11 @@ bool CheaterPlayerStrategy::issueOrder(bool isDeployPhase)
  */
 bool CheaterPlayerStrategy::issueDeployOrder()
 {
+    srand(time(NULL));
+    int randomNumber = rand();
     //Generate random parameters for the deploy orders (No specific behavior specified).
-    srand(time(nullptr));
-    int randomIndex = rand() % (player->getTerritories().size() - 1);
-    int numArmies = rand() % (player->getReinforcementPool() - 1);
+    int randomIndex = randomNumber % (player->getTerritories().size() - 1);
+    int numArmies = (randomNumber % player->getReinforcementPool()) + 1;
     Territory* targetTer = toDefend().at(randomIndex);
 
     Deploy* deployOrder = new Deploy(player, numArmies, targetTer);
