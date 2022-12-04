@@ -54,6 +54,11 @@ void HumanPlayerStrategy::setPlayer(Player *player)
     this->player = player;
 }
 
+string HumanPlayerStrategy::getStrategyType()
+{
+    return "human";
+}
+
 /**
  * Returns a list of enemy territories adjacent to an
  * owned territory.
@@ -532,6 +537,11 @@ void AggressivePlayerStrategy::setPlayer(Player *player)
     this->player = player;
 }
 
+string AggressivePlayerStrategy::getStrategyType()
+{
+    return "aggressive";
+}
+
 vector<Territory*> AggressivePlayerStrategy::toDefend()
 {
     return player->getTerritories();
@@ -606,6 +616,11 @@ vector<Territory*> BenevolentPlayerStrategy::toAttack()
     return player->getTerritories();
 }
 
+string BenevolentPlayerStrategy::getStrategyType()
+{
+    return "benevolent";
+}
+
 bool BenevolentPlayerStrategy::issueOrder(bool isDeployPhase)
 {
     return true;
@@ -660,19 +675,37 @@ void NeutralPlayerStrategy::setPlayer(Player* p)
     this->player = p;
 }
 
+string NeutralPlayerStrategy::getStrategyType()
+{
+    return "neutral";
+}
+
 
 vector<Territory*> NeutralPlayerStrategy::toDefend()
 {
-    return player->getTerritories();
+    vector<Territory*> emptyVector;
+    return emptyVector;
 }
 
 vector<Territory*> NeutralPlayerStrategy::toAttack()
 {
-    return player->getTerritories();
+    vector<Territory*> emptyVector;
+    return emptyVector;
 }
 
+/**
+ * Issue order returns true (endPhase) and ends the order issuing
+ * phase without issuing any order.
+ * @param isDeployPhase
+ * @return
+ */
 bool NeutralPlayerStrategy::issueOrder(bool isDeployPhase)
 {
+    if(isDeployPhase) {
+        cout << "No deploy orders issued for neutral player" << endl;
+    } else {
+        cout << "No orders issued for neutral player" << endl;
+    }
     return true;
 }
 
@@ -726,6 +759,11 @@ void CheaterPlayerStrategy::setPlayer(Player *player)
     this->player = player;
 }
 
+string CheaterPlayerStrategy::getStrategyType()
+{
+    return "cheater";
+}
+
 vector<Territory*> CheaterPlayerStrategy::toDefend()
 {
     return player->getTerritories();
@@ -733,12 +771,55 @@ vector<Territory*> CheaterPlayerStrategy::toDefend()
 
 vector<Territory*> CheaterPlayerStrategy::toAttack()
 {
-    return player->getTerritories();
+    vector<Territory*> toAttack;
+
+    for(auto* ownedTerritory: this->player->getTerritories()) {
+        for (auto* adjacentTerritory: ownedTerritory->getAdjacentTerritories()) {
+            if(adjacentTerritory->getOwner() != this->player &&
+               find(toAttack.begin(), toAttack.end(), adjacentTerritory) == toAttack.end()) {
+                toAttack.push_back(adjacentTerritory);
+            }
+        }
+    }
+    return toAttack;
 }
 
 bool CheaterPlayerStrategy::issueOrder(bool isDeployPhase)
 {
-    return true;
+   if(isDeployPhase) {
+        return issueDeployOrder();
+   }
+
+   // Does not issue any other kind of orders but issue orders.
+   return true;
+}
+
+/**
+ * Generates random parameters (number of armies and territory) and creates
+ * deploy orders.
+ * @return True if reinforcement pool is empty.
+ */
+bool CheaterPlayerStrategy::issueDeployOrder()
+{
+    //Generate random parameters for the deploy orders (No specific behavior specified).
+    srand(time(nullptr));
+    int randomIndex = rand() % (player->getTerritories().size() - 1);
+    int numArmies = rand() % (player->getReinforcementPool() - 1);
+    Territory* targetTer = toDefend().at(randomIndex);
+
+    Deploy* deployOrder = new Deploy(player, numArmies, targetTer);
+    player->getOrdersList()->addOrder(deployOrder);
+    player->setReinforcementPool(this->player->getReinforcementPool() - numArmies);
+    targetTer->setTempNumOfArmies(targetTer->getTempNumOfArmies() + numArmies);
+    cout << "Deploy order issued for player " << player->getName() << ".\n";
+    cout  << numArmies << " units to be deployed on " << targetTer->getName() << "." << endl;
+
+    //Verify if other deploy orders can be issued. If not return false.
+    if(player->getReinforcementPool() == 0) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 /**

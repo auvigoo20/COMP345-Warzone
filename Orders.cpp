@@ -412,6 +412,13 @@ void Advance::execute()
        printOrder(cout);
        notify(this);
    } else {
+       // If attacked player is neutral, change player strategy to 'aggressive'.
+       if(this->targetTerritory->getOwner()->getPlayerStrategy()->getStrategyType() == "neutral") {
+           cout << "## Neutral player was attacked. Changing to aggressive player !##" << endl;
+           AggressivePlayerStrategy* agrStrt = new AggressivePlayerStrategy();
+           agrStrt->setPlayer(this->targetTerritory->getOwner());
+           this->targetTerritory->getOwner()->setPlayerStrategy(agrStrt);
+       }
        printOrder(cout);
        attackSimulation();
        notify(this);
@@ -515,6 +522,12 @@ void Bomb::execute()
     if(!validate()) {
         cout << "Invalid Order; Bomb not executed." << endl;
     } else {
+        if(this->targetTerritory->getOwner()->getPlayerStrategy()->getStrategyType() == "neutral") {
+//           AggressivePlayerStrategy* agrStrt = new AggressivePlayerStrategy();
+//           agrStrt->setPlayer(this->targetTerritory->getOwner());
+//           this->targetTerritory->getOwner()->setPlayerStrategy(agrStrt);
+            cout << "######### NEUTRAL PLAYER WAS ATTACKED ##########" << endl;
+        }
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() / 2);
         printOrder(cout);
         notify(this);

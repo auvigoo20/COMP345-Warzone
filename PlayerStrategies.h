@@ -7,6 +7,7 @@ public:
     virtual vector<Territory*> toAttack() = 0;
     virtual vector<Territory*> toDefend() = 0;
     virtual bool issueOrder(bool isDeployPhase) = 0;
+    virtual string getStrategyType() = 0;
     virtual ~PlayerStrategy() = default;
 
     virtual Player* getPlayer() = 0;
@@ -14,15 +15,6 @@ public:
 
 private:
     Player* player;
-
-    virtual bool issueDeployOrder() = 0;
-    virtual void issueAdvanceOrder() = 0;
-    virtual void issueAirliftOrder(int cardIndex) = 0;
-    virtual void issueBombOrder(int cardIndex) = 0;
-    virtual void issueBlockadeOrder(int cardIndex) = 0;
-    virtual void issueNegotiateOrder(int cardIndex)  = 0;
-    virtual void issueReinforcementOrder(int cardIndex) = 0;
-
 };
 
 class NeutralPlayerStrategy: public PlayerStrategy {
@@ -38,6 +30,7 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     friend ostream& operator<<(ostream& output, NeutralPlayerStrategy& s);
@@ -58,6 +51,7 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     friend ostream& operator<<(ostream& output, AggressivePlayerStrategy& s);
@@ -78,6 +72,7 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     friend ostream& operator<<(ostream& output, BenevolentPlayerStrategy& s);
@@ -97,17 +92,18 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     Player* player;
 
-    bool issueDeployOrder() override;
-    void issueAdvanceOrder() override;
-    void issueAirliftOrder(int index) override;
-    void issueBombOrder(int index) override;
-    void issueBlockadeOrder(int index) override;
-    void issueNegotiateOrder(int index) override;
-    void issueReinforcementOrder(int index) override;
+    bool issueDeployOrder();
+    void issueAdvanceOrder();
+    void issueAirliftOrder(int index);
+    void issueBombOrder(int index);
+    void issueBlockadeOrder(int index);
+    void issueNegotiateOrder(int index);
+    void issueReinforcementOrder(int index);
     void getAvailableOptions();
     void getHelp();
     int validateChoice(const string& choice);
@@ -129,9 +125,12 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     Player* player;
+
+    bool issueDeployOrder();
 };
 
 void printTerritoryVector(const vector<Territory*>& v);

@@ -671,6 +671,22 @@ void GameEngine::issueOrdersPhase() {
     // signified that they are done issuing orders.
     // This includes the neutral player (who for now is treated/behaves like any other player)
     for (Player* player : this->players) {
+
+        // If the player has the 'cheater' strategy, once per turn all the territories adjacent to his own
+        // are automatically given to him.
+        if(player->getPlayerStrategy()->getStrategyType() == "cheater") {
+            // toAttack returns a vector of all the territories adjacent to his own.
+           vector<Territory*>  adjacentTerritories = player->toAttack();
+
+           // Looping through the adjacentTerritories vector. Removing the territories
+           // from the other players' list of territories, adding it to the cheater player's
+           // list and set the cheater as the territory owner.
+           for(auto* adjacentTerritory: adjacentTerritories) {
+               adjacentTerritory->getOwner()->removeTerritory(adjacentTerritory);
+               adjacentTerritory->setOwner(player);
+               player->addTerritory(adjacentTerritory);
+           }
+        }
         bool endPhase = false;
         cout << "Player issuing order: " << player->getName() << "..." << endl;
         while(!endPhase) {
