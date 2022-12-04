@@ -47,7 +47,7 @@ int OrdersList::getSize()
 
 Order* OrdersList::getOrder(int index)
 {
-    return ordersList[index - 1];
+    return ordersList.at(index);
 }
 
 
@@ -67,11 +67,11 @@ void OrdersList::removeOrder(int index)
 
     if(size == 0) {
         cout << "Orders list is empty. Impossible to remove order !" << endl;
-    } else if(index  < 1 || index > size) {
-        cout << "Index out of bound !";
+    } else if(index  < 0 || index > size) {
+        cout << "Index out of bound !" << endl;
     } else {
-        delete ordersList[index - 1];
-        ordersList.erase(ordersList.begin() + index - 1);
+        delete ordersList.at(index);
+        ordersList.erase(ordersList.begin() + index);
     }
 }
 
@@ -91,9 +91,9 @@ void OrdersList::moveOrderUp(int index)
     } else if (index < 0 || index >= size) {
         cout << "Index out of bound !" << endl;
     } else {
-        Order* temp = ordersList[index];
-        ordersList[index] = ordersList[index - 1];
-        ordersList[index - 1] = temp;
+        Order* temp = ordersList.at(index);
+        ordersList.at(index) = ordersList.at(index - 1);
+        ordersList.at(index - 1) = temp;
     }
 }
 
@@ -113,9 +113,9 @@ void OrdersList::moveOrderDown(int index)
     } else if (index < 0 || index >= size) {
         cout << "Index out of bound !" << endl;
     } else {
-        Order* temp = ordersList[index];
-        ordersList[index] = ordersList[index - 1];
-        ordersList[index - 1] = temp;
+        Order* temp = ordersList.at(index);
+        ordersList.at(index) = ordersList.at(index - 1);
+        ordersList.at(index - 1) = temp;
     }
 }
 
@@ -161,7 +161,7 @@ OrdersList& OrdersList::operator=(const OrdersList& o)
        //Initialize vector with same size as assigned object.
        this->ordersList = vector<Order*>(size);
        for(int i = 0; i < size; i++) {
-           ordersList[i] = o.ordersList[i]->copy();
+           ordersList.at(i) = o.ordersList.at(i)->copy();
        }
        return *this;
    }

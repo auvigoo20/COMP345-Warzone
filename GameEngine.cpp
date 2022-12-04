@@ -5,6 +5,7 @@
 #include "Cards.h"
 
 #include <string>
+#include <iomanip>
 using std::string;
 
 #include <sstream>
@@ -245,14 +246,16 @@ GameEngine::GameEngine(State *startingState) {
 }
 
 GameEngine::~GameEngine(){
-    delete deck;
-    deck = nullptr;
-    delete map;
-    map = nullptr;
     for (auto p : players){
         delete p;
         p = nullptr;
     }
+    // Tournament players not cleaned up here as they are cleaned in runTournament()
+
+    delete map;
+    map = nullptr;
+    delete deck;
+    deck = nullptr;
 }
 
 GameEngine::GameEngine(State *startingState, vector<Player *> players, Map *map) {
@@ -435,6 +438,72 @@ void GameEngine::initializeEngineStates() {
     win->setTransitions({replayTransition, quitTransition});
 }
 
+void GameEngine::prepareGame() {
+    cout << "******* Players have been created ******" << endl;
+
+    // Resetting each players' ally and opponent lists
+    this->updatePlayersAllyAndOpponentLists();
+
+    // Distributing territories evenly among players
+
+    int territoryCount = this->map->getAllTerritories().size();
+    vector<Territory *> tempTerritories = this->map->getAllTerritories();
+    int currentPlayer;
+
+    for (int i = 0; i < territoryCount; i++) {
+        currentPlayer = i % players.size();
+        tempTerritories.at(i)->setOwner(players.at(currentPlayer));
+        players.at(currentPlayer)->addTerritory(tempTerritories.at(i));
+    }
+
+    cout << endl << "******** Territories Distributed *******" << endl;
+
+    // Randomly generating a new playing order
+
+    srand(time(NULL));
+
+    for (int i = 0; i < (players.size() * 2); i++) {
+        int shuffle = (rand() % players.size());
+        players.emplace_back(players.at(shuffle));
+        players.erase(players.begin() + shuffle, players.begin() + shuffle + 1);
+    }
+
+    cout << endl << "******* Playing Order Determined *******" << endl;
+
+    // Assigning troops to each players' reinforcement pool
+
+    for (int i = 0; i < players.size(); i++) {
+        players.at(i)->setReinforcementPool(50);
+    }
+
+    cout << endl << "********* Army Units Dispatched ********" << endl;
+
+    // Drawing Cards to each players' hands
+
+    // Creating the Deck
+    for (int i = 0; i < players.size(); i++) {
+        this->deck->addCard(new BombCard);
+        this->deck->addCard(new ReinforcementCard);
+        this->deck->addCard(new BlockadeCard);
+        this->deck->addCard(new AirliftCard);
+        this->deck->addCard(new DiplomacyCard);
+    }
+
+    // Creating hands and drawing cards to them
+    for (int i = 0; i < players.size(); i++) {
+        Player *tempPlayer = players.at(i);
+        Hand *hand = new Hand(tempPlayer, deck);
+        deck->draw(hand);
+        deck->draw(hand);
+        tempPlayer->setHand(hand);
+        tempPlayer = nullptr;
+    }
+
+    cout << endl << "************** Cards Drawn *************" << endl;
+
+    this->transition(assignReinforcement);
+}
+
 void GameEngine::startupPhase() {
     cout << "****************************************" << endl;
     cout << "*       Initiating Startup Phase       *" << endl;
@@ -543,68 +612,8 @@ void GameEngine::startupPhase() {
                                                "not present. No change in state.");
                 } else {
                     done = true;
+                    this->prepareGame();
 
-                    cout << "******* Players have been created ******" << endl;
-
-                    // Resetting each players' ally and opponent lists
-                    this->updatePlayersAllyAndOpponentLists();
-
-                    // Distributing territories evenly among players
-
-                    int territoryCount = this->map->getAllTerritories().size();
-                    vector<Territory *> tempTerritories = this->map->getAllTerritories();
-                    int currentPlayer;
-
-                    for (int i = 0; i < territoryCount; i++) {
-                        currentPlayer = i % players.size();
-                        tempTerritories[i]->setOwner(players[currentPlayer]);
-                        players[currentPlayer]->addTerritory(tempTerritories[i]);
-                    }
-
-                    cout << endl << "******** Territories Distributed *******" << endl;
-
-                    // Randomly generating a new playing order
-
-                    srand(time(NULL));
-
-                    for (int i = 0; i < (players.size() * 2); i++) {
-                        int shuffle = (rand() % players.size());
-                        players.emplace_back(players.at(shuffle));
-                        players.erase(players.begin() + shuffle, players.begin() + shuffle + 1);
-                    }
-
-                    cout << endl << "******* Playing Order Determined *******" << endl;
-
-                    // Assigning troops to each players' reinforcement pool
-
-                    for (int i = 0; i < players.size(); i++) {
-                        players[i]->setReinforcementPool(50);
-                    }
-
-                    cout << endl << "********* Army Units Dispatched ********" << endl;
-
-                    // Drawing Cards to each players' hands
-
-                    // Creating the Deck
-                    for (int i = 0; i < players.size(); i++) {
-                        this->deck->addCard(new BombCard);
-                        this->deck->addCard(new ReinforcementCard);
-                        this->deck->addCard(new BlockadeCard);
-                        this->deck->addCard(new AirliftCard);
-                        this->deck->addCard(new DiplomacyCard);
-                    }
-
-                    // Creating hands and drawing cards to them
-                    for (int i = 0; i < players.size(); i++) {
-                        Player *tempPlayer = players.at(i);
-                        Hand *hand = new Hand(tempPlayer, deck);
-                        deck->draw(hand);
-                        deck->draw(hand);
-                        tempPlayer->setHand(hand);
-                        tempPlayer = nullptr;
-                    }
-
-                    cout << endl << "************** Cards Drawn *************" << endl;
                     currentCommand->saveEffect("gamestart command executed. Territories distributed. "
                                                "Playing Order Determined. Army Units Assigned. Hands Created "
                                                "with 2 Cards from Deck");
@@ -614,7 +623,7 @@ void GameEngine::startupPhase() {
     }
     cout << endl;
     for (int i = 0; i < players.size(); i++) {
-        cout << *players[i] << endl;
+        cout << *players.at(i) << endl;
     }
 
     cout << "****************************************" << endl;
@@ -680,7 +689,7 @@ void GameEngine::issueOrdersPhase() {
     this->transition(executeOrders);
 }
 
-void GameEngine::executeOrdersPhase() {
+void GameEngine::executeOrdersPhase(bool tournamentMode) {
     cout << endl << "********** Execute Orders Phase **********" << endl;
 
     for (Player* player : this->players) {
@@ -699,10 +708,10 @@ void GameEngine::executeOrdersPhase() {
             if (player->getOrdersList()->getSize() >= 1) {
                 // If top order can still be casted to Deploy* then it is a deploy order to be executed.
                 // Else, player is done executing deploy orders and we can move on to the next player.
-                if (dynamic_cast<Deploy*>(player->getOrdersList()->getOrder(1)) != nullptr) {
+                if (dynamic_cast<Deploy*>(player->getOrdersList()->getOrder(0)) != nullptr) {
                     cout << "Executing deploy order for " << player->getName() << endl;
-                    player->getOrdersList()->getOrder(1)->execute();
-                    player->getOrdersList()->removeOrder(1);
+                    player->getOrdersList()->getOrder(0)->execute();
+                    player->getOrdersList()->removeOrder(0);
                     cout << "***" << endl;
                 } else {
                     playersWithoutOrders++;
@@ -732,10 +741,10 @@ void GameEngine::executeOrdersPhase() {
             if (player->getOrdersList()->getSize() >= 1) {
                 cout << "Executing non-deploy order for " << player->getName() << endl;
                 playersWithoutOrders = 0;
-                player->getOrdersList()->getOrder(1)->execute();
+                player->getOrdersList()->getOrder(0)->execute();
 
                 // After every order execution, eliminate any players that control no territories.
-                vector<int>result = checkAndEliminatePlayers();
+                vector<int>result = checkAndEliminatePlayers(tournamentMode);
 
                 cout << "Eliminated: {";
                 for (int j : result) {
@@ -813,12 +822,12 @@ void GameEngine::executeOrdersPhase() {
     }
 }
 
-void GameEngine::mainGameLoop() {
-    cout << "****************************************" << endl;
-    cout << "*      Initiating Main Game Loop       *" << endl;
-    cout << "****************************************" << endl;
+void GameEngine::mainGameLoop(int maxTurns, bool tournamentMode) {
+    cout << endl << "******* Initiating Main Game Loop ******" << endl;
 
     turn = 1;
+
+    bool checkMaxTurns = (maxTurns > 0);
 
     while(true) {
         cout << endl << "********** Turn " << turn << " **********" << endl;
@@ -837,35 +846,51 @@ void GameEngine::mainGameLoop() {
         // - After the issueorder phase of turn 4, player 1 will have all territories.
         //
         // This is for demonstration purposes and thus this code can/will be removed in part 3.
-        for (Player *player: this->players) {
-            this->deck->draw(player->getHand());
-        }
-        if (turn == 3) {
-            for (Territory* territory : this->players.at(2)->getTerritories()) {
+        for (int i=1; i<players.size(); i++) {
+            for (Territory* territory : this->players.at(i)->getTerritories()) {
                 territory->setOwner(this->players.at(0));
                 this->players.at(0)->addTerritory(territory);
             }
-            this->players.at(2)->setTerritories({});
-            cout << "All " << this->players.at(2)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
-        }
-        if (turn == 4) {
-            for (Territory* territory : this->players.at(1)->getTerritories()) {
-                territory->setOwner(this->players.at(0));
-                this->players.at(0)->addTerritory(territory);
-            }
-            this->players.at(1)->setTerritories({});
-            cout << "All " << this->players.at(1)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
+            this->players.at(i)->setTerritories({});
+            cout << "All " << this->players.at(i)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
         }
         //
         // Game loop continues here.
 
         if (this->currentState == executeOrders) {
-            executeOrdersPhase();
+            executeOrdersPhase(tournamentMode);
         }
         if (this->currentState == win) {
+            winningPlayer = this->players.front();
+            break;
+        }
+        if (checkMaxTurns && turn == maxTurns) {
+            // Here, the win state is being used to signal that a game ended successfully, albeit on a draw.
+            this->transition(win);
+            winningPlayer = nullptr;
+
             break;
         }
         turn++;
+    }
+
+    // Clean up after the game
+    vector<Player*> playersToCleanUp = tournamentMode ? tournamentPlayers : players;
+    for (Player* player : playersToCleanUp) {
+        player->setTerritories({});
+//        delete player->getHand();
+        while(player->getOrdersList()->getSize() > 0) {
+            player->getOrdersList()->removeOrder(0);
+        }
+        player->setReinforcementPool(0);
+        player->setEntitledToCard(false);
+    }
+    delete this->map;
+    map = nullptr;
+
+    // Start next tournament game right away
+    if (tournamentMode) {
+        return;
     }
 
     // Get the command from the console on game win
@@ -873,18 +898,22 @@ void GameEngine::mainGameLoop() {
     while(true) {
         command = this->commandProcessor->getCommand();
         if (commandProcessor->validate(command)) {
-            Player* winningPlayer = this->players.front();
-            command->saveEffect("player" + winningPlayer->getName() + " has won");
-
-            // Clean up memory on game end
-            delete winningPlayer;
-            winningPlayer = nullptr;
-            delete this->map;
-            map = nullptr;
-            delete this->deck;
-            deck = nullptr;
+            if (winningPlayer == nullptr) {
+                command->saveEffect("game ended in a draw");
+            } else {
+                command->saveEffect("player" + winningPlayer->getName() + " has won");
+            }
 
             break;
+        }
+    }
+
+    // Clean up remaining players, if this is not a tournament.
+    if(!tournamentMode) {
+        while(players.size() > 0) {
+            delete players.at(0);
+            players.at(0) = nullptr;
+            players.erase(players.begin());
         }
     }
 
@@ -912,7 +941,7 @@ void GameEngine::updatePlayersAllyAndOpponentLists() {
     }
 }
 
-vector<int> GameEngine::checkAndEliminatePlayers() {
+vector<int> GameEngine::checkAndEliminatePlayers(bool tournamentMode) {
     vector<int> numEliminated = {};
     bool win = false;
     Player* winningPlayer;
@@ -923,7 +952,10 @@ vector<int> GameEngine::checkAndEliminatePlayers() {
         // This includes the neutral player (who for now is treated/behaves like any other player)
         if (player->getTerritories().empty()) {
             cout << "Player " << player->getName() << " was eliminated." << endl;
-            delete this->players.at(i);
+            // If this is tournament mode then we need to preserve the eliminated player
+            if (!tournamentMode) {
+                delete this->players.at(i);
+            }
             this->players.at(i) = nullptr;
             this->players.erase(this->players.begin()+i);
             numEliminated.push_back(i);
@@ -986,4 +1018,128 @@ int GameEngine::getTournamentMaxNumOfTurns() {
 
 void GameEngine::setTournamentMaxNumOfTurns(int numOfTurns) {
     tournamentMaxNumOfTurns = numOfTurns;
+}
+
+void GameEngine::tournamentStartupPhase(std::string currentMap) {
+    for (Player* pl : players) {
+    }
+
+    // Receive the command from Console input using the getCommand()
+    MapLoader mapLoader;
+
+    // Loading the map using the MapLoader object and assign the map to the game engine
+    this->map = mapLoader.readMapFile(currentMap);
+
+    // If map file does not exist, the map has to be skipped.
+    if (this->map == nullptr) {
+        cout <<"WARN: Map " << currentMap << " not found; skipping map." << endl;
+        transition(start);
+        return;
+    }
+
+    // If the map that has been loaded is invalid, the map has to be skipped.
+    if (!this->map->validate()) {
+        cout <<"WARN: Map " << currentMap << " validation unsuccessful; skipping map." << endl;
+        transition(start);
+        return;
+    }
+
+    prepareGame();
+}
+
+void GameEngine::runTournament() {
+    vector<vector<Player*>> tournamentResults;
+
+    // WILL NEED TO CHANGE TO USE ACTUAL PLAYER STRATEGIES
+    for (string strategy : getTournamentPlayerStrategies()) {
+        tournamentPlayers.push_back(new Player(strategy));
+    }
+
+    cout << "INFO: Players set! Listing players..." << endl;
+    for (Player* player : players) {
+        cout << player->getName() << endl;
+    }
+    cout << endl;
+
+    // Loop through each map in M and play G games
+    for (string currentMap : getTournamentMapFiles()) {
+        vector<Player*> mapResults;
+        cout << "INFO: Playing games for map " << currentMap << endl;
+
+        // Play a game in G
+        for (int gameNumber=0; gameNumber < getTournamentNumOfGames(); gameNumber++) {
+            cout << "INFO: Playing game " << gameNumber+1 << " of map " << currentMap << endl;
+
+            players = tournamentPlayers;
+            tournamentStartupPhase(currentMap);
+
+            // If the current state is not assignReinforcement then the startup phase has failed.
+            // Thus, the game has to be skipped.
+            if(currentState != assignReinforcement) {
+                break;
+            }
+
+            // Execute game loop
+            mainGameLoop(getTournamentMaxNumOfTurns(), true);
+
+            mapResults.push_back(winningPlayer);
+        }
+        tournamentResults.push_back(mapResults);
+    }
+
+    // Write results to gamelog.txt
+    const string logfile = "../gamelog.txt";
+    std::ofstream file;
+    // Open the gamelog file in "append" mode
+    file.open(logfile, ios::app);
+    if(file.is_open()){
+
+        file << "***************************************" << endl;
+        file << "*        TOURNAMENT RESULTS           *" << endl;
+        file << "***************************************" << endl;
+
+        file << left << setw(30) << "Map " << " | ";
+        for (int i=1; i<=getTournamentNumOfGames(); i++) {
+            file << left << setw(10) << "Game " + to_string(i) << " | ";
+        }
+        file << endl;
+        for (int i=0; i< getTournamentMapFiles().size(); i++) {
+            file << left << setw(30) << getTournamentMapFiles().at(i) << " | ";
+
+            // Size will be 0 if the map was skipped
+            if (tournamentResults.at(i).size() == 0) {
+                file << left << setw(30) << "---MAP SKIPPED---";
+            }
+
+                // Otherwise print out the results
+            else {
+                for (int j=0; j<getTournamentNumOfGames(); j++) {
+                    Player* gameWinner = tournamentResults.at(i).at(j);
+                    if (gameWinner == nullptr) {
+                        file << left << setw(10) << "DRAW ";
+                    }
+                    else {
+                        file << left << setw(10) << gameWinner->getName() << " | ";
+                    }
+                }
+            }
+            file << endl;
+        }
+        file.close();
+    }
+    else{
+        std::cout << "ERROR: gamelog.txt cannot be opened." << std::endl;
+    }
+
+
+
+    // Memory clean up for players
+    for (auto p : tournamentPlayers) {
+        delete p;
+        p = nullptr;
+    }
+    vector<Player*>().swap(tournamentPlayers);
+
+    // Not a memory leak as players use the same objects as tournamentPlayers which was cleaned above
+    vector<Player*>().swap(players);
 }

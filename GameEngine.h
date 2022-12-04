@@ -59,9 +59,11 @@ class GameEngine : public Subject, ILoggable {
 private:
     State* currentState;
     vector<Player*> players;
+    vector<Player*> tournamentPlayers;
     Map* map;
     CommandProcessor* commandProcessor;
     int turn;
+    Player* winningPlayer;
 
     Command* latestCommand;
     Deck* deck;
@@ -70,7 +72,7 @@ private:
 
     void reinforcementPhase();
     void issueOrdersPhase();
-    void executeOrdersPhase();
+    void executeOrdersPhase(bool tournamentMode);
 
     //TOURNAMENT FIELDS
     vector<string> tournamentMapFiles;
@@ -102,12 +104,13 @@ public:
     void setDeck(Deck* deck);
 
     void updatePlayersAllyAndOpponentLists();
-    vector<int> checkAndEliminatePlayers();
+    vector<int> checkAndEliminatePlayers(bool tournamentMode);
 
     string stringToLog();
 
+    void prepareGame();
     void startupPhase();
-    void mainGameLoop();
+    void mainGameLoop(int maxTurns, bool tournamentMode);
 
     //TOURNAMENT METHODS
     vector<string> getTournamentMapFiles();
@@ -120,6 +123,8 @@ public:
     void setTournamentNumOfGames(int numOfGames);
     int getTournamentMaxNumOfTurns();
     void setTournamentMaxNumOfTurns(int numOfTurns);
+    void tournamentStartupPhase(string currentMap);
+    void runTournament();
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.

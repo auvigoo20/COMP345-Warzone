@@ -33,6 +33,7 @@ public:
     void removeCard(int index);
     void playCard(int index);
     void setOwner(Player* owner);
+    Deck* getDeckList();
     void setDeckList(Deck* deckList);
     vector<Card*>* getHandList();
     ostream& printHand(ostream& output);
