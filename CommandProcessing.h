@@ -44,6 +44,7 @@ class CommandProcessor: public Subject, ILoggable{
         GameEngine* getGameEngine();
         bool validate(Command*);
         string stringToLog();
+        bool validateTournamentCommand(Command* command);
 
 };
 ostream& operator<<(ostream &strm, const CommandProcessor &c);

@@ -139,7 +139,7 @@ int testMainGameLoop() {
     hand2->setDeckList(ge->getDeck());
     hand3->setDeckList(ge->getDeck());
 
-    ge->mainGameLoop();
+    ge->mainGameLoop(0, false);
 
     return 0;
 }

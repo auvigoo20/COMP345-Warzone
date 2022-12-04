@@ -6,6 +6,7 @@
 #include "CommandProcessingDriver.h"
 #include "LoggingObserverDriver.h"
 #include "PlayerStrategiesDriver.h"
+#include "TournamentDriver.h"
 #include <string>
 
 int main(int argc, char** argv){
@@ -16,13 +17,14 @@ int main(int argc, char** argv){
 //        testMainGameLoop();
 //        testLoggingObserver();
             testPlayerStrategies();
+//        testTournament();
     }
     else{
         if(string(argv[1]) == "-console"){
-            testCommandProcessorConsole();
+            testTournament();
         }
         else if(string(argv[1]) == "-file"){
-            testCommandProcessorFile(string(argv[2]));
+            testTournamentFile(string(argv[2]));
         }
     }
 
