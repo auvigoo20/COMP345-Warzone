@@ -47,9 +47,6 @@ int testPlayerStrategies() {
     player1->getHand()->addCard(diplomacyCard);
     player1->getHand()->addCard(reinforcementCard);
 
-    HumanPlayerStrategy* humanStrategy = new HumanPlayerStrategy(player1);
-    AggressivePlayerStrategy* aggressiveStrategy = new AggressivePlayerStrategy(player1);
-    player1->setPlayerStrategy(aggressiveStrategy);
 
     Continent* continent =  new Continent("Africa", 12);
     Territory* ownedTerritory1 = new Territory("ownedTerritory1", 1, 1, continent);
@@ -68,6 +65,14 @@ int testPlayerStrategies() {
     ownedTerritory1->addAdjacentTerritory(alliedAdjacentTer);
 
 
+    HumanPlayerStrategy* humanStrategy = new HumanPlayerStrategy(player1);
+    AggressivePlayerStrategy* aggressivePlayerStrategy = new AggressivePlayerStrategy(player1);
+    CheaterPlayerStrategy* cheaterStrategy = new CheaterPlayerStrategy(player1);
+    NeutralPlayerStrategy* neutralStrategy = new NeutralPlayerStrategy(player2);
+
+    cout << " --- Testing human player strategy ---" << endl;
+
+    player1->setPlayerStrategy(humanStrategy);
     bool endPhase = false;
     while(!endPhase) {
         endPhase = player1->issueOrder(true);
@@ -77,6 +82,45 @@ int testPlayerStrategies() {
     while(!endPhase) {
         endPhase = player1->issueOrder(false);
     }
+
+    cout << " --- Testing aggressive player strategy ---" << endl;
+
+    player1->setPlayerStrategy(aggressivePlayerStrategy);
+    endPhase = false;
+    while(!endPhase) {
+        endPhase = player1->issueOrder(true);
+    }
+
+    endPhase = false;
+    while(!endPhase) {
+        endPhase = player1->issueOrder(false);
+    }
+
+    cout << " --- Testing cheating player strategy ---" << endl;
+    player1->setPlayerStrategy(cheaterStrategy);
+    player1->setReinforcementPool(10);
+    endPhase = false;
+    while(!endPhase) {
+        endPhase = player1->issueOrder(true);
+    }
+
+    endPhase = false;
+    while(!endPhase) {
+        endPhase = player1->issueOrder(false);
+    }
+
+
+    cout << " --- Testing neutral player strategy ---" << endl;
+    player1->removeTerritory(enemyTerritory1);
+    enemyTerritory1->setOwner(player2);
+    player2->addTerritory(enemyTerritory1);
+    player1->setReinforcementPool(10);
+    player2->setPlayerStrategy(neutralStrategy);
+
+    // Create offensive advance order on player2 who is now 'Neutral'
+    Advance* advanceOrder = new Advance(player1, 10, ownedTerritory1, enemyTerritory1);
+    // Should change player2 strategy to aggressive.
+    advanceOrder->execute();
 
     return 0;
 }

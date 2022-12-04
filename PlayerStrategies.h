@@ -7,6 +7,7 @@ public:
     virtual vector<Territory*> toAttack() = 0;
     virtual vector<Territory*> toDefend() = 0;
     virtual bool issueOrder(bool isDeployPhase) = 0;
+    virtual string getStrategyType() = 0;
     virtual ~PlayerStrategy() = default;
 
     virtual Player* getPlayer() = 0;
@@ -30,6 +31,7 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     friend ostream& operator<<(ostream& output, NeutralPlayerStrategy& s);
@@ -50,6 +52,7 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     friend ostream& operator<<(ostream& output, AggressivePlayerStrategy& s);
@@ -70,6 +73,7 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     friend ostream& operator<<(ostream& output, BenevolentPlayerStrategy& s);
@@ -89,6 +93,7 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     Player* player;
@@ -121,9 +126,12 @@ public:
 
     void setPlayer(Player* player) override;
     Player* getPlayer() override;
+    string getStrategyType() override;
 
 private:
     Player* player;
+
+    bool issueDeployOrder();
 };
 
 void printTerritoryVector(const vector<Territory*>& v);
