@@ -70,7 +70,7 @@ int testPlayerStrategies() {
     CheaterPlayerStrategy* cheaterStrategy = new CheaterPlayerStrategy(player1);
     NeutralPlayerStrategy* neutralStrategy = new NeutralPlayerStrategy(player2);
 
-    cout << " --- Testing human player strategy ---" << endl;
+    cout << "\n --- Testing human player strategy ---" << endl;
 
     player1->setPlayerStrategy(humanStrategy);
     bool endPhase = false;
@@ -83,7 +83,7 @@ int testPlayerStrategies() {
         endPhase = player1->issueOrder(false);
     }
 
-    cout << " --- Testing aggressive player strategy ---" << endl;
+    cout << "\n --- Testing aggressive player strategy ---" << endl;
 
     player1->setPlayerStrategy(aggressivePlayerStrategy);
     endPhase = false;
@@ -96,7 +96,7 @@ int testPlayerStrategies() {
         endPhase = player1->issueOrder(false);
     }
 
-    cout << " --- Testing cheating player strategy ---" << endl;
+    cout << "\n --- Testing cheating player strategy ---" << endl;
     player1->setPlayerStrategy(cheaterStrategy);
     player1->setReinforcementPool(10);
     endPhase = false;
@@ -110,17 +110,19 @@ int testPlayerStrategies() {
     }
 
 
-    cout << " --- Testing neutral player strategy ---" << endl;
+    cout << "\n --- Testing neutral player strategy ---" << endl;
     player1->removeTerritory(enemyTerritory1);
     enemyTerritory1->setOwner(player2);
     player2->addTerritory(enemyTerritory1);
     player1->setReinforcementPool(10);
     player2->setPlayerStrategy(neutralStrategy);
+    cout << "Player 2 strategy type: " << player2->getPlayerStrategy()->getStrategyType() << endl;
 
     // Create offensive advance order on player2 who is now 'Neutral'
     Advance* advanceOrder = new Advance(player1, 10, ownedTerritory1, enemyTerritory1);
     // Should change player2 strategy to aggressive.
     advanceOrder->execute();
+    cout << "Player 2 strategy type: " << player2->getPlayerStrategy()->getStrategyType() << endl;
 
     return 0;
 }

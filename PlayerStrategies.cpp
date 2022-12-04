@@ -237,9 +237,10 @@ void HumanPlayerStrategy::issueAdvanceOrder()
         Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
         sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
         player->getOrdersList()->addOrder(advanceOrder);
-        cout << "Advance order issued for player " << player->getName() << ". ";
+        cout << "Advance order issued for player " << player->getName() << ". " << endl;
         cout << numArmies << " advanced from " << sourceTer->getName() << " to ";
         cout << targetTer->getName() << "." << endl;
+        cout << "***" << endl;
     }
     else if (advanceType == 2) {
         //Offensive advance order (to enemy territory)
@@ -257,9 +258,10 @@ void HumanPlayerStrategy::issueAdvanceOrder()
         Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
         sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
         player->getOrdersList()->addOrder(advanceOrder);
-        cout << "Advance order issued for player " << player->getName() << ".\n";
+        cout << "Advance order issued for player " << player->getName() << endl;
         cout << numArmies << " to be advanced from " << sourceTer->getName() << " to ";
         cout << targetTer->getName() << "." << endl;
+        cout << "***" << endl;
     }
 }
 
@@ -286,9 +288,10 @@ void HumanPlayerStrategy::issueAirliftOrder(int cardIndex)
     sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
     //Plays the card and issues the order.
     currentCard->play(player, numArmies, sourceTer, targetTer);
-    cout << "Airlift order issued for player " << player->getName() << ".\n";
+    cout << "Airlift order issued for player " << player->getName() << endl;
     cout << numArmies << " to be airlifted from " << sourceTer->getName() << " to ";
     cout << targetTer->getName() << "." << endl;
+    cout << "***" << endl;
 }
 
 /**
@@ -310,9 +313,10 @@ void HumanPlayerStrategy::issueBombOrder(int cardIndex)
     BombCard* currentCard = dynamic_cast<BombCard*>(player->getHand()->getHandList()->at(cardIndex));
     //Plays the card and issues the order.
     currentCard->play(player, targetTer);
-    cout << "Bomb order issued for player " << player->getName() << ".\n";
+    cout << "Bomb order issued for player " << player->getName() << endl;
     cout << "Bomb to be thrown at enemy territory " << targetTer->getName();
     cout << " owned by " << targetTer->getOwner()->getName() << "." << endl;
+    cout << "***" << endl;
 }
 
 /**
@@ -334,8 +338,9 @@ void HumanPlayerStrategy::issueBlockadeOrder(int cardIndex)
     BlockadeCard* currentCard = dynamic_cast<BlockadeCard*>(player->getHand()->getHandList()->at(cardIndex));
     //Plays the card and issues the order.
     currentCard->play(player, targetTer);
-    cout << "Blockade order issued for player " << player->getName() << ".\n";
+    cout << "Blockade order issued for player " << player->getName() << endl;
     cout << "Blockade to be effective on territory " << targetTer->getName() << endl;
+    cout << "***" << endl;
 }
 
 
@@ -374,8 +379,9 @@ void HumanPlayerStrategy::issueNegotiateOrder(int cardIndex)
     DiplomacyCard* currentCard = dynamic_cast<DiplomacyCard*>(player->getHand()->getHandList()->at(cardIndex));
     //Plays the card and issues the order.
     currentCard->play(player, targetPlayer);
-    cout << "Diplomacy order issued for player " << player->getName() << ".\n";
+    cout << "Diplomacy order issued for player " << player->getName() << endl;
     cout << "Negotiation order issued on " << targetPlayer->getName() << "." << endl;
+    cout << "***" << endl;
 }
 
 
@@ -996,6 +1002,7 @@ bool CheaterPlayerStrategy::issueOrder(bool isDeployPhase)
         player->addTerritory(adjacentTerritory);
         cout << adjacentTerritory->getName() << " was wrongfully taken by ";
         cout << player->getName() << "!" << endl;
+        cout << "***" << endl;
     }
    // Does not issue any other kind of orders but issue orders.
    return true;
@@ -1019,8 +1026,9 @@ bool CheaterPlayerStrategy::issueDeployOrder()
     player->getOrdersList()->addOrder(deployOrder);
     player->setReinforcementPool(this->player->getReinforcementPool() - numArmies);
     targetTer->setTempNumOfArmies(targetTer->getTempNumOfArmies() + numArmies);
-    cout << "Deploy order issued for player " << player->getName() << ".\n";
+    cout << "Deploy order issued for player " << player->getName() << endl;
     cout  << numArmies << " units to be deployed on " << targetTer->getName() << "." << endl;
+    cout << "***" << endl;
 
     //Verify if other deploy orders can be issued. If not return false.
     if(player->getReinforcementPool() == 0) {
