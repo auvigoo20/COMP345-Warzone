@@ -248,6 +248,7 @@ void Deploy::execute()
 {
     if(!validate()) {
        cout << "Invalid Order; Deploy not executed." << endl;
+       this->targetTerritory->setTempNumOfArmies(this->targetTerritory->getNumOfArmies());
     } else {
         this->targetTerritory->setNumOfArmies(this->targetTerritory->getNumOfArmies() + this->numOfArmies);
         printOrder(cout);
@@ -393,6 +394,7 @@ void Advance::attackSimulation() const {
         cout << "Territory successfully defended !" << endl;
         targetTerritory->setNumOfArmies(remainingDefenders);
         sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() + remainingAttackers);
+        sourceTerritory->setTempNumOfArmies(this->sourceTerritory->getNumOfArmies());
     }
 }
 
@@ -403,6 +405,7 @@ void Advance::execute()
 {
    if(!validate()) {
        cout << "Invalid Order; Advance not executed." << endl;
+       this->sourceTerritory->setTempNumOfArmies(this->sourceTerritory->getNumOfArmies());
    } else if(targetTerritory->getOwner() == sourceTerritory->getOwner()) {
        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
@@ -717,6 +720,7 @@ void Airlift::execute()
 {
     if(!validate()) {
         cout << "Invalid Order; Airlift not executed." << endl;
+        sourceTerritory->setTempNumOfArmies(sourceTerritory->getNumOfArmies());
     } else {
         sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);

@@ -44,12 +44,16 @@ Player::Player(string name, Hand* hand, OrdersList* ordersList, int reinforcemen
     this->hand = hand;
     this->orderList = ordersList;
     this->reinforcementPool = reinforcementPool;
+    this->entitledToCard = false;
+    this->strategy = nullptr;
 }
 
 Player::Player(std::string name) {
     this->name = name;
     this->hand = new Hand();
     this->orderList = new OrdersList();
+    this->entitledToCard = false;
+    this->strategy = nullptr;
 }
 
 /**
@@ -70,6 +74,8 @@ Player::Player(const Player &p){
     for(auto player: p.opponentPlayerList){
         opponentPlayerList.push_back(player);
     }
+    this->strategy = p.strategy;
+    strategy->setPlayer(this);
 }
 
 /**
@@ -92,6 +98,7 @@ Player& Player::operator=(const Player &p) {
         opponentPlayerList.push_back(player);
     }
     this->strategy = p.strategy;
+    strategy->setPlayer(this);
     return *this;
 }
 
@@ -161,8 +168,12 @@ void Player::setOpponentPlayerList(vector<Player *> opponentPlayerList) {
 
 void Player::setPlayerStrategy(PlayerStrategy *ps)
 {
-    if()
-    this->strategy = ps;
+    if(strategy == nullptr) {
+        this->strategy = ps;
+    } else {
+        delete strategy;
+        this->strategy = ps;
+    }
 }
 
 /**

@@ -1,4 +1,5 @@
 #include "PlayerStrategies.h"
+#include "Player.h"
 
 using std::find;
 using std::tolower;
@@ -6,6 +7,8 @@ using std::tolower;
 // Human Player Strategy
 
 // Constructors
+
+
 
 HumanPlayerStrategy::HumanPlayerStrategy()
 {
@@ -32,21 +35,9 @@ HumanPlayerStrategy::~HumanPlayerStrategy()
 {
 }
 
-/**
- * Assignment Operator
- * @param s
- * @return
- */
-HumanPlayerStrategy& HumanPlayerStrategy::operator=(const HumanPlayerStrategy& s) {
-    if(this != &s) {
-        this->player = s.player;
-    }
-    return *this;
-}
-
 ostream& operator<<(ostream& output, HumanPlayerStrategy& s)
 {
-    output << "Human Player Strategy" << endl;
+    return output << "Human Player Strategy" << endl;
 }
 
 
@@ -188,8 +179,9 @@ bool HumanPlayerStrategy::issueDeployOrder()
     Deploy *deployOrder = new Deploy(player, numArmies, targetTer);
     player->getOrdersList()->addOrder(deployOrder);
     player->setReinforcementPool(this->player->getReinforcementPool() - numArmies);
+    targetTer->setTempNumOfArmies(targetTer->getTempNumOfArmies() + numArmies);
     cout << "Deploy order issued for player " << player->getName() << ".\n";
-    cout  << numArmies << "to be deployed on " << targetTer->getName() << "." << endl;
+    cout  << numArmies << " units to be deployed on " << targetTer->getName() << "." << endl;
 
     //Verify if other deploy orders can be issued. If not return false.
     if(player->getReinforcementPool() == 0) {
@@ -206,12 +198,12 @@ bool HumanPlayerStrategy::issueDeployOrder()
  */
 void HumanPlayerStrategy::issueAdvanceOrder()
 {
-    cout << " --- Advance Order --- \n\n" << endl;
+    cout << " --- Advance Order --- \n" << endl;
     int advanceType;
     while(true) {
         cout << "Do you wish to:\n";
         cout << "\t1 - Defend (move armies to a territory you own.\n";
-        cout << "\t2 -  Attack (move armies to an enemy territory." << endl;
+        cout << "\t2 - Attack (move armies to an enemy territory." << endl;
         cout << "Choose option 1 or 2: ";
         cin >> advanceType;
         cout << endl;
@@ -235,6 +227,7 @@ void HumanPlayerStrategy::issueAdvanceOrder()
 
         // Create Order
         Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
+        sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
         player->getOrdersList()->addOrder(advanceOrder);
         cout << "Advance order issued for player " << player->getName() << ". ";
         cout << numArmies << " advanced from " << sourceTer->getName() << " to ";
@@ -254,6 +247,7 @@ void HumanPlayerStrategy::issueAdvanceOrder()
 
         // Create Order
         Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
+        sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
         player->getOrdersList()->addOrder(advanceOrder);
         cout << "Advance order issued for player " << player->getName() << ".\n";
         cout << numArmies << " to be advanced from " << sourceTer->getName() << " to ";
@@ -281,6 +275,7 @@ void HumanPlayerStrategy::issueAirliftOrder(int cardIndex)
     // Remove the card from the handlist and add it back to the decklist
     player->getHand()->playCard(cardIndex);
     AirliftCard* currentCard = dynamic_cast<AirliftCard*>(player->getHand()->getHandList()->at(cardIndex));
+    sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
     //Plays the card and issues the order.
     currentCard->play(player, numArmies, sourceTer, targetTer);
     cout << "Airlift order issued for player " << player->getName() << ".\n";
@@ -375,6 +370,12 @@ void HumanPlayerStrategy::issueNegotiateOrder(int cardIndex)
     cout << "Negotiation order issued on " << targetPlayer->getName() << "." << endl;
 }
 
+
+void HumanPlayerStrategy::issueReinforcementOrder(int index)
+{
+
+}
+
 /**
  * Allows human player to select a territory from a list of
  * territory pointers and return said pointer.
@@ -410,12 +411,11 @@ int HumanPlayerStrategy::chooseNumArmies(Territory *sourceTerritory)
 {
     int numArmies;
     while(true) {
-        cout << "Specify the number of armies to advance (between 1 and ";
-        cout << sourceTerritory->getNumOfArmies() << "). :";
+        cout << "Specify the number of armies:";
         cin >> numArmies;
         cout << endl;
 
-        if(numArmies <= 0 || numArmies > sourceTerritory->getNumOfArmies()) {
+        if(numArmies <= 0) {
             cout << "Invalid input !" << endl;
             continue;
         }
@@ -435,7 +435,7 @@ void HumanPlayerStrategy::getAvailableOptions()
     cout << " - Advance order." << endl;
     if(!player->getHand()->getHandList()->empty()) {
         for(auto* card: *player->getHand()->getHandList()) {
-            cout << " - " << card << "." << endl;
+            cout << " - " << *card << endl;
         }
     }
     cout << "Enter '-h' for help." << endl;
@@ -513,21 +513,10 @@ AggressivePlayerStrategy::~AggressivePlayerStrategy()
 {
 }
 
-/**
- * Assignment Operator
- * @param s
- * @return
- */
-AggressivePlayerStrategy& AggressivePlayerStrategy::operator=(const AggressivePlayerStrategy& s) {
-    if(this != &s) {
-        this->player = s.player;
-    }
-    return *this;
-}
-
 ostream& operator<<(ostream& output, AggressivePlayerStrategy& s)
 {
     output << "Aggressive Player Strategy" << endl;
+    return output;
 }
 
 // Getters and setters
@@ -541,6 +530,21 @@ Player* AggressivePlayerStrategy::getPlayer()
 void AggressivePlayerStrategy::setPlayer(Player *player)
 {
     this->player = player;
+}
+
+vector<Territory*> AggressivePlayerStrategy::toDefend()
+{
+    return player->getTerritories();
+}
+
+vector<Territory*> AggressivePlayerStrategy::toAttack()
+{
+    return player->getTerritories();
+}
+
+bool AggressivePlayerStrategy::issueOrder(bool isDeployPhase)
+{
+    return true;
 }
 
 
@@ -573,21 +577,10 @@ BenevolentPlayerStrategy::~BenevolentPlayerStrategy()
 {
 }
 
-/**
- * Assignment Operator
- * @param s
- * @return
- */
-BenevolentPlayerStrategy& BenevolentPlayerStrategy::operator=(const BenevolentPlayerStrategy& s) {
-    if(this != &s) {
-        this->player = s.player;
-    }
-    return *this;
-}
-
 ostream& operator<<(ostream& output, BenevolentPlayerStrategy& s)
 {
     output << "Benevolent Player Strategy" << endl;
+    return output;
 }
 
 // Getters and setters
@@ -601,6 +594,21 @@ Player* BenevolentPlayerStrategy::getPlayer()
 void BenevolentPlayerStrategy::setPlayer(Player *player)
 {
     this->player = player;
+}
+
+vector<Territory*> BenevolentPlayerStrategy::toDefend()
+{
+    return player->getTerritories();
+}
+
+vector<Territory*> BenevolentPlayerStrategy::toAttack()
+{
+    return player->getTerritories();
+}
+
+bool BenevolentPlayerStrategy::issueOrder(bool isDeployPhase)
+{
+    return true;
 }
 
 
@@ -633,21 +641,10 @@ NeutralPlayerStrategy::~NeutralPlayerStrategy()
 {
 }
 
-/**
- * Assignment Operator
- * @param s
- * @return
- */
-NeutralPlayerStrategy& NeutralPlayerStrategy::operator=(const NeutralPlayerStrategy& s) {
-    if(this != &s) {
-        this->player = s.player;
-    }
-    return *this;
-}
-
 ostream& operator<<(ostream& output, NeutralPlayerStrategy& s)
 {
     output << "Neutral Player Strategy" << endl;
+    return output;
 }
 
 // Getters and setters
@@ -658,9 +655,25 @@ Player* NeutralPlayerStrategy::getPlayer()
 }
 
 
-void NeutralPlayerStrategy::setPlayer(Player *player)
+void NeutralPlayerStrategy::setPlayer(Player* p)
 {
-    this->player = player;
+    this->player = p;
+}
+
+
+vector<Territory*> NeutralPlayerStrategy::toDefend()
+{
+    return player->getTerritories();
+}
+
+vector<Territory*> NeutralPlayerStrategy::toAttack()
+{
+    return player->getTerritories();
+}
+
+bool NeutralPlayerStrategy::issueOrder(bool isDeployPhase)
+{
+    return true;
 }
 
 
@@ -692,21 +705,11 @@ CheaterPlayerStrategy::~CheaterPlayerStrategy()
 {
 }
 
-/**
- * Assignment Operator
- * @param s
- * @return
- */
-CheaterPlayerStrategy& CheaterPlayerStrategy::operator=(const CheaterPlayerStrategy& s) {
-    if(this != &s) {
-        this->player = s.player;
-    }
-    return *this;
-}
 
 ostream& operator<<(ostream& output, CheaterPlayerStrategy& s)
 {
     output << "Cheater Player Strategy" << endl;
+    return output;
 }
 
 
@@ -723,12 +726,28 @@ void CheaterPlayerStrategy::setPlayer(Player *player)
     this->player = player;
 }
 
+vector<Territory*> CheaterPlayerStrategy::toDefend()
+{
+    return player->getTerritories();
+}
+
+vector<Territory*> CheaterPlayerStrategy::toAttack()
+{
+    return player->getTerritories();
+}
+
+bool CheaterPlayerStrategy::issueOrder(bool isDeployPhase)
+{
+    return true;
+}
+
 /**
  * Given a vector of territories, prints them with an index.
  */
 void printTerritoryVector(const vector<Territory*>& v) {
     int i = 1;
     for(auto* territory: v) {
-        cout << i << " - " << territory->getName() << " : " << territory->getNumOfArmies() << endl;
+        cout << i << " - " << territory->getName() << " - Available units :" << territory->getTempNumOfArmies() << endl;
+        i++;
     }
 }

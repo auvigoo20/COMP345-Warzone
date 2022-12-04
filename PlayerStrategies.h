@@ -1,14 +1,16 @@
 #pragma once
 
 #include "Map.h"
-#include "Player.h"
 
 class PlayerStrategy{
 public:
     virtual vector<Territory*> toAttack() = 0;
     virtual vector<Territory*> toDefend() = 0;
     virtual bool issueOrder(bool isDeployPhase) = 0;
-    virtual ~PlayerStrategy() = 0;
+    virtual ~PlayerStrategy() = default;
+
+    virtual Player* getPlayer() = 0;
+    virtual void setPlayer(Player* p) = 0;
 
 private:
     Player* player;
@@ -33,10 +35,9 @@ public:
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
     bool issueOrder(bool isDeployPhase) override;
-    NeutralPlayerStrategy& operator=(const NeutralPlayerStrategy& s);
 
-    void setPlayer(Player* player);
-    Player* getPlayer();
+    void setPlayer(Player* player) override;
+    Player* getPlayer() override;
 
 private:
     friend ostream& operator<<(ostream& output, NeutralPlayerStrategy& s);
@@ -54,15 +55,15 @@ public:
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
     bool issueOrder(bool isDeployPhase) override;
-    AggressivePlayerStrategy& operator=(const AggressivePlayerStrategy& s);
 
-    void setPlayer(Player* player);
-    Player* getPlayer();
+    void setPlayer(Player* player) override;
+    Player* getPlayer() override;
 
 private:
     friend ostream& operator<<(ostream& output, AggressivePlayerStrategy& s);
     Player* player;
 };
+
 
 class BenevolentPlayerStrategy: public PlayerStrategy {
 public:
@@ -74,10 +75,9 @@ public:
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
     bool issueOrder(bool isDeployPhase) override;
-    BenevolentPlayerStrategy& operator=(const BenevolentPlayerStrategy& s);
 
-    void setPlayer(Player* player);
-    Player* getPlayer();
+    void setPlayer(Player* player) override;
+    Player* getPlayer() override;
 
 private:
     friend ostream& operator<<(ostream& output, BenevolentPlayerStrategy& s);
@@ -94,10 +94,9 @@ public:
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
     bool issueOrder(bool isDeployPhase) override;
-    HumanPlayerStrategy& operator=(const HumanPlayerStrategy& s);
 
-    void setPlayer(Player* player);
-    Player* getPlayer();
+    void setPlayer(Player* player) override;
+    Player* getPlayer() override;
 
 private:
     Player* player;
@@ -127,13 +126,13 @@ public:
     vector<Territory*> toAttack() override;
     vector<Territory*> toDefend() override;
     bool issueOrder(bool isDeployPhase) override;
-    CheaterPlayerStrategy& operator=(const CheaterPlayerStrategy& s);
 
-    void setPlayer(Player* player);
-    Player* getPlayer();
+    void setPlayer(Player* player) override;
+    Player* getPlayer() override;
 
 private:
     Player* player;
 };
 
-void printTerritoryVector(const vector<Territory*> v);
+void printTerritoryVector(const vector<Territory*>& v);
+
