@@ -160,6 +160,10 @@ void Hand::setOwner(Player* p) {
     this->owner = p;
 }
 
+Deck *Hand::getDeckList() {
+    return deckList;
+}
+
 void Hand::setDeckList(Deck *deckList) {
     this->deckList = deckList;
 }
@@ -182,9 +186,17 @@ Hand& Hand::operator=(const Hand &h)
 
 Hand::~Hand()
 {
-    for(auto card: handList){
-        this->deckList->addCard(card);
+    if (deckList != nullptr) {
+        for(auto card: handList){
+            this->deckList->addCard(card);
+        }
+    } else {
+        for (auto card : handList) {
+            delete card;
+            card = nullptr;
+        }
     }
+
     //Swapping content to a non-instantiated vector will deallocate its memory.
     vector<Card*>().swap(this->handList);
 }

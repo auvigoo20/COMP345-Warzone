@@ -59,9 +59,11 @@ class GameEngine : public Subject, ILoggable {
 private:
     State* currentState;
     vector<Player*> players;
+    vector<Player*> tournamentPlayers;
     Map* map;
     CommandProcessor* commandProcessor;
     int turn;
+    Player* winningPlayer;
 
     Command* latestCommand;
     Deck* deck;
@@ -70,7 +72,15 @@ private:
 
     void reinforcementPhase();
     void issueOrdersPhase();
-    void executeOrdersPhase();
+    void executeOrdersPhase(bool tournamentMode);
+
+    //TOURNAMENT FIELDS
+    vector<string> tournamentMapFiles;
+    vector<string> tournamentPlayerStrategies;
+    int tournamentNumOfGames;
+    int tournamentMaxNumOfTurns;
+
+
 public:
     GameEngine();
     GameEngine(const GameEngine &g);
@@ -94,15 +104,27 @@ public:
     void setDeck(Deck* deck);
 
     void updatePlayersAllyAndOpponentLists();
-    vector<int> checkAndEliminatePlayers();
+    vector<int> checkAndEliminatePlayers(bool tournamentMode);
 
     string stringToLog();
 
-    // Startup Phase method
+    void prepareGame();
     void startupPhase();
+    void mainGameLoop(int maxTurns, bool tournamentMode);
 
-    // Main game loop
-    void mainGameLoop();
+    //TOURNAMENT METHODS
+    vector<string> getTournamentMapFiles();
+    void addTournamentMapFile(string filename);
+    void setTournamentMapFiles(vector<string> tournamentMapFiles);
+    vector<string> getTournamentPlayerStrategies();
+    void addTournamentPlayerStrategy(string strategy);
+    void setTournamentPlayerStrategies(vector<string> tournamentPlayerStrategies);
+    int getTournamentNumOfGames();
+    void setTournamentNumOfGames(int numOfGames);
+    int getTournamentMaxNumOfTurns();
+    void setTournamentMaxNumOfTurns(int numOfTurns);
+    void tournamentStartupPhase(string currentMap);
+    void runTournament();
 
     // Since the States and Transitions will be the same for any/all GameEngines, they are made static.
     // However, since the States and Transition depend on each other, they cannot be made both const and static.
@@ -126,4 +148,5 @@ public:
     static Transition* winTransition;
     static Transition* quitTransition;
     static Transition* replayTransition;
+    static Transition* tournamentTransition;
 };

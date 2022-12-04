@@ -1,0 +1,1 @@
+tournament -M ../map_files/abc_valid.map ../map_files/canada_valid.map -P cheater aggressive benevolent -G 3 -D 15

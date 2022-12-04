@@ -92,7 +92,7 @@ int testOrdersLists(){
     //Testing Orders execute function:
     cout << "Testing Orders execute function:" << endl;
     cout << "All orders in list1 must be validated and executed in order." << endl;
-    for(int i = 1; i <= list1->getSize(); i++) {
+    for(int i = 0; i <= list1->getSize(); i++) {
         cout << i << " - ";
         list1->getOrder(i)->execute();
         cout << endl;
