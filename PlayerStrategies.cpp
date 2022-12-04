@@ -1,6 +1,7 @@
 #include "PlayerStrategies.h"
 #include "Player.h"
 
+#include <algorithm>
 using std::find;
 using std::tolower;
 
@@ -532,19 +533,210 @@ void AggressivePlayerStrategy::setPlayer(Player *player)
     this->player = player;
 }
 
-vector<Territory*> AggressivePlayerStrategy::toDefend()
-{
-    return player->getTerritories();
-}
-
+/**
+ * Method to get the list of territories an Aggressive player should attack
+ * @return A list of territories to advance to
+ */
 vector<Territory*> AggressivePlayerStrategy::toAttack()
 {
-    return player->getTerritories();
+    vector<Territory*> toAttack;
+
+    for(Territory* ownedTerritory: this->player->getTerritories()) {
+        for (Territory* adjacentTerritory: ownedTerritory->getAdjacentTerritories()) {
+            if (adjacentTerritory->getOwner() != this->player &&
+                find(toAttack.begin(), toAttack.end(), adjacentTerritory) == toAttack.end()) {
+                toAttack.push_back(adjacentTerritory);
+            }
+        }
+    }
+    return toAttack;
+}
+
+/**
+ * Method to get the list of territories an Aggressive player should defend.
+ * For an aggressive player this will only be their strongest.
+ * @return The strongest country the player has
+ */
+vector<Territory*> AggressivePlayerStrategy::toDefend()
+{
+    // Find the territories adjacent to enemy territories
+    vector<Territory*> adjacentToEnemy;
+    for (Territory* t : this->player->getTerritories()) {
+        for (Territory* adjacent : t->getAdjacentTerritories()) {
+            if (adjacent->getOwner() != this->player) {
+                adjacentToEnemy.push_back(t);
+                break;
+            }
+        }
+    }
+
+    // Find the strongest territory
+    Territory* strongest = adjacentToEnemy.front();
+    for (Territory* t : adjacentToEnemy) {
+        if (t->getNumOfArmies() > strongest->getNumOfArmies()) {
+            strongest = t;
+        }
+    }
+
+    // Return list containing just the strongest
+    return vector<Territory*>({strongest});
 }
 
 bool AggressivePlayerStrategy::issueOrder(bool isDeployPhase)
 {
-    return true;
+    if (isDeployPhase) {
+        // Deploy to the strongest territory
+        Territory* strongest = toDefend().front();
+        int numArmies = player->getReinforcementPool();
+        Deploy* deployOrder = new Deploy (player, numArmies, strongest);
+
+        player->getOrdersList()->addOrder(deployOrder);
+        player->setReinforcementPool(player->getReinforcementPool() - numArmies);
+        strongest->setTempNumOfArmies(strongest->getTempNumOfArmies() + numArmies);
+
+        cout << "Deploy order issued for player " << player->getName() << endl;
+        cout  << numArmies << " units to be deployed on " << strongest->getName() << "." << endl;
+        cout << "***" << endl;
+
+        // This is the only deploy order the aggressive player will make
+        return true;
+    }
+
+    // Play a card if applicable
+    else if (!player->getHand()->getHandList()->empty()) {
+        Card *cardToPlay = player->getHand()->getHandList()->front();
+        string cardType = cardToPlay->getCardType();
+
+        // Bomb an arbitrary adjacent enemy territory
+        if (cardType == "bomb") {
+            Territory *toBomb = toAttack().front();
+            player->getHand()->playCard(0);
+            dynamic_cast<BombCard *>(cardToPlay)->play(player, toBomb);
+
+            cout << "Bomb order issued for player " << player->getName() << endl;
+            cout << "Bomb to be thrown at enemy territory " << toBomb->getName();
+            cout << " owned by " << toBomb->getOwner()->getName() << "." << endl;
+            cout << "***" << endl;
+        }
+
+        // Simply play a reinforcement card
+        else if (cardType == "reinforcement") {
+            player->getHand()->playCard(0);
+            dynamic_cast<ReinforcementCard *>(cardToPlay)->play(player);
+
+            cout << "Reinforcement order issued for player " << player->getName() << endl;
+            cout << "Player now has " << player->getReinforcementPool() << " available troops." << endl;
+            cout << "***" << endl;
+        }
+
+        // Use blockade on an arbitrary owned territory that isn't the strongest
+        else if (cardType == "blockade") {
+            for (Territory *t: player->getTerritories()) {
+                if (t != toDefend().front()) {
+                    player->getHand()->playCard(0);
+                    dynamic_cast<BlockadeCard *>(cardToPlay)->play(player, t);
+
+                    cout << "Blockade order issued for player " << player->getName() << endl;
+                    cout << "Blockade to be effective on territory " << t->getName() << endl;
+                    cout << "***" << endl;
+
+                    // No need to go through any more territories once we use the card.
+                    break;
+                }
+            }
+        }
+
+        else if (cardType == "airlift") {
+            // Find a "stuck" territory (ie one that is not adjacent to any enemy territories)
+            // and airlift its troops to our strongest
+            Territory* strongest = toDefend().front();
+            Territory* source = nullptr;
+
+            for (Territory* t : player->getTerritories()) {
+                source = t;
+
+                // Check if the source territory has an adjacent enemy territory
+                // If it does then don't use it as our source
+                for (Territory* adj : t->getAdjacentTerritories()) {
+                    if (adj->getOwner() != player) {
+                        source = nullptr;
+                        break;
+                    }
+                }
+
+                // If our source territory isn't null anymore then we have found a suitable territory
+                if (source != nullptr) {
+                    break;
+                }
+            }
+
+            // If source is still nullptr then no "stuck" territories were found; pick the second-strongest territory
+            if (source == nullptr) {
+                // Find the territories adjacent to enemy territories
+                vector<Territory*> adjacentToEnemy;
+                for (Territory* t : this->player->getTerritories()) {
+                    for (Territory* adjacent : t->getAdjacentTerritories()) {
+                        if (adjacent->getOwner() != this->player) {
+                            adjacentToEnemy.push_back(t);
+                            break;
+                        }
+                    }
+                }
+
+                // Find the second-strongest territory, to use as source
+                source = adjacentToEnemy.front();
+                for (Territory* t : adjacentToEnemy) {
+                    if (t->getNumOfArmies() > source->getNumOfArmies() && t != strongest) {
+                        source = t;
+                    }
+                }
+            }
+
+            int numArmies = source->getTempNumOfArmies();
+            player->getHand()->playCard(0);
+            dynamic_cast<AirliftCard *>(cardToPlay)->play(player, numArmies, source, strongest);
+
+            cout << "Airlift order issued for player " << player->getName() << endl;
+            cout << numArmies << " to be airlifted from " << source->getName() << " to ";
+            cout << strongest->getName() << "." << endl;
+            cout << "***" << endl;
+        }
+
+        // Negotiate with an arbitrary enemy player
+        else if (cardType == "negotiate") {
+            Player *toNegotiate = toAttack().back()->getOwner();
+            player->getHand()->playCard(0);
+            dynamic_cast<DiplomacyCard *>(cardToPlay)->play(player, toNegotiate);
+
+            cout << "Diplomacy order issued for player " << player->getName() << ".\n";
+            cout << "Negotiation order issued on " << toNegotiate->getName() << "." << endl;
+            cout << "***" << endl;
+        }
+    }
+
+    else {
+        // Advance all units from the strongest territory to an adjacent enemy territory
+        Territory* strongest = toDefend().front();
+        for (Territory* t : strongest->getAdjacentTerritories()) {
+            if (t->getOwner() != player) {
+                int numArmies = strongest->getTempNumOfArmies();
+                Advance* advanceOrder = new Advance(player, numArmies, strongest, t);
+                player->getOrdersList()->addOrder(advanceOrder);
+
+                cout << "Advance order issued for player " << player->getName() << "." << endl;
+                cout << numArmies << " advanced from " << strongest->getName() << " to ";
+                cout << t->getName() << "." << endl;
+                cout << "***" << endl;
+
+                // This is the only Advance order an aggressive player will make,
+                // and will also be the last order an aggressive player makes as wel.
+                return true;
+            }
+        }
+    }
+
+    // Continue issuing orders until the final order (the advance order) is issued.
+    return false;
 }
 
 

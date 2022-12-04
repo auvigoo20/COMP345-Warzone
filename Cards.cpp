@@ -316,6 +316,7 @@ string BombCard::getCardType()
  }
 
 void ReinforcementCard::play(Player* owner) {  // Reinforcement Card does not create an order
+     owner->setReinforcementPool(owner->getReinforcementPool()+5);
 }
 
 ostream& ReinforcementCard::printCard(std::ostream &output) const {

@@ -48,7 +48,8 @@ int testPlayerStrategies() {
     player1->getHand()->addCard(reinforcementCard);
 
     HumanPlayerStrategy* humanStrategy = new HumanPlayerStrategy(player1);
-    player1->setPlayerStrategy(humanStrategy);
+    AggressivePlayerStrategy* aggressiveStrategy = new AggressivePlayerStrategy(player1);
+    player1->setPlayerStrategy(aggressiveStrategy);
 
     Continent* continent =  new Continent("Africa", 12);
     Territory* ownedTerritory1 = new Territory("ownedTerritory1", 1, 1, continent);
