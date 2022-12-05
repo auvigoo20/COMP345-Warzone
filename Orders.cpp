@@ -631,6 +631,7 @@ void Blockade::execute()
     } else {
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() * 2);
         targetTerritory->setOwner(neutralPlayer);
+        this->currentPlayer->removeTerritory(targetTerritory);
         printOrder(cout);
         notify(this);
     }
