@@ -41,6 +41,12 @@ int testPlayerStrategies() {
     DiplomacyCard* diplomacyCard = new DiplomacyCard();
     ReinforcementCard* reinforcementCard = new ReinforcementCard();
 
+    BombCard* bombCard2 = new BombCard();
+    BlockadeCard* blockadeCard2 = new BlockadeCard();
+    AirliftCard* airliftCard2 = new AirliftCard();
+    DiplomacyCard* diplomacyCard2 = new DiplomacyCard();
+    ReinforcementCard* reinforcementCard2 = new ReinforcementCard();
+
     player1->getHand()->addCard(bombCard);
     player1->getHand()->addCard(blockadeCard);
     player1->getHand()->addCard(airliftCard);
@@ -60,6 +66,9 @@ int testPlayerStrategies() {
     player1->addTerritory(alliedNonAdjacentTer);
     player2->addTerritory(enemyTerritory1);
     player2->addTerritory(enemyNonAdjacentTer);
+
+    player1->setOpponentPlayerList({player2});
+    player2->setOpponentPlayerList({player1});
 
     ownedTerritory1->addAdjacentTerritory(enemyTerritory1);
     ownedTerritory1->addAdjacentTerritory(alliedAdjacentTer);
@@ -99,12 +108,16 @@ int testPlayerStrategies() {
         endPhase = player1->issueOrder(false);
     }
 
+    player1->getHand()->addCard(bombCard2);
+    player1->getHand()->addCard(blockadeCard2);
+    player1->getHand()->addCard(airliftCard2);
+    player1->getHand()->addCard(diplomacyCard2);
+    player1->getHand()->addCard(reinforcementCard2);
 
     cout << "\n --- Testing benevolent player strategy ---" << endl;
 
     player1->setPlayerStrategy(benevolentPlayerStrategy);
     ownedTerritory1->setNumOfArmies(10);
-    alliedNonAdjacentTer->setNumOfArmies(10);
     endPhase = false;
     while(!endPhase) {
         endPhase = player1->issueOrder(true);
@@ -142,6 +155,16 @@ int testPlayerStrategies() {
     // Should change player2 strategy to aggressive.
     advanceOrder->execute();
     cout << "Player 2 strategy type: " << player2->getPlayerStrategy()->getStrategyType() << endl;
+
+    delete player1;
+    delete player2;
+    delete deck;
+    delete continent;
+    delete ownedTerritory1;
+    delete alliedNonAdjacentTer;
+    delete alliedAdjacentTer;
+    delete enemyTerritory1;
+    delete enemyNonAdjacentTer;
 
     return 0;
 }
