@@ -1,6 +1,7 @@
 #include "PlayerStrategiesDriver.h"
 #include "TournamentDriver.h"
 #include <string>
+using std::string;
 
 int main(int argc, char** argv){
     if(argc == 1){
