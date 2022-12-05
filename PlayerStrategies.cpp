@@ -247,7 +247,6 @@ void HumanPlayerStrategy::issueAdvanceOrder()
 
         // Create Order
         Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
-        sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
         player->getOrdersList()->addOrder(advanceOrder);
         cout << "Advance order issued for player " << player->getName() << ". " << endl;
         cout << numArmies << " advanced from " << sourceTer->getName() << " to ";
@@ -268,7 +267,6 @@ void HumanPlayerStrategy::issueAdvanceOrder()
 
         // Create Order
         Advance* advanceOrder = new Advance(player, numArmies, sourceTer, targetTer);
-        sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
         player->getOrdersList()->addOrder(advanceOrder);
         cout << "Advance order issued for player " << player->getName() << endl;
         cout << numArmies << " to be advanced from " << sourceTer->getName() << " to ";
@@ -297,7 +295,6 @@ void HumanPlayerStrategy::issueAirliftOrder(int cardIndex)
     // Remove the card from the handlist and add it back to the decklist
     player->getHand()->playCard(cardIndex);
     AirliftCard* currentCard = dynamic_cast<AirliftCard*>(player->getHand()->getHandList()->at(cardIndex));
-    sourceTer->setTempNumOfArmies(sourceTer->getTempNumOfArmies() - numArmies);
     //Plays the card and issues the order.
     currentCard->play(player, numArmies, sourceTer, targetTer);
     cout << "Airlift order issued for player " << player->getName() << endl;
@@ -750,7 +747,6 @@ bool AggressivePlayerStrategy::issueOrder(bool isDeployPhase)
         for (Territory* t : strongest->getAdjacentTerritories()) {
             if (t->getOwner() != player) {
                 int numArmies = strongest->getTempNumOfArmies();
-                strongest->setTempNumOfArmies(strongest->getTempNumOfArmies() - numArmies);
                 Advance* advanceOrder = new Advance(player, numArmies, strongest, t);
                 player->getOrdersList()->addOrder(advanceOrder);
 
@@ -905,7 +901,6 @@ bool BenevolentPlayerStrategy::issueOrder(bool isDeployPhase)
                 dynamic_cast<AirliftCard *>(card)->play(player, numArmies, strongest, weakest);
 
                 cout << "Airlift order issued for player " << player->getName() << endl;
-                strongest->setTempNumOfArmies(strongest->getTempNumOfArmies() - numArmies);
                 cout << numArmies << " to be airlifted from " << strongest->getName() << " to ";
                 cout << weakest->getName() << "." << endl;
                 return false; // keep checking for other possible cards
@@ -1022,7 +1017,6 @@ bool BenevolentPlayerStrategy::issueOrder(bool isDeployPhase)
 
         Advance* advanceOrder = new Advance(player, numArmies, strongest, weakest);
         player->getOrdersList()->addOrder(advanceOrder);
-        strongest->setTempNumOfArmies(strongest->getTempNumOfArmies() - numArmies);
 
         cout << "Advance order issued for player " << player->getName() << "." << endl;
         cout << numArmies << " advanced from " << strongest->getName() << " to ";
