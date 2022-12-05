@@ -492,6 +492,10 @@ void GameEngine::prepareGame() {
     // Creating hands and drawing cards to them
     for (int i = 0; i < players.size(); i++) {
         Player *tempPlayer = players.at(i);
+        if (tempPlayer->getHand() != nullptr) {
+            delete tempPlayer->getHand();
+            tempPlayer->setHand(nullptr);
+        }
         Hand *hand = new Hand(tempPlayer, deck);
         deck->draw(hand);
         deck->draw(hand);
@@ -685,7 +689,7 @@ void GameEngine::issueOrdersPhase() {
         cout << "Player issuing order: " << player->getName() << "..." << endl;
         while(!endPhase) {
             // Deploy phase
-           endPhase = player->issueOrder(true);
+            endPhase = player->issueOrder(true);
         }
         endPhase = false;
         while(!endPhase) {
@@ -709,8 +713,8 @@ void GameEngine::executeOrdersPhase(bool tournamentMode) {
 
     // First do all deploy orders of all players
     // This includes the neutral player (who for now is treated/behaves like any other player)
-    int playersWithoutOrders = 0;
-    while (playersWithoutOrders < this->players.size()) {
+    bool issueOrdersLeft = true;
+    while (issueOrdersLeft) {
         for (Player* player : this->players) {
             // If player still has orders, they may still have deploy orders.
             // Else, player is done executing deploy orders and we can move on to the next player.
@@ -722,18 +726,23 @@ void GameEngine::executeOrdersPhase(bool tournamentMode) {
                     player->getOrdersList()->getOrder(0)->execute();
                     player->getOrdersList()->removeOrder(0);
                     cout << "***" << endl;
-                } else {
-                    playersWithoutOrders++;
                 }
-            } else {
-                playersWithoutOrders++;
+            }
+        }
+
+        // Check if any player still has deploy orders left
+        issueOrdersLeft = false;
+        for (Player* player : this->players) {
+            if (player->getOrdersList()->getSize() > 0 && dynamic_cast<Deploy*>(player->getOrdersList()->getOrder(0)) != nullptr) {
+                issueOrdersLeft = true;
+                break;
             }
         }
     }
 
     // Now do the rest of the orders
     // Keep executing orders until all players have no more orders to execute
-    playersWithoutOrders = 0;
+    int playersWithoutOrders = 0;
     int nextPlayer = 0;
     while (playersWithoutOrders < this->players.size() && !gameWon) {
         // Loop through each player and execute the top order in their list
@@ -808,7 +817,7 @@ void GameEngine::executeOrdersPhase(bool tournamentMode) {
                     this->deck->draw(player->getHand());
                     player->setEntitledToCard(false);
                 }
-                player->getOrdersList()->removeOrder(1);
+                player->getOrdersList()->removeOrder(0);
             } else {
                 playersWithoutOrders++;
             }
@@ -847,30 +856,34 @@ void GameEngine::mainGameLoop(int maxTurns, bool tournamentMode) {
             issueOrdersPhase();
         }
 
-        // FOR NOW
-        // To demonstrate that during the loop, the game removes players that have no territories and declares win when
-        // a player controls all territories, I manually perform the following actions:
-        // - After every turn, each player will be given a (random) card.
-        // - After the issueorder phase of turn 3, player 3 will have no territories
-        // - After the issueorder phase of turn 4, player 1 will have all territories.
-        //
-        // This is for demonstration purposes and thus this code can/will be removed in part 3.
-        for (int i=1; i<players.size(); i++) {
-            for (Territory* territory : this->players.at(i)->getTerritories()) {
-                territory->setOwner(this->players.at(0));
-                this->players.at(0)->addTerritory(territory);
+        // Every turn, a cheater player automatically takes the territories closest to him.
+        cout << endl << "********** Gifting of territories to cheater **********" << endl;
+        for (Player* player : players) {
+            if (player->getPlayerStrategy()->getStrategyType() != "cheater") {
+                continue;
+            } else {
+                // toAttack returns a vector of all the enemy territories adjacent to his own.
+                vector<Territory*>  adjacentTerritories = player->toAttack();
+
+                // Looping through the adjacentTerritories vector. Removing the territories
+                // from the other players' list of territories, adding it to the cheater player's
+                // list and set the cheater as the territory owner.
+                for(auto* adjacentTerritory: adjacentTerritories) {
+                    adjacentTerritory->getOwner()->removeTerritory(adjacentTerritory);
+                    adjacentTerritory->setOwner(player);
+                    player->addTerritory(adjacentTerritory);
+                    cout << adjacentTerritory->getName() << " was wrongfully taken by ";
+                    cout << player->getName() << "!" << endl;
+                    cout << "***" << endl;
+                }
             }
-            this->players.at(i)->setTerritories({});
-            cout << "All " << this->players.at(i)->getName() << " territories forcefully transferred to " << this->players.at(0)->getName() << endl;
         }
-        //
-        // Game loop continues here.
+        cout << "***" << endl;
 
         if (this->currentState == executeOrders) {
             executeOrdersPhase(tournamentMode);
         }
         if (this->currentState == win) {
-            winningPlayer = this->players.front();
             break;
         }
         if (checkMaxTurns && turn == maxTurns) {
@@ -886,13 +899,14 @@ void GameEngine::mainGameLoop(int maxTurns, bool tournamentMode) {
     // Clean up after the game
     vector<Player*> playersToCleanUp = tournamentMode ? tournamentPlayers : players;
     for (Player* player : playersToCleanUp) {
+        cout << "Cleaning up player: " << player->getName() << "...";
         player->setTerritories({});
-//        delete player->getHand();
         while(player->getOrdersList()->getSize() > 0) {
             player->getOrdersList()->removeOrder(0);
         }
         player->setReinforcementPool(0);
         player->setEntitledToCard(false);
+        cout << " done." << endl;
     }
     delete this->map;
     map = nullptr;
@@ -953,7 +967,7 @@ void GameEngine::updatePlayersAllyAndOpponentLists() {
 vector<int> GameEngine::checkAndEliminatePlayers(bool tournamentMode) {
     vector<int> numEliminated = {};
     bool win = false;
-    Player* winningPlayer;
+    Player* winner;
     for (int i=0; i<this->getPlayers().size(); i++) {
         Player* player = players.at(i);
 
@@ -974,13 +988,14 @@ vector<int> GameEngine::checkAndEliminatePlayers(bool tournamentMode) {
         // Neutral territories must therefore not exist; any neutral territories need to be conquered before a win
         // can be declared.
         if (player->getTerritories().size() == this->map->getAllTerritories().size()) {
-            winningPlayer = player;
+            winner = player;
             win = true;
         }
     }
 
     if (win) {
-        cout << "Player " << winningPlayer->getName() << " has won! Game over." << endl;
+        cout << "Player " << winner->getName() << " has won! Game over." << endl;
+        this->winningPlayer = winner;
         return vector<int>{-1};
     } else {
         return numEliminated;
@@ -1059,9 +1074,17 @@ void GameEngine::tournamentStartupPhase(std::string currentMap) {
 void GameEngine::runTournament() {
     vector<vector<Player*>> tournamentResults;
 
-    // WILL NEED TO CHANGE TO USE ACTUAL PLAYER STRATEGIES
     for (string strategy : getTournamentPlayerStrategies()) {
-        tournamentPlayers.push_back(new Player(strategy));
+        // Create player
+        string playerName = strategy + "Player";
+        Player* tournamentPlayer = new Player(playerName);
+
+        // Set strategy
+        PlayerStrategy* ps = tournamentPlayer->createPlayerStrategy(strategy);
+        tournamentPlayer->setPlayerStrategy(ps);
+
+        // Add player to tournament
+        tournamentPlayers.push_back(tournamentPlayer);
     }
 
     cout << "INFO: Players set! Listing players..." << endl;
@@ -1109,7 +1132,7 @@ void GameEngine::runTournament() {
 
         file << left << setw(30) << "Map " << " | ";
         for (int i=1; i<=getTournamentNumOfGames(); i++) {
-            file << left << setw(10) << "Game " + to_string(i) << " | ";
+            file << left << setw(20) << "Game " + to_string(i) << " | ";
         }
         file << endl;
         for (int i=0; i< getTournamentMapFiles().size(); i++) {
@@ -1125,10 +1148,10 @@ void GameEngine::runTournament() {
                 for (int j=0; j<getTournamentNumOfGames(); j++) {
                     Player* gameWinner = tournamentResults.at(i).at(j);
                     if (gameWinner == nullptr) {
-                        file << left << setw(10) << "DRAW ";
+                        file << left << setw(20) << "DRAW" << " | ";
                     }
                     else {
-                        file << left << setw(10) << gameWinner->getName() << " | ";
+                        file << left << setw(20) << gameWinner->getName() << " | ";
                     }
                 }
             }

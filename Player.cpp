@@ -23,6 +23,7 @@ ostream & operator<<(ostream &strm, const Player &p){
  * Default constructor
  */
 Player::Player(){
+    hand = nullptr;
 }
 
 /**
@@ -50,7 +51,7 @@ Player::Player(string name, Hand* hand, OrdersList* ordersList, int reinforcemen
 
 Player::Player(std::string name) {
     this->name = name;
-    this->hand = new Hand();
+    this->hand = nullptr;
     this->orderList = new OrdersList();
     this->entitledToCard = false;
     this->strategy = nullptr;
@@ -166,6 +167,10 @@ void Player::setOpponentPlayerList(vector<Player *> opponentPlayerList) {
     this->opponentPlayerList = opponentPlayerList;
 }
 
+/**
+ * Sets the player strategy, deleting the old one if it exists.
+ * @param ps
+ */
 void Player::setPlayerStrategy(PlayerStrategy *ps)
 {
     if(strategy == nullptr) {
@@ -174,6 +179,30 @@ void Player::setPlayerStrategy(PlayerStrategy *ps)
         delete strategy;
         this->strategy = ps;
     }
+}
+
+/**
+ * Creates a new player strategy for the current player from a string.
+ * @param strategyName The strategy to create
+ * @return The PlayerStrategy object
+ */
+PlayerStrategy *Player::createPlayerStrategy(std::string strategyName) {
+    PlayerStrategy* ps = nullptr;
+
+    if (strategyName == "aggressive") {
+        ps = new AggressivePlayerStrategy(this);
+    }
+    else if (strategyName == "benevolent") {
+        ps = new BenevolentPlayerStrategy(this);
+    }
+    else if (strategyName == "neutral") {
+        ps = new NeutralPlayerStrategy(this);
+    }
+    else if (strategyName == "cheater") {
+        ps = new CheaterPlayerStrategy(this);
+    }
+
+    return ps;
 }
 
 /**

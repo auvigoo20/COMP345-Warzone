@@ -1192,25 +1192,11 @@ vector<Territory*> CheaterPlayerStrategy::toAttack()
 
 bool CheaterPlayerStrategy::issueOrder(bool isDeployPhase)
 {
-   if(isDeployPhase) {
+    if(isDeployPhase) {
         return issueDeployOrder();
-   }
-
-    // toAttack returns a vector of all the enemy territories adjacent to his own.
-    vector<Territory*>  adjacentTerritories = player->toAttack();
-
-    // Looping through the adjacentTerritories vector. Removing the territories
-    // from the other players' list of territories, adding it to the cheater player's
-    // list and set the cheater as the territory owner.
-    for(auto* adjacentTerritory: adjacentTerritories) {
-        adjacentTerritory->getOwner()->removeTerritory(adjacentTerritory);
-        adjacentTerritory->setOwner(player);
-        player->addTerritory(adjacentTerritory);
-        cout << adjacentTerritory->getName() << " was wrongfully taken by ";
-        cout << player->getName() << "!" << endl;
-        cout << "***" << endl;
     }
-   // Does not issue any other kind of orders but issue orders.
+
+   // Does not issue any other kind of orders but deploy orders.
    return true;
 }
 

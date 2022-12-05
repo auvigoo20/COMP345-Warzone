@@ -16,8 +16,8 @@ int main(int argc, char** argv){
 //        testOrderExecution();
 //        testMainGameLoop();
 //        testLoggingObserver();
-            testPlayerStrategies();
-//        testTournament();
+//        testPlayerStrategies();
+        testTournament();
     }
     else{
         if(string(argv[1]) == "-console"){
