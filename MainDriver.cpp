@@ -5,6 +5,7 @@
 #include "CardsDriver.h"
 #include "CommandProcessingDriver.h"
 #include "LoggingObserverDriver.h"
+#include "PlayerStrategiesDriver.h"
 #include "TournamentDriver.h"
 #include <string>
 
@@ -15,7 +16,8 @@ int main(int argc, char** argv){
 //        testOrderExecution();
 //        testMainGameLoop();
 //        testLoggingObserver();
-testTournament();
+            testPlayerStrategies();
+//        testTournament();
     }
     else{
         if(string(argv[1]) == "-console"){

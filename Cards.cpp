@@ -209,7 +209,9 @@ ostream& operator <<(ostream& output, Card& c){
     return c.printCard(output);
 }
 
-BombCard::BombCard(){
+BombCard::BombCard()
+{
+    cardType = "bomb";
 }
 
 /**
@@ -219,9 +221,11 @@ BombCard::BombCard(){
  */
 BombCard::BombCard(const BombCard& b)
 {
+    cardType = "bomb";
 }
 
 ReinforcementCard::ReinforcementCard() {
+    cardType = "reinforcement";
 }
 
 /**
@@ -231,9 +235,11 @@ ReinforcementCard::ReinforcementCard() {
  */
 ReinforcementCard::ReinforcementCard(const ReinforcementCard& r)
 {
+    cardType = "reinforcement";
 }
 
 BlockadeCard::BlockadeCard() {
+    cardType = "blockade";
 }
 
 /**
@@ -243,9 +249,12 @@ BlockadeCard::BlockadeCard() {
  */
 BlockadeCard::BlockadeCard(const BlockadeCard& r)
 {
+    cardType = "blockade";
 }
 
-AirliftCard::AirliftCard() {
+AirliftCard::AirliftCard()
+{
+    cardType = "airlift";
 }
 
 /**
@@ -255,9 +264,12 @@ AirliftCard::AirliftCard() {
  */
 AirliftCard::AirliftCard(const AirliftCard& a)
 {
+    cardType = "airlift";
 }
 
-DiplomacyCard::DiplomacyCard() {
+DiplomacyCard::DiplomacyCard()
+{
+    cardType = "negotiate";
 }
 
 /**
@@ -267,6 +279,7 @@ DiplomacyCard::DiplomacyCard() {
  */
 DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
 {
+    cardType = "negotiate";
 }
 
 /**
@@ -276,12 +289,16 @@ DiplomacyCard::DiplomacyCard(const DiplomacyCard& d)
 void BombCard::play(Player* owner, Territory* targetTerritory) {
     Bomb* bomb = new Bomb(owner, targetTerritory);
     owner->getOrdersList()->addOrder(bomb);
-    cout << "output bomb card" << endl;
 }
 
 ostream& BombCard::printCard(std::ostream &output) const {
     output << " Bomb Card " << endl;
     return output;
+}
+
+string BombCard::getCardType()
+{
+    return cardType;
 }
 
 /**
@@ -299,7 +316,7 @@ ostream& BombCard::printCard(std::ostream &output) const {
  }
 
 void ReinforcementCard::play(Player* owner) {  // Reinforcement Card does not create an order
-    cout << "output reinforcement card" << endl;
+     owner->setReinforcementPool(owner->getReinforcementPool()+5);
 }
 
 ostream& ReinforcementCard::printCard(std::ostream &output) const {
@@ -317,6 +334,12 @@ ReinforcementCard* ReinforcementCard::copy() const
     return new ReinforcementCard();
 }
 
+
+string ReinforcementCard::getCardType()
+{
+    return cardType;
+}
+
 ReinforcementCard::~ReinforcementCard()
 {
 }
@@ -324,7 +347,6 @@ ReinforcementCard::~ReinforcementCard()
 void BlockadeCard::play(Player* owner, Territory* targetTerritory) {
     Blockade* blockade = new Blockade(owner, targetTerritory);
     owner->getOrdersList()->addOrder(blockade);
-    cout << "output blockade card" << endl;
 }
 
 ostream& BlockadeCard::printCard(std::ostream &output) const {
@@ -342,6 +364,11 @@ BlockadeCard* BlockadeCard::copy() const
     return new BlockadeCard();
 }
 
+string BlockadeCard::getCardType()
+{
+    return cardType;
+}
+
 BlockadeCard::~BlockadeCard()
 {
 }
@@ -349,7 +376,6 @@ BlockadeCard::~BlockadeCard()
 void AirliftCard::play(Player* owner, int numOfUnits, Territory* sourceTerritory, Territory* targetTerritory) {
     Airlift* airlift = new Airlift(owner, numOfUnits, sourceTerritory, targetTerritory);
     owner->getOrdersList()->addOrder(airlift);
-    cout << "output airlift card" << endl;
 }
 
 ostream& AirliftCard::printCard(std::ostream &output) const {
@@ -367,6 +393,11 @@ AirliftCard* AirliftCard::copy() const
     return new AirliftCard();
 }
 
+string AirliftCard::getCardType()
+{
+    return cardType;
+}
+
 AirliftCard::~AirliftCard()
 {
 }
@@ -374,7 +405,6 @@ AirliftCard::~AirliftCard()
 void DiplomacyCard::play(Player* owner, Player* targetPlayer) {
     Negotiate* negotiate = new Negotiate(owner, targetPlayer);
     owner->getOrdersList()->addOrder(negotiate);
-    cout << "output diplomacy card" << endl;
 }
 
 ostream& DiplomacyCard::printCard(std::ostream &output) const {
@@ -389,6 +419,11 @@ ostream& DiplomacyCard::printCard(std::ostream &output) const {
 DiplomacyCard* DiplomacyCard::copy() const
 {
     return new DiplomacyCard();
+}
+
+string DiplomacyCard::getCardType()
+{
+    return cardType;
 }
 
 DiplomacyCard::~DiplomacyCard()

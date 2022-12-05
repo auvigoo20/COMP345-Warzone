@@ -248,9 +248,9 @@ void Deploy::execute()
 {
     if(!validate()) {
        cout << "Invalid Order; Deploy not executed." << endl;
+       this->targetTerritory->setTempNumOfArmies(this->targetTerritory->getNumOfArmies());
     } else {
         this->targetTerritory->setNumOfArmies(this->targetTerritory->getNumOfArmies() + this->numOfArmies);
-        this->currentPlayer->setReinforcementPool(this->currentPlayer->getReinforcementPool() - this->numOfArmies);
         printOrder(cout);
         notify(this);
     }
@@ -394,6 +394,7 @@ void Advance::attackSimulation() const {
         cout << "Territory successfully defended !" << endl;
         targetTerritory->setNumOfArmies(remainingDefenders);
         sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() + remainingAttackers);
+        sourceTerritory->setTempNumOfArmies(this->sourceTerritory->getNumOfArmies());
     }
 }
 
@@ -404,12 +405,20 @@ void Advance::execute()
 {
    if(!validate()) {
        cout << "Invalid Order; Advance not executed." << endl;
+       this->sourceTerritory->setTempNumOfArmies(this->sourceTerritory->getNumOfArmies());
    } else if(targetTerritory->getOwner() == sourceTerritory->getOwner()) {
        sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
        targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);
        printOrder(cout);
        notify(this);
    } else {
+       // If attacked player is neutral, change player strategy to 'aggressive'.
+       if(this->targetTerritory->getOwner()->getPlayerStrategy()->getStrategyType() == "neutral") {
+           cout << "## Neutral player was attacked. Changing to aggressive player !##" << endl;
+           AggressivePlayerStrategy* agrStrt = new AggressivePlayerStrategy();
+           agrStrt->setPlayer(this->targetTerritory->getOwner());
+           this->targetTerritory->getOwner()->setPlayerStrategy(agrStrt);
+       }
        printOrder(cout);
        attackSimulation();
        notify(this);
@@ -513,6 +522,12 @@ void Bomb::execute()
     if(!validate()) {
         cout << "Invalid Order; Bomb not executed." << endl;
     } else {
+        if(this->targetTerritory->getOwner()->getPlayerStrategy()->getStrategyType() == "neutral") {
+//           AggressivePlayerStrategy* agrStrt = new AggressivePlayerStrategy();
+//           agrStrt->setPlayer(this->targetTerritory->getOwner());
+//           this->targetTerritory->getOwner()->setPlayerStrategy(agrStrt);
+            cout << "######### NEUTRAL PLAYER WAS ATTACKED ##########" << endl;
+        }
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() / 2);
         printOrder(cout);
         notify(this);
@@ -616,6 +631,7 @@ void Blockade::execute()
     } else {
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() * 2);
         targetTerritory->setOwner(neutralPlayer);
+        this->currentPlayer->removeTerritory(targetTerritory);
         printOrder(cout);
         notify(this);
     }
@@ -718,6 +734,7 @@ void Airlift::execute()
 {
     if(!validate()) {
         cout << "Invalid Order; Airlift not executed." << endl;
+        sourceTerritory->setTempNumOfArmies(sourceTerritory->getNumOfArmies());
     } else {
         sourceTerritory->setNumOfArmies(sourceTerritory->getNumOfArmies() - numOfArmies);
         targetTerritory->setNumOfArmies(targetTerritory->getNumOfArmies() + numOfArmies);

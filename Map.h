@@ -31,6 +31,7 @@ class Territory{
         Player* owner;
         Continent* continent;
         int numOfArmies;
+        int tempNumOfArmies;
         string name;
         vector<Territory*> adjacentTerritories;
         int x, y;
@@ -45,6 +46,7 @@ class Territory{
         Player* getOwner();
         Continent* getContinent();
         int getNumOfArmies();
+        int getTempNumOfArmies();
         string getName();
         vector<Territory*> getAdjacentTerritories();
         bool isAdjacentTerritory(Territory* territory);
@@ -54,6 +56,7 @@ class Territory{
         void setOwner(Player* player);
         void setContinent(Continent* continent);
         void setNumOfArmies(int numOfArmies);
+        void setTempNumOfArmies(int tempNumOfArmies);
         void setName(string name);
         void setAdjacentTerritories(vector<Territory*> territories);
         void setX(int x);

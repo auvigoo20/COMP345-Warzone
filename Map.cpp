@@ -97,6 +97,7 @@ Territory::Territory() {
     owner = nullptr;
     continent = nullptr;
     numOfArmies = 0;
+    tempNumOfArmies = 0;
     name = "";
     x = 0;
     y = 0;
@@ -109,6 +110,7 @@ Territory::Territory() {
 Territory::Territory(const Territory &t) {
     owner = t.owner;
     numOfArmies = t.numOfArmies;
+    tempNumOfArmies = t.tempNumOfArmies;
     name = t.name;
     x = t.x;
     y = t.y;
@@ -125,6 +127,7 @@ Territory::Territory(const Territory &t) {
 Territory& Territory::operator=(const Territory &t) {
     owner = t.owner;
     numOfArmies = t.numOfArmies;
+    tempNumOfArmies = t.tempNumOfArmies;
     name = t.name;
     x = t.x;
     y = t.y;
@@ -145,6 +148,7 @@ Territory::Territory(Player *owner, Continent* continent, int numOfArmies, std::
     this->owner = owner;
     this->continent = continent;
     this->numOfArmies = numOfArmies;
+    this->tempNumOfArmies = numOfArmies;
     this->name = name;
     this->adjacentTerritories = adjacentTerritories;
     this->x = x;
@@ -155,6 +159,7 @@ Territory::Territory(Player *owner, Continent* continent, int numOfArmies, std::
     this->owner = owner;
     this->continent = continent;
     this->numOfArmies = numOfArmies;
+    this->tempNumOfArmies = numOfArmies;
     this->name = name;
     this->x = x;
     this->y = y;
@@ -180,8 +185,17 @@ int Territory::getNumOfArmies() {
     return numOfArmies;
 }
 
+int Territory::getTempNumOfArmies() {
+    return tempNumOfArmies;
+}
+
 void Territory::setNumOfArmies(int numOfArmies){
     this->numOfArmies = numOfArmies;
+    this->tempNumOfArmies = numOfArmies;
+}
+
+void Territory::setTempNumOfArmies(int tempNumOfArmies) {
+    this->tempNumOfArmies = tempNumOfArmies;
 }
 
 string Territory::getName() {

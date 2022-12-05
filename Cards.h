@@ -51,6 +51,8 @@ public:
     virtual ostream& printCard(ostream& output) const = 0;
     virtual Card* copy() const = 0;
     virtual ~Card() = default;
+
+    virtual string getCardType() = 0;
 private:
     friend ostream& operator << (ostream& output, Card& c);
 };
@@ -63,6 +65,10 @@ public:
     ostream& printCard(ostream& output) const override;
     BombCard* copy() const override;
     ~BombCard() override;
+    string getCardType() override;
+
+private:
+    string cardType = "bomb";
 };
 
 class ReinforcementCard : public Card{
@@ -73,6 +79,10 @@ public:
     ostream& printCard(ostream& output) const override;
     ReinforcementCard* copy() const override;
     ~ReinforcementCard() override;
+    string getCardType() override;
+
+private:
+    string cardType;
 };
 
 class BlockadeCard : public Card{
@@ -83,6 +93,10 @@ public:
     ostream& printCard(ostream& output) const override;
     BlockadeCard* copy() const override;
     ~BlockadeCard() override;
+    string getCardType() override;
+
+private:
+    string cardType;
  };
 
 class AirliftCard : public Card{
@@ -93,6 +107,10 @@ public:
     ostream& printCard(ostream& output) const override;
     AirliftCard* copy() const override;
     ~AirliftCard() override;
+    string getCardType() override;
+
+private:
+    string cardType;
 };
 
 class DiplomacyCard : public Card{
@@ -103,4 +121,8 @@ public:
     ostream& printCard(ostream& output) const override;
     DiplomacyCard* copy() const override;
     ~DiplomacyCard() override;
+    string getCardType() override;
+
+private:
+    string cardType;
 };
