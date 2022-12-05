@@ -410,11 +410,18 @@ void HumanPlayerStrategy::issueReinforcementOrder(int index)
  */
 Territory* HumanPlayerStrategy::chooseTerritory(vector<Territory *> territories)
 {
+    string indexStr;
     int index;
     while(true) {
         cout << "Please specify the index corresponding to the selected territory:";
-        cin >> index;
+        cin >> indexStr;
         cout << endl;
+
+        try {
+           index = stoi(indexStr);
+        } catch(const std::exception& e) {
+            index = 0;
+        }
         index--;
 
         if (index< 0 || index>= territories.size()) {
