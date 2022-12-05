@@ -160,6 +160,12 @@ bool HumanPlayerStrategy::issueOrder(bool isDeployPhase)
  */
 bool HumanPlayerStrategy::issueDeployOrder()
 {
+    //Verify if other deploy orders can be issued. If not return false.
+    if(player->getReinforcementPool() == 0) {
+        cout << "No units to deploy." << endl;
+        return true;
+    }
+
     cout << " --- Deploy Orders --- \n\n" << endl;
     cout << player->getReinforcementPool() << " units left to deploy." << endl;
 
@@ -197,12 +203,8 @@ bool HumanPlayerStrategy::issueDeployOrder()
     cout << "Deploy order issued for player " << player->getName() << ".\n";
     cout  << numArmies << " units to be deployed on " << targetTer->getName() << "." << endl;
 
-    //Verify if other deploy orders can be issued. If not return false.
-    if(player->getReinforcementPool() == 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
+
 }
 
 
@@ -366,16 +368,22 @@ void HumanPlayerStrategy::issueNegotiateOrder(int cardIndex)
     //Blockade order
     //Print to attack territories for the player to see and make a decision.
     int i = 1;
+    string indexStr;
     int index;
-    cout << "Please specify the index corresponding to the targeted player." << endl;
     for (auto* p: player->getOpponentPlayerList()) {
         cout << i << " - " << p->getName() << endl;
         i++;
     }
     while(true) {
-        cout << "Please specify the index corresponding to the targeted player." << endl;
-        cin >> index;
+        cout << "Please specify the index corresponding to the targeted player: ";
+        cin >> indexStr;
         cout << endl;
+
+        try{
+           index = stoi(indexStr);
+        } catch( const std::exception& e){
+           index = -1;
+        }
         index--;
         if(index < 0 || index >= player->getOpponentPlayerList().size()){
             cout << "The specified index is out of range. Index must be between 1 and "
@@ -397,9 +405,15 @@ void HumanPlayerStrategy::issueNegotiateOrder(int cardIndex)
 }
 
 
-void HumanPlayerStrategy::issueReinforcementOrder(int index)
+void HumanPlayerStrategy::issueReinforcementOrder(int cardIndex)
 {
+    ReinforcementCard* currentCard = dynamic_cast<ReinforcementCard *>(player->getHand()->getHandList()->at(cardIndex));
+    player->getHand()->playCard(cardIndex);
+    currentCard->play(player);
 
+    cout << "Reinforcement order issued for player " << player->getName() << endl;
+    cout << "Player now has " << player->getReinforcementPool() << " available troops." << endl;
+    cout << "***" << endl;
 }
 
 /**
@@ -464,8 +478,8 @@ int HumanPlayerStrategy::chooseNumArmies(Territory *sourceTerritory)
  */
 void HumanPlayerStrategy::getAvailableOptions()
 {
-    cout << "List of available plays: " << endl;
-    cout << " - Advance order." << endl;
+    cout << "List of available plays: \n" << endl;
+    cout << " -\tAdvance Order \n" << endl;
     if(!player->getHand()->getHandList()->empty()) {
         for(auto* card: *player->getHand()->getHandList()) {
             cout << " - " << *card << endl;
@@ -860,6 +874,12 @@ string BenevolentPlayerStrategy::getStrategyType()
 bool BenevolentPlayerStrategy::issueOrder(bool isDeployPhase)
 {
     if(isDeployPhase) {
+
+        // Only returns true if no more units to deploy (endPhase)
+        if(player->getReinforcementPool() == 0) {
+            return true;
+        }
+
         Territory* weakest = toDefend().front();
         int numArmies = 1;
 
@@ -870,11 +890,6 @@ bool BenevolentPlayerStrategy::issueOrder(bool isDeployPhase)
 
         cout << "Deploy order issued for player " << player->getName() << endl;
         cout  << numArmies << " units to be deployed on " << weakest->getName() << "." << endl;
-
-        // Only returns true if no more units to deploy
-        if(player->getReinforcementPool() == 0) {
-            return true;
-        }
         return false;
     }
     // When deploy phase is done, player will only play cards that do not harm other players
@@ -1228,6 +1243,11 @@ bool CheaterPlayerStrategy::issueOrder(bool isDeployPhase)
  */
 bool CheaterPlayerStrategy::issueDeployOrder()
 {
+    //Verify if other deploy orders can be issued. If not return false.
+    if(player->getReinforcementPool() == 0) {
+        return true;
+    }
+
     srand(time(NULL));
     int randomNumber = rand();
     //Generate random parameters for the deploy orders (No specific behavior specified).
@@ -1243,12 +1263,7 @@ bool CheaterPlayerStrategy::issueDeployOrder()
     cout  << numArmies << " units to be deployed on " << targetTer->getName() << "." << endl;
     cout << "***" << endl;
 
-    //Verify if other deploy orders can be issued. If not return false.
-    if(player->getReinforcementPool() == 0) {
-        return true;
-    } else {
-        return false;
-    }
+    return false;
 }
 
 /**
@@ -1257,7 +1272,7 @@ bool CheaterPlayerStrategy::issueDeployOrder()
 void printTerritoryVector(const vector<Territory*>& v) {
     int i = 1;
     for(auto* territory: v) {
-        cout << i << " - " << territory->getName() << " - Available units :" << territory->getTempNumOfArmies() << endl;
+        cout << i << " - " << territory->getName() << " - Available units: " << territory->getTempNumOfArmies() << endl;
         i++;
     }
 }

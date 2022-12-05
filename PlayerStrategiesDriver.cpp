@@ -61,6 +61,9 @@ int testPlayerStrategies() {
     player2->addTerritory(enemyTerritory1);
     player2->addTerritory(enemyNonAdjacentTer);
 
+    player1->setOpponentPlayerList({player2});
+    player2->setOpponentPlayerList({player1});
+
     ownedTerritory1->addAdjacentTerritory(enemyTerritory1);
     ownedTerritory1->addAdjacentTerritory(alliedAdjacentTer);
     alliedAdjacentTer->addAdjacentTerritory(ownedTerritory1);
@@ -86,18 +89,18 @@ int testPlayerStrategies() {
         endPhase = player1->issueOrder(false);
     }
 
-    cout << "\n --- Testing aggressive player strategy ---" << endl;
-
-    player1->setPlayerStrategy(aggressivePlayerStrategy);
-    endPhase = false;
-    while(!endPhase) {
-        endPhase = player1->issueOrder(true);
-    }
-
-    endPhase = false;
-    while(!endPhase) {
-        endPhase = player1->issueOrder(false);
-    }
+//    cout << "\n --- Testing aggressive player strategy ---" << endl;
+//
+//    player1->setPlayerStrategy(aggressivePlayerStrategy);
+//    endPhase = false;
+//    while(!endPhase) {
+//        endPhase = player1->issueOrder(true);
+//    }
+//
+//    endPhase = false;
+//    while(!endPhase) {
+//        endPhase = player1->issueOrder(false);
+//    }
 
 
     cout << "\n --- Testing benevolent player strategy ---" << endl;
