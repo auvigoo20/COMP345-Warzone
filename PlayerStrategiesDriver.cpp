@@ -63,10 +63,13 @@ int testPlayerStrategies() {
 
     ownedTerritory1->addAdjacentTerritory(enemyTerritory1);
     ownedTerritory1->addAdjacentTerritory(alliedAdjacentTer);
+    alliedAdjacentTer->addAdjacentTerritory(ownedTerritory1);
+    enemyTerritory1->addAdjacentTerritory(ownedTerritory1);
 
 
     HumanPlayerStrategy* humanStrategy = new HumanPlayerStrategy(player1);
     AggressivePlayerStrategy* aggressivePlayerStrategy = new AggressivePlayerStrategy(player1);
+    BenevolentPlayerStrategy* benevolentPlayerStrategy = new BenevolentPlayerStrategy(player1);
     CheaterPlayerStrategy* cheaterStrategy = new CheaterPlayerStrategy(player1);
     NeutralPlayerStrategy* neutralStrategy = new NeutralPlayerStrategy(player2);
 
@@ -86,6 +89,22 @@ int testPlayerStrategies() {
     cout << "\n --- Testing aggressive player strategy ---" << endl;
 
     player1->setPlayerStrategy(aggressivePlayerStrategy);
+    endPhase = false;
+    while(!endPhase) {
+        endPhase = player1->issueOrder(true);
+    }
+
+    endPhase = false;
+    while(!endPhase) {
+        endPhase = player1->issueOrder(false);
+    }
+
+
+    cout << "\n --- Testing benevolent player strategy ---" << endl;
+
+    player1->setPlayerStrategy(benevolentPlayerStrategy);
+    ownedTerritory1->setNumOfArmies(10);
+    alliedNonAdjacentTer->setNumOfArmies(10);
     endPhase = false;
     while(!endPhase) {
         endPhase = player1->issueOrder(true);

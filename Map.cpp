@@ -191,6 +191,7 @@ int Territory::getTempNumOfArmies() {
 
 void Territory::setNumOfArmies(int numOfArmies){
     this->numOfArmies = numOfArmies;
+    this->tempNumOfArmies = numOfArmies;
 }
 
 void Territory::setTempNumOfArmies(int tempNumOfArmies) {
