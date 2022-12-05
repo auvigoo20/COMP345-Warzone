@@ -1,5 +1,7 @@
 #pragma once
 
-#include <string>;
+#include <string>
+using std::string;
+
 void testTournament();
 void testTournamentFile(std::string file);
