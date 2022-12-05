@@ -39,6 +39,7 @@ public:
     void setAllyPlayerList(vector<Player*> allyPlayerList);
     void setOpponentPlayerList(vector<Player*> opponentPlayerList);
     void setPlayerStrategy(PlayerStrategy* ps);
+    PlayerStrategy* createPlayerStrategy(string strategyName);
 
     void addTerritory(Territory* t);
     void removeTerritory(Territory* t);
